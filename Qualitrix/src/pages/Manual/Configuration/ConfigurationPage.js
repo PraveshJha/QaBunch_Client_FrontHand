@@ -16,7 +16,7 @@ import {
 } from 'reactstrap';
 import { ConfigData } from './ConfigData'
 import ConfigGetter from './ConfigGetter'
-import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader } from '../../Web/WebPageTableHeader'
+import { EnvironmentURLTableHeader} from '../WebPageTableHeader'
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -44,6 +44,10 @@ class ConfigurationPage extends React.Component {
     isErrorOnNewTestCycle: ConfigData.IsErrorOnNewTestCycle,
     newTestCycle: ConfigData.NewTestCycle,
 
+    //****** Environment Configuration  ***********************************************************
+    envUrlList: ConfigData.EnvUrlList,
+    selectedRowFromUrlTable:ConfigData.SelectedRowFromUrlTable,
+
 
   };
   async componentDidMount() {
@@ -56,6 +60,10 @@ class ConfigurationPage extends React.Component {
     this.setState({ isErrorOnCurrentTestCycle: ConfigData.IsErrorOnCurrentTestCycle })
     this.setState({ isErrorOnNewTestCycle: ConfigData.IsErrorOnNewTestCycle })
     this.setState({ newTestCycle: ConfigData.NewTestCycle })
+
+    //****** Env Configuration  ***********************************************************
+    this.setState({ envUrlList: ConfigData.EnvUrlList })
+    this.setState({selectedRowFromUrlTable:ConfigData.SelectedRowFromUrlTable})
 
   }
 
@@ -141,10 +149,91 @@ saveCurrentCycle = async (event) => {
 
 }
 
+ //****** Env Configuration ***************************************************
+
+addNewUrlForEnvironment = async (event) => {
+  await event.preventDefault();
+  var allUrlList = this.state.envUrlList;
+  if (allUrlList.length > 0) {
+    var prevComponentName = allUrlList[allUrlList.length - 1]['name'];
+    var prevComponentUrl = allUrlList[allUrlList.length - 1]['url'];
+    if (prevComponentName.toString().trim() === "" || prevComponentUrl.toString().trim() === '') {
+      this.setState({ isNameValidforUrlTable: false });
+      return await this.getNotification('error', "Please add the correct Env name and Url from 'ADD NEW ENVIRONMENT' section");
+    }
+  }
+  this.setState({ isNameValidforUrlTable: true });
+  var lastId = allUrlList.length + 1;
+  var newRow = { id: lastId, name: '', url: '' };
+  this.setState({ envUrlList: [...this.state.envUrlList, newRow] });
+  ConfigData.EnvUrlList.push(newRow);
+
+}
+
+deleteUrlFromUrlTable = async (event) => {
+  await event.preventDefault();
+  var allUrlList = this.state.envUrlList;
+  if (allUrlList.length === 0) {
+    return await this.getNotification('error', "No Environment is found under 'ADD NEW ENVIRONMENT' section");
+  }
+  if (Number(this.state.selectedRowFromUrlTable) > 0 && Number(this.state.selectedRowFromUrlTable) <= allUrlList.length) {
+    var urlListAfterDelete = await ConfigGetter.updateRowIdAfterDelete(allUrlList, this.state.selectedRowFromUrlTable)
+    this.setState({ envUrlList: [] }, () => { this.setState({ envUrlList: urlListAfterDelete }); });
+    ConfigData.EnvUrlList = urlListAfterDelete;
+  }
+  else {
+    this.setState({ isNameValidforUrlTable: false });
+    return await this.getNotification('error', 'No Environment is selected for delete.');
+  }
+}
+
+saveUrlTableData = async (event) => {
+  await event.preventDefault();
+  var allUrlList = this.state.envUrlList;
+  if (this.state.isNameValidforUrlTable) {
+    if (allUrlList.length > 0) {
+      var componentName = allUrlList[allUrlList.length - 1]['name'];
+      var componentUrl = allUrlList[allUrlList.length - 1]['url'];
+      if (componentName.trim() === '' || componentUrl.trim() === '') {
+        return await this.getNotification('error', "Please add the correct environment and URL in 'ADD NEW ENVIRONMENTs' table");
+      }
+    }
+    ConfigData.EnvUrlList = allUrlList;
+    this.setState({ isPageLoading: true });
+    var isSaved = true;
+   var isSaved = await ConfigGetter.saveURLDetails();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Environment and Url information is successfully saved.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to save Environment and Url information because of ' + Config.ErrorMessage);
+    }
+
+  }
+  else {
+    return await this.getNotification('error', "Please add the correct Component and URL in 'ADD NEW ENVIRONMENT' table");
+  }
+}
+
+selectRadioButtonFromURlTable = (row, isSelect) => {
+  if (isSelect) {
+    ConfigData.SelectedRowFromUrlTable = row.id;
+    this.setState({ selectedRowFromUrlTable: row.id });
+  }
+
+}
+
 
 //****************** End */********************************** */
 
 render() {
+  const selectRowFromUrlTable = {
+    mode: 'radio',
+    onSelect: this.selectRadioButtonFromURlTable,
+    selected: [this.state.selectedRowFromUrlTable]
+  };
+
   return (
     <Page
       className="ConfigurationPage"
@@ -199,6 +288,44 @@ render() {
               </CardBody>
             </Card>
           </Col>
+          <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Add new environment
+                    <ButtonGroup size="sm">
+                      <Button color='dark' onClick={this.addNewUrlForEnvironment.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveUrlTableData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='dark' onClick={this.deleteUrlFromUrlTable.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BootstrapTable
+                      keyField='id'
+                      data={this.state.envUrlList}
+                      columns={EnvironmentURLTableHeader}
+                      wrapperClasses="table-responsive"
+                      striped
+                      hover
+                      condensed
+                      selectRow={selectRowFromUrlTable}
+                      cellEdit={cellEditFactory({
+                        mode: 'click',
+                        blurToSave: true,
+                      })}
+                    />
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
         </Row>
       </Fade>
     </Page>

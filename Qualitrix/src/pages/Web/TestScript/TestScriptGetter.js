@@ -44,6 +44,22 @@ export class TestScriptGetter {
     if (!await Config.isDemo) {
       allconfigData = await ConfigGetter.readConfigurationFile('Web');
       TestScriptData.AllConfigData = await allconfigData;
+      try {
+        var defaultEnv = await allconfigData['DefaultSelectedEnvironment'];
+        var allEnv = await allconfigData['Environment'];
+        if (await allEnv.length > 0) {
+          if (await defaultEnv === '' || await defaultEnv === undefined) {
+            defaultEnv = await allEnv[0]['name'];
+          }
+          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name',await defaultEnv)
+          if(await index > -1)
+          {
+             var appUrl = await allEnv[await index]['url'];
+             TestScriptData.AppUrl = await appUrl;
+          }
+        }
+      }
+      catch (error) { }
     }
 
   }

@@ -553,6 +553,7 @@ export class DataGetter {
                     allOptionsList.push(await methodList);
                 }
                 CustomFunctionData.AllSeleniumMethod = await allOptionsList;
+                console.log(await allOptionsList);
                 return await allOptionsList;
             }
             catch (error) {

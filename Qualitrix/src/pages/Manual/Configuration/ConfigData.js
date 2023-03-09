@@ -5,4 +5,6 @@ export var ConfigData = {
     IsErrorOnCurrentTestCycle:false,
     NewTestCycle:'',
     IsErrorOnNewTestCycle:false,
+    EnvUrlList:[],
+    SelectedRowFromUrlTable:-1,
 };

@@ -6,12 +6,14 @@ const selectedProject = Config.SelectedProject;
 export class ConfigGetter {
 
     async manualConfigPageLoad() {
-        var allconfigData = null;
+        var configData = {};
         if (!await Config.isDemo) {
-            var configData = await this.getConfigData();
+            configData = await this.getConfigData();
             ConfigData.AllConfigData = await configData;
         }
         await this.setTestCycleDropDown();
+        await this.setEnvironment(await configData);
+        
 
     }
 
@@ -38,6 +40,17 @@ export class ConfigGetter {
             ConfigData.ListOfTestCycle =[];
             ConfigData.CurrentTestCycle =''
         }
+        }
+    }
+
+    async setEnvironment(configDataResponse)
+    {
+        if(await Config.isDemo)
+        {
+
+        }
+        else{
+            ConfigData.EnvUrlList = await configDataResponse['Environment'];
         }
     }
 
@@ -130,6 +143,42 @@ export class ConfigGetter {
             var serverResponse = await restAPI.get(backendApi + 'manualconfiguration/listofusers', await headers);
             var allUsers = await serverResponse['data'];
             return await allUsers;
+        }
+
+    }
+
+    async updateRowIdAfterDelete(tableData, id) {
+        tableData = await tableData.filter(m => m.id !== id);
+        for (let i = 0; i < await tableData.length; i++) {
+            tableData[i]['id'] = i + 1;;
+
+        }
+        return await tableData;
+    }
+
+    async saveURLDetails() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'manualconfiguration/project/' + await selectedProject + '/saveenvironment', await headers, await ConfigData.EnvUrlList);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
         }
 
     }

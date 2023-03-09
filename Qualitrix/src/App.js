@@ -38,6 +38,7 @@ const ManualConfigurationPage = React.lazy(() => import('../src/pages/Manual/Con
 const ManualTCPage = React.lazy(() => import('../src/pages/Manual/TestCase/TestCasePage'));
 const DefectPage = React.lazy(() => import('../src/pages/Manual/Defects/DefectPage'));
 const TestPlanPage = React.lazy(() => import('../src/pages/Manual/TestPlan/TestPlan'));
+const ManualDashboardPage = React.lazy(() => import('../src/pages/Manual/Dashboard/DashboardPage'));
 
 
 const getBasename = () => {
@@ -84,6 +85,7 @@ class App extends React.Component {
                 <Route path="/mn/configuration" element={<ManualConfigurationPage />} />
                 <Route path="/mn/defects" element={<DefectPage />} />
                 <Route path="/mn/testplan" element={<TestPlanPage />} />
+                <Route path="/mn/dashboard" element={<ManualDashboardPage />} />
               </Routes>
             </React.Suspense>
           </MainLayout>
