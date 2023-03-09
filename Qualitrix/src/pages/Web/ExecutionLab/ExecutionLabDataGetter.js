@@ -96,11 +96,14 @@ export class ExecutionLabDataGetter {
     var barChartDataForFail = {};
     var componentPassFailData = [];
     var executionTimeData = [];
+    var randomNumber =10;
+    var status = "Pass"
+    var selectedRowId;
     if (Config.isDemo) {
       for (let i = 0; i < await selectedScripts.length; i++) {
-        var selectedRowId = await selectedScripts[i];
-        var randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
-        var status = "Pass"
+         selectedRowId = await selectedScripts[i];
+         randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
+        status = "Pass"
         if (randomNumber === 1) {
           status = "Fail";
         }
@@ -109,19 +112,19 @@ export class ExecutionLabDataGetter {
       var RandonExecutionTime = await DataGeneratorUtility.getNumberArray(5);
       executionTimeData.push(RandonExecutionTime);
       for (let i = 0; i < await selectedScripts.length; i++) {
-        var executionStartDate = new Date();
-        var selectedRowId = await selectedScripts[i];
-        var randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
-        var status = "Pass";
-        var AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Pass', 'screenshot': <img width="100" height="50" src={demoImage}></img> }]
+       // var executionStartDate = new Date();
+         selectedRowId = await selectedScripts[i];
+         randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
+         status = "Pass";
+        var AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Pass', 'screenshot': <img alt ='screeshot' width="100" height="50" src={demoImage}></img> }]
         if (randomNumber === 1) {
           status = "Fail";
-          AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Fail', 'screenshot': <img width="100" height="50" src={demoImage}></img> }]
+          AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Fail', 'screenshot': <img alt= 'screenshot' width="100" height="50" src={demoImage}></img> }]
         }
         allTestScripts[selectedRowId - 1]['status'] = status;
         ExecutionLabData.AssertionResultsForAllResults[selectedRowId] = await AssertionData;
-        var executionendDate = new Date();
-        var executionTimeInseconds = (executionendDate.getTime() - executionStartDate.getTime()) / 1000;
+        //var executionendDate = new Date();
+        //var executionTimeInseconds = (executionendDate.getTime() - executionStartDate.getTime()) / 1000;
         // mockResultsData['Execution Time'] = await executionTimeInseconds + ' Seconds';
       }
     }
@@ -138,7 +141,7 @@ export class ExecutionLabDataGetter {
       executionParams['applicationUrl'] = await ExecutionLabData.AllConfigData['Environment'][indexforEnvironment]['url'];
       var testScriptForExecution = [];
       for (let i = 0; i < await selectedScripts.length; i++) {
-        var selectedRowId = await selectedScripts[i];
+        selectedRowId = await selectedScripts[i];
         var testScriptDetails = await ExecutionLabData.ListOfTestScripts[Number(await selectedRowId) - 1];
         testScriptForExecution.push(await testScriptDetails);
       }
@@ -289,10 +292,11 @@ export class ExecutionLabDataGetter {
   }
   async createTestSuiteForSpecificComponent(componentName, rowId = 1) {
     var allTestScripts = [];
+    var rowData ={}
     if (Config.isDemo) {
       var randomRowCount = await DataGeneratorUtility.getNumberFromRange(10, 20);
       for (let i = 0; i < randomRowCount; i++) {
-        var rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
+         rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
         rowData.id = rowId;
         rowData.testid = "QA-" + await DataGeneratorUtility.getNumberFromRange(100, 500);
         rowData.testname = " This is test case No " + (i + 1);
@@ -304,7 +308,7 @@ export class ExecutionLabDataGetter {
     else {
       var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, 'Web', componentName);
       for (let i = 0; i < allComponentTestDetails.length; i++) {
-        var rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
+         rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
         allTestScripts.push(rowData);
         rowId = rowId + 1;
       }

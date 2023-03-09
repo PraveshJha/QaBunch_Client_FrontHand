@@ -132,7 +132,7 @@ class ObjectRepositoryPage extends React.Component {
           return await this.getNotification('error', "Please add correct details in 'Object Repository' table section");
         }
       }
-      if(await Object.keys(await ORData.NewAndUpdatedElement).length ==0 && await ORData.DeletedKey.length===0)
+      if(await Object.keys(await ORData.NewAndUpdatedElement).length ===0 && await ORData.DeletedKey.length===0)
       {
         return await this.getNotification('error', "There is no any locator added or updated.");
       }

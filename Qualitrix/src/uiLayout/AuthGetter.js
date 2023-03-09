@@ -83,5 +83,5 @@ export class AuthGetter {
         }
     }
 }
-export default new AuthGetter;
+export default new AuthGetter();
 

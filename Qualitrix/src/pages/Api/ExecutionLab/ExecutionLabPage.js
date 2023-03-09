@@ -13,7 +13,6 @@ import {
   Button,
   ButtonGroup,
   Progress,
-  Fade,
 } from 'reactstrap';
 import { ExecutionLabData } from './ExecutionLabData'
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'

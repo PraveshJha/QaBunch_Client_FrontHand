@@ -12,7 +12,6 @@ import {
   Label,
   FormGroup,
   Input,
-  CardImg,
   Nav,
   Fade,
 } from 'reactstrap';
@@ -23,7 +22,6 @@ import { Config } from '../../QAautoMATER/Config';
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import NotificationSystem from 'react-notification-system';
 import "react-widgets/styles.css";
 import PageLoader from 'react-fullpage-custom-loader'
@@ -33,7 +31,6 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
-import { FaJenkins, FaGitlab } from "react-icons/fa";
 import { ExecutionTableHeaderWithoutStatus } from '../Api/ExecutionLab/ExecutionTableHeader'
 import DropDownOptions from '../../uiLayout/components/DropDownOptions'
 const bem = bn.create('header');
@@ -467,8 +464,8 @@ class CICDPage extends React.Component {
           <Row>
             <Nav className={bem.e('nav-right')}>
               <Col>
-                <img height="32" width="32" src="https://cdn.simpleicons.org/jenkins/grey" />
-                <img height="32" width="32" src="https://cdn.simpleicons.org/AzureDevOps/black" />
+                <img alt ='jenkins' height="32" width="32" src="https://cdn.simpleicons.org/jenkins/grey" />
+                <img alt = 'azure' height="32" width="32" src="https://cdn.simpleicons.org/AzureDevOps/black" />
                 {/* <img height="32" width="32" src="https://cdn.simpleicons.org/Bamboo/blue" />
               <img height="32" width="32" src="https://cdn.simpleicons.org/GitLab/black" />
               <img height="32" width="32" src="https://cdn.simpleicons.org/TeamCity/blue" />

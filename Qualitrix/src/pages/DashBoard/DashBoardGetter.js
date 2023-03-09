@@ -10,6 +10,7 @@ const selectedProject = Users.userSelectedAccount;
 export class DashBoardGetter {
 
     async dashboardPageLoadData(selectedTestingType, envChange = false) {
+        var daysCounterForDevepeonet = 0;
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 1000));
         }
@@ -24,14 +25,14 @@ export class DashBoardGetter {
             }
             try {
                 await new Promise(wait => setTimeout(wait, 1000));
-                var daysCounterForDevepeonet = await Number(await allconfigData['DefaultSaveDaysToDevelopment']);
+                daysCounterForDevepeonet = await Number(await allconfigData['DefaultSaveDaysToDevelopment']);
             }
             catch (error) {
-                var daysCounterForDevepeonet = 0;
+                 daysCounterForDevepeonet = 0;
             }
             var reportTrailCount = 0;
             try {
-                var reportTrailCount = await Number(await allconfigData['DefaultReportTrailCount']);
+                 reportTrailCount = await Number(await allconfigData['DefaultReportTrailCount']);
             }
             catch (error) {
                 reportTrailCount = 0;
@@ -179,19 +180,20 @@ export class DashBoardGetter {
     }
 
     async getModuleWiseScripts(dashboardData) {
-        var output = {}
+        var yaxisData =[];
+        var dataValue = [];
         if (Config.isDemo) {
             DashBoardData.ModuleScriptCountXaxis = await DataGeneratorUtility.getStringArray(12);
-            var yaxisData = await DataGeneratorUtility.getNumberArray(12);
-            var dataValue = [];
+            yaxisData = await DataGeneratorUtility.getNumberArray(12);
+            dataValue = [];
             dataValue.push(yaxisData)
             DashBoardData.ModuleScriptCountYaxis = dataValue;
         }
         else {
             try {
                 DashBoardData.ModuleScriptCountXaxis = await dashboardData['ModuleScriptCountXaxis']
-                var yaxisData = await dashboardData['ModuleScriptCountYaxis']
-                var dataValue = [];
+                yaxisData = await dashboardData['ModuleScriptCountYaxis']
+                dataValue = [];
                 dataValue.push(yaxisData)
                 DashBoardData.ModuleScriptCountYaxis = dataValue;
             }
@@ -202,19 +204,21 @@ export class DashBoardGetter {
     }
 
     async getTestDevelopmentCountDayWise(dayCounterForDevelopment, dashboardData) {
+        var pastDate =[];
+        var allPastDateItem=[];
         if (Config.isDemo) {
             var testScripts = [];
             testScripts.push(await DataGeneratorUtility.getNumberArray(dayCounterForDevelopment, 0, 20));
             DashBoardData.DayWiseTestScriptDevelopment = await testScripts;
-            var pastDate = await DataGetter.getPastDateList(Number(dayCounterForDevelopment));
-            var allPastDateItem = await pastDate['pastdatelist'];
+            pastDate = await DataGetter.getPastDateList(Number(dayCounterForDevelopment));
+            allPastDateItem = await pastDate['pastdatelist'];
             DashBoardData.ListOfPastDateforDaysToDevelopment = await allPastDateItem;
         }
         else {
             try {
                 var testDevcountDayWise = await dashboardData['DayWiseTestScriptDevelopment'];
-                var pastDate = await DataGetter.getPastDateList(Number(dayCounterForDevelopment));
-                var allPastDateItem = await pastDate['pastdatelist'];
+                pastDate = await DataGetter.getPastDateList(Number(dayCounterForDevelopment));
+                allPastDateItem = await pastDate['pastdatelist'];
                 DashBoardData.ListOfPastDateforDaysToDevelopment = await allPastDateItem;
                 var dataValue = [];
                 dataValue.push(testDevcountDayWise)
@@ -259,9 +263,12 @@ export class DashBoardGetter {
     }
 
     async getSelectedReportData() {
+        var listOfPassFail = [];
+        var executionTimeData = [];
+        var componentPassFailData = [];
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 2000));
-            var listOfPassFail = [];
+            listOfPassFail = [];
             var passCount = await DataGeneratorUtility.getNumberFromRange(200, 223);
             listOfPassFail.push(passCount);
             var failCount = await DataGeneratorUtility.getNumberFromRange(1, 50);
@@ -271,11 +278,11 @@ export class DashBoardGetter {
             var xaxisData = await DataGeneratorUtility.getStringArray(12);
             executionTimeLabel.push(await xaxisData);
             DashBoardData.SelectedReportExecutionTimeGraphXaxis = await xaxisData;
-            var executionTimeData = []
+            executionTimeData = []
             var yaxisData = await DataGeneratorUtility.getNumberArray(12);
             executionTimeData.push(await yaxisData);
             DashBoardData.SelectedReportExecutionTimeGraphYaxis = await executionTimeData;
-            var componentPassFailData = [];
+            componentPassFailData = [];
             var passData = {}
             var failData = {}
             for (let i = 0; i < await xaxisData.length; i++) {
@@ -338,7 +345,7 @@ export class DashBoardGetter {
                 try {
                     var testingTechniques = await executionData['testingType'];
                     DashBoardData.TestingMethod = await testingTechniques;
-                    var listOfPassFail = [];
+                    listOfPassFail = [];
                     listOfPassFail.push(await executionData['totalPass']);
                     listOfPassFail.push(await executionData['totalFail']);
                     DashBoardData.SelectedReportTotalPassFailData = await listOfPassFail;
@@ -347,13 +354,13 @@ export class DashBoardGetter {
                     if (DashBoardData.SelectedTab === 'Api') {
                         DashBoardData.ResponseDataForAllResults = await executionData['testResultsDataForAllTestScripts'];
                     }
-                    var executionTimeData = await executionData['executionTimeData'];
+                    executionTimeData = await executionData['executionTimeData'];
                     var executionTimeDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await executionTimeData);
                     var yaxisDataForExecutionTime = [];
                     yaxisDataForExecutionTime.push(await executionTimeDataxandyAxis['value']);
                     DashBoardData.SelectedReportExecutionTimeGraphXaxis = await executionTimeDataxandyAxis['key'];
                     DashBoardData.SelectedReportExecutionTimeGraphYaxis = await yaxisDataForExecutionTime;
-                    var componentPassFailData = await executionData['componentPassFail'];
+                    componentPassFailData = await executionData['componentPassFail'];
                     var allPassDataForComponent = [];
                     var componentPassDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await componentPassFailData[0]);
                     allPassDataForComponent.push(await componentPassDataxandyAxis['value'])
@@ -379,11 +386,12 @@ export class DashBoardGetter {
     }
 
     async setGraphDatabasedOnReportTrail(reportTrailCount = 10, executionCounter = 10) {
+        var listOfPassFail = [];
         if (Config.isDemo) {
             reportTrailCount = 10;
             DashBoardData.TotalTestScriptsOnLastExecution = await DataGeneratorUtility.getNumberFromRange(150, 200);
             DashBoardData.PassPercentageInLastExecution = await DataGeneratorUtility.getNumberFromRange(50, 100);
-            var listOfPassFail = [];
+            listOfPassFail = [];
             var passCount = await DataGeneratorUtility.getNumberFromRange(1000, 2000);
             listOfPassFail.push(passCount);
             var failCount = await DataGeneratorUtility.getNumberFromRange(100, 3000);
@@ -397,12 +405,12 @@ export class DashBoardGetter {
             yaxisData.push(failData);
             DashBoardData.ExecutionYaxisInLastXResults = yaxisData;
             DashBoardData.ExecutionTimeXaxisInLastXResults = await DataGeneratorUtility.getListOfDateDate(reportTrailCount);
-            var yaxisData = [];
+             yaxisData = [];
             var randomNumber = await DataGeneratorUtility.getNumberArray(reportTrailCount, 10, 60);
             yaxisData.push(randomNumber)
             DashBoardData.ExecutionTimeYaxisInLastXResults = yaxisData;
             var failedData = [];
-            var randomNumber = await DataGeneratorUtility.getNumberArray(reportTrailCount, 0, 5);
+            randomNumber = await DataGeneratorUtility.getNumberArray(reportTrailCount, 0, 5);
             failedData.push(randomNumber);
             DashBoardData.FailedComponentInLastXResults = failedData;
         }
@@ -418,7 +426,7 @@ export class DashBoardGetter {
                 if (Object.keys(await reportData).length > 0) {
                     DashBoardData.TotalTestScriptsOnLastExecution = await reportData['lastResultTotalExecutedScript'];
                     DashBoardData.PassPercentageInLastExecution = await reportData['lastResultPassPercenatage'];
-                    var listOfPassFail = [];
+                    listOfPassFail = [];
                     listOfPassFail.push(await reportData['totalPassInXCounter']);
                     listOfPassFail.push(await reportData['totalFailInXCounter']);
                     DashBoardData.TotalPassFailInLastXResults = await listOfPassFail;
@@ -513,5 +521,5 @@ export class DashBoardGetter {
     }
 
 }
-export default new DashBoardGetter;
+export default new DashBoardGetter();
 

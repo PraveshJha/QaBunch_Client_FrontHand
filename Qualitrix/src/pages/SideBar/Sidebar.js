@@ -5,12 +5,11 @@ import {
   MdKeyboardArrowDown,
   MdSettings,
   MdOutlineCloud,
-  MdOutlineIntegrationInstructions,
   MdOutlineTakeoutDining,
   MdAssistantNavigation
 } from 'react-icons/md';
 import { ImLab, ImCommand, ImCodepen, ImLibrary,ImMan,ImBug } from "react-icons/im";
-import { AiFillApi, AiOutlineShopping, AiOutlineDatabase, AiOutlineTeam,AiFillBulb,AiFillRobot } from "react-icons/ai";
+import { AiFillApi, AiOutlineShopping, AiOutlineDatabase,AiFillBulb,AiFillRobot } from "react-icons/ai";
 import { NavLink } from 'react-router-dom';
 import {
   Collapse,
@@ -46,7 +45,7 @@ const apiTestingComponents = [
 ];
 
 const manualTestingComponents = [
-  // { to: '/mn/dashboard', name: 'Dashboard', exact: false, Icon: MdLeaderboard },
+  { to: '/mn/dashboard', name: 'Dashboard', exact: false, Icon: MdLeaderboard },
   { to: '/mn/testcase', name: 'Test Cases', exact: false, Icon: MdAssistantNavigation },
   { to: '/mn/testplan', name: 'Test Execution', exact: false, Icon: AiFillBulb },
   { to: '/mn/defects', name: 'Defect', exact: false, Icon: ImBug },
@@ -58,14 +57,14 @@ const automationTestingComponents = [
   { to: '/ui/cicd', name: 'Ci/Cd', exact: true, Icon: AiFillApi }
 ];
 
-const navItems = [
-  { to: '/dashboard', name: 'Dashboard', exact: true, Icon: MdLeaderboard },
-  { to: '/cicd', name: 'Ci/Cd', exact: true, Icon: AiFillApi },
-];
+// const navItems = [
+//   { to: '/dashboard', name: 'Dashboard', exact: true, Icon: MdLeaderboard },
+//   { to: '/cicd', name: 'Ci/Cd', exact: true, Icon: AiFillApi },
+// ];
 
-const navDevItems = [
-  { to: '/aboutus', name: 'About us', exact: true, Icon: AiOutlineTeam },
-];
+// const navDevItems = [
+//   { to: '/aboutus', name: 'About us', exact: true, Icon: AiOutlineTeam },
+// ];
 
 const bem = bn.create('sidebar');
 

@@ -23,6 +23,8 @@ export class CustomFunctionGetter {
   }
 
   async getCustomFunctionList() {
+    var headers ={}
+    var serverResponse ={}
     if (Config.isDemo) {
       CustomFunctionData.ListOfCustomFunction = ['Given I am on Home page', 'Given I am on Product List page', 'Given I am on Product Information page']
       CustomFunctionData.CustomFunctionListWithLabelandValue = [{ label: 'Custom function 1', value: 'Custom function 1' }];
@@ -34,8 +36,8 @@ export class CustomFunctionGetter {
         backendApi = await Config.remoteBackendAPI;
       }
       try {
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
+         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfCustomFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -46,8 +48,8 @@ export class CustomFunctionGetter {
           await allFuctionWithLabelAndValue.push(await optionList);
         }
         CustomFunctionData.CustomFunctionListWithLabelandValue = await allFuctionWithLabelAndValue;
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/customfunctionlistwithargs', await headers);
+         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/customfunctionlistwithargs', await headers);
         var customFunctionNameWithParam = await serverResponse['data'];
         CustomFunctionData.CustomFunctionNameWithListOfArgument = await customFunctionNameWithParam;
       }
@@ -256,6 +258,8 @@ export class CustomFunctionGetter {
   }
 
   async saveCustomPageMethod() {
+    var headers ={}
+    var serverResponse ={}
     if (Config.isDemo) {
       await new Promise(wait => setTimeout(wait, 3000));
       return true;
@@ -281,16 +285,16 @@ export class CustomFunctionGetter {
         if (await Object.keys(newElement).length > 0) {
           var dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement
-          var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-          var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
-          if (!saveOrData['isFileSaved']) {
-            Config.ErrorMessage = await saveFile['errorMessage'];
+          if (!await saveOrData['isFileSaved']) {
+            Config.ErrorMessage = await saveOrData['errorMessage'];
             return;
           }
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
+         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+         serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -398,7 +402,7 @@ export class CustomFunctionGetter {
 
   async isDataFilledforDependenPage() {
     var allData = CustomFunctionData.DependentCustomFunction;
-    var totalRows = await allData.length;
+    //var totalRows = await allData.length;
     if (allData.length === 0) {
       return true
     }
@@ -571,5 +575,5 @@ export class CustomFunctionGetter {
   }
 }
 
-export default new CustomFunctionGetter;
+export default new CustomFunctionGetter();
 

@@ -183,5 +183,5 @@ export class ConfigGetter {
 
     }
 }
-export default new ConfigGetter;
+export default new ConfigGetter();
 

@@ -130,7 +130,7 @@ class TestDataPage extends React.Component {
           return await this.getNotification('error', "Please add correct details in 'Common Test data' table section");
         }
       }
-      if(await Object.keys(await TestData.TestDataToAdd).length ==0 && await TestData.DeletedKey.length ===0)
+      if(await Object.keys(await TestData.TestDataToAdd).length ===0 && await TestData.DeletedKey.length ===0)
       {
         return await this.getNotification('error', "There is no any test data added or updated.");
       }

@@ -15,7 +15,6 @@ import {
   Nav,
   Modal, ModalHeader,
   ModalBody,
-  ModalFooter,
   Fade,
 } from 'reactstrap';
 import bn from '../../utils/bemnames';
@@ -28,10 +27,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import cellEditFactory from 'react-bootstrap-table2-editor';
-import { TableDetailResultsHeaderColumn } from './TableDetailResultsHeaderColumn'
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../LoaderMessage';
-import DataGetter from '../DataGetter';
 import { ExecutionTableHeader } from '../Api/ExecutionLab/ExecutionTableHeader'
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -888,7 +885,7 @@ class DashboardPage extends React.Component {
                 <Col lg={12} md={12} sm={12} xs={12}>
                   <Form>
                     <FormGroup row>
-                      <img src={this.state.imageData}></img>;
+                      <img alt ='imagedata' src={this.state.imageData}></img>;
                     </FormGroup>
                   </Form>
                 </Col>

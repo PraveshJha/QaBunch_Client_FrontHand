@@ -1,7 +1,5 @@
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import { textFilter } from 'react-bootstrap-table2-filter';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { Placeholder } from 'reactstrap';
-import ExecutionLabDataGetter from './ExecutionLabDataGetter';
 import { ExecutionLabData } from './ExecutionLabData';
 export var ExecutionTableHeader = [{
 	dataField: 'id',
@@ -104,7 +102,7 @@ export var ResponseAsserionTableHeader = [{
 	headerStyle: { width: '100px' },
 	formatter: (cell) => {
 		var imageData = 'data:image/png;base64, ' + cell;
-		return <img width="100" height="50" src={imageData}></img>;
+		return <img alt ='screenshot' width="100" height="50" src={imageData}></img>;
 	},
 	events: {
 		onClick: (e, column, columnIndex, row, rowIndex) => {

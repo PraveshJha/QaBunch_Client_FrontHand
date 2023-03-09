@@ -16,14 +16,11 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  div,
   Nav,
   NavItem,
   NavLink,
   TabContent,
   TabPane,
-  CardTitle,
-  CardText,
   ModalFooter
 } from 'reactstrap';
 import { DefectData } from './DefectData'
@@ -32,7 +29,6 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import NotificationSystem from 'react-notification-system';
 import "react-widgets/styles.css";
 import PageLoader from 'react-fullpage-custom-loader'
@@ -40,14 +36,10 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestCaseTableHeader, TestCaseCommentHeader, TestCaseHistoryHeader,DefectTableHeader } from '../WebPageTableHeader'
+import {TestCaseCommentHeader, TestCaseHistoryHeader,DefectTableHeader } from '../WebPageTableHeader'
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
 import TreeMenu from 'react-simple-tree-menu';
 import '../../../../node_modules/react-simple-tree-menu/dist/main.css';
-import { TestScriptData } from '../../Web/TestScript/TestScriptData';
-import TestScriptGetter from '../../Web/TestScript/TestScriptGetter';
-import { Combobox } from 'react-widgets'
-import { TestCaseData } from '../TestCase/TestCaseData';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -660,7 +652,6 @@ class DefectPage extends React.Component {
         var history = "Defect" + updatedField + ' field updated.';
         this.setState({ isPageLoading: true });
         var isSaved = await DefectGetter.updateDefectField(await history);
-        var isSaved = true;
         this.setState({ isPageLoading: false });
         if (await isSaved) {
           this.setState({ isDefectModalOpen: false });

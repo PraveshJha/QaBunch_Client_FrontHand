@@ -27,7 +27,7 @@ import {
 import { TestScriptData } from './TestScriptData'
 import ConfigGetter from '../Configuration/ConfigGetter';
 import TestScriptGetter from './TestScriptGetter';
-import { Config, Users } from '../../../QAautoMATER/Config';
+import { Config } from '../../../QAautoMATER/Config';
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -907,12 +907,12 @@ class TestScriptPage extends React.Component {
     TestScriptData.IsOrModalVisible = false;
   }
 
-  selectExistingOR = async (event) => {
-    var dataChoice = await event;
-    if (this.state.componentName !== await dataChoice) {
+  // selectExistingOR = async (event) => {
+  //   var dataChoice = await event;
+  //   if (this.state.componentName !== await dataChoice) {
 
-    }
-  }
+  //   }
+  // }
 
   selectExistingOR = async (event) => {
     var dataChoice = await event;
@@ -986,7 +986,7 @@ class TestScriptPage extends React.Component {
     if (await locatorProperty === '') {
       this.setState({ isErrorOnLocatorProperty: true });
     }
-    if (await elementName == '' || locator == '' || locatorProperty == '') {
+    if (await elementName === '' || await locator === '' || await locatorProperty === '') {
       return await this.getNotification('error', "Elelemnet Name, locator and locator property can not be blank.");
     }
     if (this.state.isErrorOnElementName) {
@@ -1586,7 +1586,7 @@ class TestScriptPage extends React.Component {
                       <Col lg={12} md={12} sm={12} xs={12}>
                         <Form>
                           <FormGroup row>
-                            <img src={this.state.stepScreenshot}></img>
+                            <img alt ='stepscreenshot' src={this.state.stepScreenshot}></img>
                           </FormGroup>
                           <FormGroup row>
                             <ReactJson name={false} collapseStringsAfterLength={20} displayDataTypes={false} indentWidth={0} enableClipboard={true} iconStyle="circle" src={this.state.debugDetails} />

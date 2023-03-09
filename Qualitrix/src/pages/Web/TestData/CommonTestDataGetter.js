@@ -65,5 +65,5 @@ export class CommonTestDataGetter {
         }
     }
 }
-export default new CommonTestDataGetter;
+export default new CommonTestDataGetter();
 

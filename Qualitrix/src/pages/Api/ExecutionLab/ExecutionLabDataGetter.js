@@ -5,9 +5,6 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import GetData from '../../../QAautoMATER/funcLib/getData';
-import SetData from '../../../QAautoMATER/funcLib/setData';
-import { SessionVariable } from '../../SessionVariable';
-import DateTimeUtility from '../../../QAautoMATER/funcLib/DateTimeUtility';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 const selectedProject = Config.SelectedProject;
 
@@ -78,13 +75,14 @@ export class ExecutionLabDataGetter {
         var barChartDataForFail = {};
         var componentPassFailData = [];
         var executionReportData ={}
+        var status = "Pass";
         if (Config.isDemo) {
             var mockResultsData = {};
             for (let i = 0; i < await selectedScripts.length; i++) {
                 var executionStartDate = new Date();
                 var selectedRowId = await selectedScripts[i];
                 var randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
-                var status = "Pass";
+                status = "Pass";
                 var AssertionData = [{ "id": 1, "expression": "ResponseCode", "function": "ShouldBe", "expected": 200, "actual": 200 }]
                 mockResultsData['ResponseCode'] = 200;
                 mockResultsData['ResponseHeader'] = { headkerKey: 'Hope you are enjoing QAautoMater' };
@@ -137,7 +135,7 @@ export class ExecutionLabDataGetter {
         ExecutionLabData.ListOfTestScripts = allTestScripts;
         for (let i = 0; i < allTestScripts.length; i++) {
             var componentName = await allTestScripts[i]['component'];
-            var status = await allTestScripts[i]['status'];
+             status = await allTestScripts[i]['status'];
             if (status === "Pass") {
                 totalPass = totalPass + 1;
                 if (barChartDataForPass[componentName] === undefined)
@@ -175,10 +173,11 @@ export class ExecutionLabDataGetter {
 
     async createTestSuiteForSpecificComponent(componentName, rowId = 1) {
         var allTestScripts = [];
+        var rowData ={}
         if (Config.isDemo) {
             var randomRowCount = await DataGeneratorUtility.getNumberFromRange(10, 20);
             for (let i = 0; i < randomRowCount; i++) {
-                var rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
+                rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
                 rowData.id = rowId;
                 rowData.testid = "QA-" + await DataGeneratorUtility.getNumberFromRange(100, 500);
                 rowData.testname = " This is test case No " + (i + 1);
@@ -190,7 +189,7 @@ export class ExecutionLabDataGetter {
         else {
             var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             for (let i = 0; i < allComponentTestDetails.length; i++) {
-                var rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
+                rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
                 allTestScripts.push(rowData);
                 rowId = rowId + 1;
             }
@@ -247,5 +246,5 @@ export class ExecutionLabDataGetter {
 
 
 }
-export default new ExecutionLabDataGetter;
+export default new ExecutionLabDataGetter();
 

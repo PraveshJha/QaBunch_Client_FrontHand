@@ -7,11 +7,6 @@ import {
   CardHeader,
   Col,
   Row,
-  Carousel,
-  CarouselItem,
-  CarouselControl,
-  CarouselIndicators,
-  CarouselCaption,
   CardImg,
   CardTitle,
   CardText,
@@ -22,7 +17,6 @@ import qaautomaterimage1 from "../../image/qaautomaterimage1.jpg"
 import qaautomaterimage2 from "../../image/qaautomaterimage2.jpg"
 import qaautomaterimage3 from "../../image/qaautomaterimage3.jpg"
 import qaautomaterimage4 from "../../image/qaautomaterimage4.jpg"
-import profiletemplate from "../../image/profiletemplate.jpg"
 import { AboutUsData } from './AboutUsData'
 const items = [
   {

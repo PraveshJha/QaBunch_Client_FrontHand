@@ -8,7 +8,6 @@ import { TestData } from "./TestData/TestData";
 import { TestScriptData } from "./TestScript/TestScriptData";
 import { CustomFunctionData } from "./CustomFunction/CustomFunctionData";
 import CustomFunctionGetter from "./CustomFunction/CustomFunctionGetter";
-import DataGetter from "../DataGetter";
 export var EnvironmentURLTableHeader = [{
 	dataField: 'id',
 	text: '#',

@@ -67,5 +67,5 @@ export class ORGetter {
 
     }
 }
-export default new ORGetter;
+export default new ORGetter();
 

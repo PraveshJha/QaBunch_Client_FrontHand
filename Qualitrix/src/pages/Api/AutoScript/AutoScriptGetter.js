@@ -58,14 +58,16 @@ export class AutoScriptGetter {
     }
 
     async createNewTestScript() {
+        var completedScripts ={}
+        var percentage =0;
         if (await Config.isDemo) {
 
             AutoScriptData.TotalController = await DataGeneratorUtility.getNumberFromRange(5, 9);
             AutoScriptData.TotalEndPoint = await DataGeneratorUtility.getNumberFromRange(10, 20);
             AutoScriptData.ExistingEndPoint = await DataGeneratorUtility.getNumberFromRange(1, 3);
             AutoScriptData.NewApiScripts = await DataGeneratorUtility.getNumberFromRange(190, 200);
-            var completedScripts = await DataGeneratorUtility.getNumberFromRange(180, 189);
-            var percentage = await parseFloat(await Number (await Number(completedScripts)/await await Number(AutoScriptData.NewApiScripts ))*100).toFixed(0)
+            completedScripts = await DataGeneratorUtility.getNumberFromRange(180, 189);
+            percentage = await parseFloat(await Number (await Number(completedScripts)/await await Number(AutoScriptData.NewApiScripts ))*100).toFixed(0)
             AutoScriptData.TotalCompeletedTestScript = await percentage
             return true;
         }
@@ -81,19 +83,19 @@ export class AutoScriptGetter {
             requestBody['componentKey'] = await componentUrl;
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
             var serverResponse = await restAPI.post(backendAPI + 'swagger/project/' + selectedProject, await headers, await requestBody);
-            var serverResponse = await serverResponse['data'];
+            serverResponse = await serverResponse['data'];
             Config.ErrorMessage = await serverResponse['errorMessage'];
             AutoScriptData.TotalController = await serverResponse['totalController'];
             AutoScriptData.TotalEndPoint =  await serverResponse['totalEndPoint'];
             AutoScriptData.ExistingEndPoint = await serverResponse['existingEndPoint'];
             AutoScriptData.NewApiScripts = await serverResponse['totalScriptCreated'];
-            var completedScripts = await serverResponse['scriptCountInCompleteStatus'];
-            var percentage = await parseFloat(await Number (await Number(completedScripts)/await await Number(AutoScriptData.NewApiScripts ))*100).toFixed(0)
+            completedScripts = await serverResponse['scriptCountInCompleteStatus'];
+            percentage = await parseFloat(await Number (await Number(completedScripts)/await await Number(AutoScriptData.NewApiScripts ))*100).toFixed(0)
             AutoScriptData.TotalCompeletedTestScript = await percentage
             return serverResponse['isSuccess'];
         }
 
     }
 }
-export default new AutoScriptGetter;
+export default new AutoScriptGetter();
 

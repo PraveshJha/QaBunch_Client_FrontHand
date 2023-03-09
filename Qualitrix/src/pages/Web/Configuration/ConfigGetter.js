@@ -26,6 +26,7 @@ export class ConfigGetter {
     /////****** Default Configuration Getter *******************************************************
 
     async updateDefaultConfigurationData(allconfigData) {
+        var dataChoice =''
         if (Config.isDemo) {
             ConfigData.EnvironmentList = await ['Dev', 'QA'];
             ConfigData.DefaultSelectedEnvironment = 'Dev';
@@ -36,7 +37,7 @@ export class ConfigGetter {
         else {
             if (ConfigData.EnvUrlList.length > 0) {
                 ConfigData.EnvironmentList = await GetData.jsonArrayGetallKeyValue(await ConfigData.EnvUrlList, 'name');
-                var dataChoice = await allconfigData['DefaultSelectedEnvironment'];
+                dataChoice = await allconfigData['DefaultSelectedEnvironment'];
                 if (dataChoice === undefined) {
                     ConfigData.DefaultSelectedEnvironment = ConfigData.EnvironmentList[0];
                     ConfigData.CleanUpEnvironment= await ConfigData.EnvironmentList[0];
@@ -46,7 +47,7 @@ export class ConfigGetter {
                     ConfigData.CleanUpEnvironment= await dataChoice;
                 }
             }
-            var dataChoice = await allconfigData['DefaultReportTrailCount'];
+            dataChoice = await allconfigData['DefaultReportTrailCount'];
             if (dataChoice === undefined) {
                 ConfigData.DefaultReportTrailCount = 0;
             }
@@ -260,5 +261,5 @@ export class ConfigGetter {
     }
 
 }
-export default new ConfigGetter;
+export default new ConfigGetter();
 

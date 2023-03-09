@@ -26,7 +26,6 @@ import {
 } from 'reactstrap';
 import { TestScriptData } from './TestScriptData'
 import TestScriptGetter from './TestScriptGetter';
-import bn from '../../../utils/bemnames';
 import {
   RequestVariableTableHeader,
   AsserionTableHeader,
@@ -40,7 +39,7 @@ import { ResponseAsserionTableHeader } from '../ExecutionLab/ExecutionTableHeade
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
 import NotificationSystem from 'react-notification-system';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -56,7 +55,6 @@ import { Config } from '../../../QAautoMATER/Config';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
 
-const bem = bn.create('header');
 class TestScriptPage extends React.Component {
   notificationSystem = React.createRef();
   constructor(props) {
@@ -784,6 +782,7 @@ class TestScriptPage extends React.Component {
   }
 
   updateRequestBodyKeyData = async () => {
+    var existingRequestBody ={}
     var rowChoice = Number(this.state.selectedRowFromDynamicDataTable);
     if (rowChoice > -1) {
       var dataKey = DynamicData[Number(rowChoice) - 1]['key'];
@@ -791,13 +790,13 @@ class TestScriptPage extends React.Component {
       var selectedKey = this.state.selectedKeyNameInRequestBody;
       var nameSpaceForKey = this.state.selectedKeyNameSpaceinRequestBody;
       if (selectedKey.trim() !== '') {
-        var existingRequestBody = this.state.allRequestBody;
+         existingRequestBody = this.state.allRequestBody;
         var keytoSend
         if (dataParam.trim() !== '')
           keytoSend = '{{RandomData.' + dataKey + '||' + dataParam + '}}'
         else
           keytoSend = '{{RandomData.' + dataKey + '}}'
-        var existingRequestBody = await TestScriptGetter.updateRequestBody(this.state.allRequestBody, await nameSpaceForKey, keytoSend);
+         existingRequestBody = await TestScriptGetter.updateRequestBody(this.state.allRequestBody, await nameSpaceForKey, keytoSend);
         this.setState({ allRequestBody: {} }, () => { this.setState({ allRequestBody: existingRequestBody }); });
       }
       this.setState({ testDataModal: false });
@@ -1128,7 +1127,7 @@ class TestScriptPage extends React.Component {
 
     //****** Dependent Table Verification  *****************************************
 
-    var depApiTableData = this.state.dependentApiDataTable;
+    //var depApiTableData = this.state.dependentApiDataTable;
     var isDependendentDetailsFilled = await TestScriptGetter.isAllDetailsValidInDependendtApiTable();
     if (!isDependendentDetailsFilled) {
       return await this.getNotification('error', "Please add the correct details in 'Select Dependent Api script' table.");
@@ -1136,14 +1135,14 @@ class TestScriptPage extends React.Component {
 
     //****** Request Header Verification  *****************************************
 
-    var RequestHeader = this.state.allHttpHeaderData;
+   // var RequestHeader = this.state.allHttpHeaderData;
     var isRequestHeaderDetailsFilled = await TestScriptGetter.isAllDetailsValidForRequestHeaderTable();
     if (!isRequestHeaderDetailsFilled) {
       return await this.getNotification('error', "Please add the correct details in 'Request Header' table.");
     }
 
     //****** Request variable Verification  *****************************************
-    var RequestVariables = this.state.allRequestVariables;
+    //var RequestVariables = this.state.allRequestVariables;
     var isRequestVariableDetailsFilled = await TestScriptGetter.isAllDetailsValidForRequestVariableTable();
     if (!isRequestVariableDetailsFilled) {
       return await this.getNotification('error', "Please add the correct details in 'Save Request Parameter' table.");
@@ -1173,11 +1172,11 @@ class TestScriptPage extends React.Component {
   //****************** End */********************************** */
 
   render() {
-    const selectRowFromDependentResponseKeyTable = {
-      mode: 'radio',
-      onSelect: this.selectRadioButtonFromDependentResponseKeyTable,
-      selected: [this.state.selectedRowDependentResponseKeyTable]
-    };
+    // const selectRowFromDependentResponseKeyTable = {
+    //   mode: 'radio',
+    //   onSelect: this.selectRadioButtonFromDependentResponseKeyTable,
+    //   selected: [this.state.selectedRowDependentResponseKeyTable]
+    // };
     const selectRowFromDependentApiTable = {
       mode: 'radio',
       onSelect: this.selectRadioButtonFromDependentApiTable,

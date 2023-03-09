@@ -1,9 +1,8 @@
 import logo from '../../src/image/QAautoMATER.PNG';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import PageSpinner from '../uiLayout/PageSpinner';
-import { MainLayout, EmptyLayout, LayoutRoute, Sidebar } from '../pages';
+import { MainLayout} from '../pages';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import DropDownOptions from '../uiLayout/components/DropDownOptions'
 import { Config, Users } from '../QAautoMATER/Config'

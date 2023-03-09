@@ -12,29 +12,18 @@ import {
   Row,
   Button,
   ButtonGroup,
-  Offcanvas,
-  OffcanvasHeader,
-  OffcanvasBody,
   Fade,
 } from 'reactstrap';
 import { AutoScriptData } from './AutoScriptData'
 import AutoScriptGetter from './AutoScriptGetter';
 import { Config } from '../../../QAautoMATER/Config';
-import { NewAPITableHeader } from './AutoScriptTableHeader'
-import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
 import NotificationSystem from 'react-notification-system';
 import "react-widgets/styles.css";
-import ReactJson from 'react-json-view'
-import DataGetter from '../../DataGetter';
-import { DynamicData } from '../../../QAautoMATER/dynamicData/DynamicData';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
-import filterFactory from 'react-bootstrap-table2-filter';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
 import { TextWidget,NumberWidget } from '../../../uiLayout/components/widget';
 
@@ -46,7 +35,7 @@ class AutoScriptPage extends React.Component {
     this.state = {
 
       //****** Page Loader ***********************************************************
-      isPageLoading: true,
+      isPageLoading: false,
 
       //****** Basic Details ***********************************************************
 
@@ -74,7 +63,7 @@ class AutoScriptPage extends React.Component {
       listOfTestScripts: AutoScriptData.ListOfTestScripts,
 
       //****** Page Loader ***********************************************************
-      isPageLoading: false,
+
 
     };
 
@@ -239,11 +228,6 @@ class AutoScriptPage extends React.Component {
   //****************** End */********************************** */
 
   render() {
-    const expandRow = {
-      showExpandColumn: true,
-      expandByColumnOnly: false,
-      renderer: this.showTestScripts
-    };
     return (
       <Page
         className="AutoScriptPage"

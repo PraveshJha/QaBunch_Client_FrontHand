@@ -16,7 +16,6 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  Fade,
 } from 'reactstrap';
 import { ExecutionLabData } from './ExecutionLabData'
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
@@ -31,7 +30,6 @@ import { DoughnutChart, BarChart, LineChart } from '../../../uiLayout/components
 import NotificationSystem from 'react-notification-system';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
-import ReactJson from 'react-json-view'
 
 class ExecutionLabPage extends React.Component {
   notificationSystem = React.createRef();
@@ -331,7 +329,7 @@ class ExecutionLabPage extends React.Component {
   showTestResults(row) {
     var boarderColor = 'default';
     var assertionData = [];
-    var executionTime = '';
+   // var executionTime = '';
     if (ExecutionLabData.AssertionResultsForAllResults[row.id] !== undefined) {
       assertionData = ExecutionLabData.AssertionResultsForAllResults[row.id];
     }
@@ -615,7 +613,7 @@ class ExecutionLabPage extends React.Component {
               <Col lg={12} md={12} sm={12} xs={12}>
                 <Form>
                   <FormGroup row>
-                    <img src={this.state.imageData}></img>;
+                    <img alt ='screenshot' src={this.state.imageData}></img>;
                   </FormGroup>
                 </Form>
               </Col>

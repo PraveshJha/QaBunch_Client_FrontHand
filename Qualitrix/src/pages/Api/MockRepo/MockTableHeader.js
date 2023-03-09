@@ -1,7 +1,7 @@
 import GetData from "../../../QAautoMATER/funcLib/getData";
 import Matcher from "../../../QAautoMATER/funcLib/matcher";
 import  {MockData}  from './MockData';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import { textFilter } from 'react-bootstrap-table2-filter';
 export var ResponseHttpTableHeader = [{
 	dataField: 'id',
 	text: '#',

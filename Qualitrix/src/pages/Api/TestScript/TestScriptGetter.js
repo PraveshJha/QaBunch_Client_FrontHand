@@ -7,12 +7,10 @@ import SetData from '../../../QAautoMATER/funcLib/setData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
-import FileLib from '../../../QAautoMATER/funcLib/fileLib';
 import ExecutionLabDataGetter from '../ExecutionLab/ExecutionLabDataGetter';
 import { SessionVariable } from '../../SessionVariable';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 const selectedProject = Config.SelectedProject;
-const apiComponentPath = ''
 
 export class TestScriptGetter {
 
@@ -122,6 +120,7 @@ export class TestScriptGetter {
     }
 
     async callRestApiMethod(apiUrl, relativeUrl, testid, requestHeaderList, methodName, requestPayLoad, dependentApi, assertionData, requestVariable) {
+        var requestHeader ={}
         try {
             var allVariableDataToShow = [];
             if (await relativeUrl.toString().trim() !== '') {
@@ -130,7 +129,7 @@ export class TestScriptGetter {
             if (await testid.toString().trim() === '') {
                 testid = "Debug-TestId"
             }
-            var requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
+            requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
             requestHeader = await DataGetter.convertRandomDataandSessionVariable(await requestHeader, await testid);
             var totalIteration = 1;
             if (await methodName === "Post" || await methodName === "Put" || await methodName === "Patch") {
@@ -146,7 +145,7 @@ export class TestScriptGetter {
                 var requestBody = await requestPayLoad[dataCounter.toString()];
                 requestBody = await DataGetter.convertRandomDataandSessionVariable(await requestBody, await testid,await SessionVariable);
                 var requestedUrl = await DataGetter.convertRandomDataandSessionVariable(await apiUrl, await testid,await SessionVariable);
-                var requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
+                requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
                 requestHeader = await DataGetter.convertRandomDataandSessionVariable(await requestHeader, await testid, await SessionVariable);
                 await DataGetter.saveRequestVariableKeyInSessionVariable(await testid, await requestVariable, await requestHeader, await requestBody);
                 var ResponseData = await DataGetter.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
@@ -208,11 +207,14 @@ export class TestScriptGetter {
 
     async getDependentTestIdList(componentName) {
         var allTestIdwithName = [];
+        var testId =''
+        var testDetails =''
+        var testIdwithName =''
         if (Config.isDemo) {
-            var testId = await DataGeneratorUtility.getNumberArray(5);
+             testId = await DataGeneratorUtility.getNumberArray(5);
             for (let i = 0; i < await testId.length; i++) {
-                var testDetails = await testId[i] + '@ this my test case ' + (i + 1);
-                var testIdwithName = { label: testDetails, value: testDetails }
+                testDetails = await testId[i] + '@ this my test case ' + (i + 1);
+                testIdwithName = { label: testDetails, value: testDetails }
                 allTestIdwithName.push(testIdwithName);
             }
             TestScriptData.DependentTestIdList = await allTestIdwithName;
@@ -220,10 +222,10 @@ export class TestScriptGetter {
         else {
             var allTestIdDetailsForComponent = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             for (let i = 0; i < await allTestIdDetailsForComponent.length; i++) {
-                var testId = await allTestIdDetailsForComponent[i]['testid'];
+                testId = await allTestIdDetailsForComponent[i]['testid'];
                 var testName = await allTestIdDetailsForComponent[i]['testname'];
-                var testDetails = testId + '@' + testName;
-                var testIdwithName = { label: testDetails, value: testDetails }
+                testDetails = testId + '@' + testName;
+                testIdwithName = { label: testDetails, value: testDetails }
                 allTestIdwithName.push(testIdwithName);
             }
             TestScriptData.DependentTestIdList = await allTestIdwithName;
@@ -448,7 +450,7 @@ export class TestScriptGetter {
         }
         else {
             var testScriptData = {}
-            var testScriptData = await DataGetter.getTestDetailsInJson(await component, await testId, await depTestName, 'Api');
+            testScriptData = await DataGetter.getTestDetailsInJson(await component, await testId, await depTestName, 'Api');
             //var testScriptData = await require('../../../QAautoMATER/dataHub/' + selectedProject + '/Api/TestScripts/' + component + '/' + testIdWithName + '.json');
             outPut['relativeurl'] = await testScriptData['RelativeUrl'];
             outPut['httpmethod'] = await testScriptData['HttpMethod'];
@@ -460,6 +462,9 @@ export class TestScriptGetter {
     }
 
     async callDependendtApiMethod(testingType, apiUrl, relativeUrl, testid, requestHeaderList, methodName, requestPayLoad, dependentApi, responseVariable, component, testName) {
+        var requestHeader ={}
+        var ResponseData ={}
+        var totalDepApi = 0;
         try {
             SessionVariable[await testid] = {};
             var allVariableDataToShow = [];
@@ -467,12 +472,12 @@ export class TestScriptGetter {
                 apiUrl = await apiUrl + await relativeUrl;
             }
             var requestedUrl = await apiUrl;
-            var requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
+            requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
             requestHeader = await DataGetter.convertRandomDataandSessionVariable(await requestHeader, await testid);
             var totalIteration = 1;
             if (testingType === 'Unit Testing') {
-                var totalDepApi = 0;
-                var ResponseData = await DataGetter.getMockedResponse(await apiUrl, await methodName, await requestHeaderList, await requestPayLoad, await component, await testid, await testName, 'Api');
+                totalDepApi = 0;
+                ResponseData = await DataGetter.getMockedResponse(await apiUrl, await methodName, await requestHeaderList, await requestPayLoad, await component, await testid, await testName, 'Api');
                 await DataGetter.saveResponseVariableKeyInSessionVariable(await testid, await responseVariable, await ResponseData);
             }
             else {
@@ -489,18 +494,18 @@ export class TestScriptGetter {
                     var requestBody = await requestPayLoad[dataCounter.toString()];
                     requestBody = await DataGetter.convertRandomDataandSessionVariable(await requestBody, await testid,await SessionVariable);
                     requestedUrl = await DataGetter.convertRandomDataandSessionVariable(await requestedUrl, await testid,await SessionVariable);
-                    var requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
+                    requestHeader = await GetData.jsonObjectGetallKeyPairvalue(await requestHeaderList, 'key', 'value');
                     requestHeader = await DataGetter.convertRandomDataandSessionVariable(await requestHeader, await testid, await SessionVariable);
-                    var ResponseData = await DataGetter.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
+                    ResponseData = await DataGetter.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
                     await DataGetter.saveResponseVariableKeyInSessionVariable(await testid, await responseVariable, await ResponseData);
-                    var totalDepApi = await Object.keys(await dependendentResponse).length;
+                    totalDepApi = await Object.keys(await dependendentResponse).length;
                     allDataSetResults["Test Results for Dataset " + dataCounter] = await ResponseData;
                     if (await totalDepApi > 0) {
                         allDataSetResults["Dependendt Api Response Result"] = await dependendentResponse;
                     }
                 }
             }
-            if (totalIteration === 1 && totalDepApi == 0) {
+            if (totalIteration === 1 && totalDepApi === 0) {
                 TestScriptData.ApiResponseData = await ResponseData;
             }
             else if (totalIteration === 1 && totalDepApi > 0) {
@@ -516,11 +521,12 @@ export class TestScriptGetter {
                     var keyName = await allVarDataVaue[varCounter];
                     var keyValue = await SessionVariable[await testid][keyName];
                     var dataType = typeof (keyValue);
+                    var rowDetails ={}
                     if (dataType === 'object') {
-                        var rowDetails = { id: varCounter + 1, key: keyName, value: await JSON.stringify(keyValue) };
+                         rowDetails = { id: varCounter + 1, key: keyName, value: await JSON.stringify(keyValue) };
                     }
                     else {
-                        var rowDetails = { id: varCounter + 1, key: keyName, value: keyValue };
+                         rowDetails = { id: varCounter + 1, key: keyName, value: keyValue };
                     }
                     allVariableDataToShow.push(rowDetails);
                 }
@@ -560,5 +566,5 @@ export class TestScriptGetter {
 
 
 }
-export default new TestScriptGetter;
+export default new TestScriptGetter();
 

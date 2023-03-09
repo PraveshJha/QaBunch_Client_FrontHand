@@ -217,5 +217,5 @@ export class ConfigSetter {
 
     }
 }
-export default new ConfigSetter;
+export default new ConfigSetter();
 

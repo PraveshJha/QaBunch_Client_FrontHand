@@ -8,10 +8,8 @@ import Matcher from '../QAautoMATER/funcLib/matcher';
 import { TestScriptData } from './Api/TestScript/TestScriptData';
 import { ConfigData } from './Api/Configuration/ConfigData';
 import MockRepoGetter from './Api/MockRepo/MockRepoGetter';
-import { DashBoardData } from './DashBoard/DashboardData';
 import { CustomFunctionData } from './Web/CustomFunction/CustomFunctionData';
 const selectedProject = Config.SelectedProject;
-const apiComponentPath = '';
 export class DataGetter {
 
     async getPastDateList(historyCounter) {
@@ -228,7 +226,7 @@ export class DataGetter {
                     for (let j = 0; j < await allsessionVarKeys.length; j++) {
                         var keyName = await allsessionVarKeys[j];
                         if (await testId !== keyName) {
-                            var dataToReplace = await SessionVariable[await keyName][await variableName];
+                             dataToReplace = await SessionVariable[await keyName][await variableName];
                             if (await dataToReplace !== undefined) {
                                 break;
                             }
@@ -313,7 +311,7 @@ export class DataGetter {
                         var testid = await testIdwithName.split('@')[0];
                         var depTestName = await testIdwithName.split('@')[1];
                         var testScriptData = {}
-                        var testScriptData = await this.getTestDetailsInJson(component, testid, depTestName, 'Api');
+                        testScriptData = await this.getTestDetailsInJson(component, testid, depTestName, 'Api');
                         var componentUrlKey = await testScriptData['ComponentUrl'];
                         var matchingDataIndex = await GetData.getIndexForMatchingKeyValueinJsonArray(await ListofURl, 'name', await componentUrlKey);
                         var requestedUrl = await ListofURl[matchingDataIndex]['url'];
@@ -326,11 +324,12 @@ export class DataGetter {
                         var requestBody = await testScriptData['RequestBody']["1"];
                         requestBody = await this.convertRandomDataandSessionVariable(await requestBody, await testid,await SessionVariable);
                         requestedUrl = await this.convertRandomDataandSessionVariable(await requestedUrl, await testid,await SessionVariable);
+                        var ResponseData ={}
                         if (await testingType === 'Unit Testing') {
-                            var ResponseData = await this.getMockedResponse(await requestedUrl, await methodName, await requestHeader, await requestBody, await component, await testid, await depTestName, 'Api');
+                             ResponseData = await this.getMockedResponse(await requestedUrl, await methodName, await requestHeader, await requestBody, await component, await testid, await depTestName, 'Api');
                         }
                         else {
-                            var ResponseData = await this.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
+                             ResponseData = await this.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
                         }
                         
                         for (let varCounter = 0; varCounter < allSequnce.length; varCounter++) {
@@ -372,7 +371,7 @@ export class DataGetter {
                         var testIdwithName = await dependendentAPIScripts[allSequnce[i]]['testid'];
                         var testid = await testIdwithName.split('@')[0];
                         var varData = [];
-                        var allTestDetails = { component: component, testid, testid, testidwithname: testIdwithName, variable: [] }
+                        var allTestDetails = { component: component, testid: await testid, testidwithname: testIdwithName, variable: [] }
                         var testScriptData = {}
                         //var testScriptData = await require('../QAautoMATER/dataHub/' + selectedProject + '/Api/TestScripts/' + component + '/' + testIdwithName + '.json');
                         for (let varCounter = 0; varCounter < allSequnce.length; varCounter++) {
@@ -403,7 +402,6 @@ export class DataGetter {
                 for (let i = 0; i < await depApiDetails.length; i++) {
                     allChildDetails.push(await depApiDetails[i]);
                 }
-                var component = await allChildDetails[0]['component'];
                 var testIdwithName = await allChildDetails[0]['testid'];
                 parentTestId = await testIdwithName.split('@')[0];
                 var testDetails = {};
@@ -421,7 +419,6 @@ export class DataGetter {
             var outPut = [];
             var allComponentUrlTable = TestScriptData.AllComponentUrlLIst;
             for (let i = 0; i < await allComponentUrlTable.length; i++) {
-                var roedetails = { id: i + 1, name: await allComponentUrlTable[i], url: 'https://fakerestapi.azurewebsites.net/api/v1/Activities' }
                 outPut.push(allComponentUrlTable);
             }
             return outPut;
@@ -476,7 +473,7 @@ export class DataGetter {
     async getMockedResponse(apiUrl, methodName, requestHeader, requestBody, componentName, testId, testName, testingType) {
         var responsData = {}
         var isRequestBodySent = false;
-        var response;
+        var response ={};
         switch (methodName.trim().toLocaleLowerCase()) {
             case "post":
             case "put":
@@ -487,7 +484,7 @@ export class DataGetter {
                 break;
         }
         try {
-            var response = await MockRepoGetter.getMockDataForExistingTestId(await componentName, await testId, await testName, await testingType);
+            response = await MockRepoGetter.getMockDataForExistingTestId(await componentName, await testId, await testName, await testingType);
             var rawreqBody = await response['ResponseBody']['MockedResponseBody'];
             rawreqBody = await this.convertRandomDataandSessionVariable(await rawreqBody, await testId);
             var rawresHeader = await response['ResponseHeader'];
@@ -553,7 +550,6 @@ export class DataGetter {
                     allOptionsList.push(await methodList);
                 }
                 CustomFunctionData.AllSeleniumMethod = await allOptionsList;
-                console.log(await allOptionsList);
                 return await allOptionsList;
             }
             catch (error) {
@@ -563,5 +559,5 @@ export class DataGetter {
     }
 
 }
-export default new DataGetter;
+export default new DataGetter();
 

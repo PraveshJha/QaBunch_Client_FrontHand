@@ -14,18 +14,15 @@ import {
   ListGroupItem,
   Modal, ModalHeader,
   ModalBody,
-  ModalFooter,
   Form,
   FormGroup,
   Label,
   Col,
-  CardImg
 } from 'reactstrap';
 import bn from '../../utils/bemnames';
 import {
   Input
 } from 'reactstrap';
-import DropDownOptions from '../../uiLayout/components/DropDownOptions'
 import { Config, Users } from '../../QAautoMATER/Config'
 import Avatar from '../../uiLayout/Avatar'
 import userImage from '../../image/profiletemplate.jpg'
@@ -202,7 +199,6 @@ class Header extends React.Component {
     var dataChoice = await event.target.value;
     if (this.state.userLastName !== await dataChoice) {
       this.setState({ userLastName: dataChoice });
-      var format = /[^A-Za-z]/ig;
       var format = /[^A-Za-z]/ig;
       if (await format.test(await dataChoice)) {
         this.setState({ isErrorOnLastName: true });

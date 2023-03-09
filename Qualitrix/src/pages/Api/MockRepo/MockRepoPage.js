@@ -166,6 +166,7 @@ class MockRepoPage extends React.Component {
   }
 
   updateRequestBodyKeyData = async () => {
+    var existingRequestBody ={}
     var rowChoice = Number(this.state.selectedRowFromDynamicDataTable);
     if (rowChoice > -1) {
       var dataKey = DynamicData[Number(rowChoice) - 1]['key'];
@@ -173,13 +174,13 @@ class MockRepoPage extends React.Component {
       var selectedKey = this.state.selectedKeyNameInRequestBody;
       var nameSpaceForKey = this.state.selectedKeyNameSpaceinRequestBody;
       if (selectedKey.trim() !== '') {
-        var existingRequestBody = this.state.responseBody;
+         existingRequestBody = this.state.responseBody;
         var keytoSend
         if (dataParam.trim() !== '')
           keytoSend = '{{RandomData.' + dataKey + '||' + dataParam + '}}'
         else
           keytoSend = '{{RandomData.' + dataKey + '}}'
-        var existingRequestBody = await MockRepoGetter.updateRequestBody(this.state.responseBody, await nameSpaceForKey, keytoSend);
+         existingRequestBody = await MockRepoGetter.updateRequestBody(this.state.responseBody, await nameSpaceForKey, keytoSend);
         this.setState({ responseBody: {} }, () => { this.setState({ responseBody: existingRequestBody }); });
         MockData.ResponseBody = this.state.responseBody;
       }

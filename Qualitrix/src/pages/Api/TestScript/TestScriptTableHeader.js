@@ -2,12 +2,11 @@ import GetData from "../../../QAautoMATER/funcLib/getData";
 import Matcher from "../../../QAautoMATER/funcLib/matcher";
 import { TestScriptData } from "./TestScriptData";
 import { AssertionFunction } from './AssertionFunction'
-import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { Type } from 'react-bootstrap-table2-editor';
 import TestScriptGetter from "./TestScriptGetter";
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import { textFilter } from 'react-bootstrap-table2-filter';
 export var RequestVariableTableHeader = [{
 	dataField: 'id',
 	text: '#',
@@ -282,7 +281,7 @@ export var DependentApiTableHeader = [{
 		}
 	},
 	validator: async (newValue, row, column, done) => {
-		if (TestScriptData.TestId != '') {
+		if (TestScriptData.TestId !== '') {
 			if (await newValue.toLowerCase().includes(TestScriptData.TestId.toLocaleLowerCase() + '@')) {
 				return done({
 					valid: false,

@@ -26,8 +26,6 @@ import NotificationSystem from 'react-notification-system';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
 import { Config } from '../../../QAautoMATER/Config';
-import ReactJson from 'react-json-view'
-import  GetData  from '../../../QAautoMATER/funcLib/getData';
 import  Matcher  from '../../../QAautoMATER/funcLib/matcher';
 
 class ConfigurationPage extends React.Component {
@@ -200,7 +198,6 @@ saveUrlTableData = async (event) => {
     }
     ConfigData.EnvUrlList = allUrlList;
     this.setState({ isPageLoading: true });
-    var isSaved = true;
    var isSaved = await ConfigGetter.saveURLDetails();
     this.setState({ isPageLoading: false });
     if (isSaved) {

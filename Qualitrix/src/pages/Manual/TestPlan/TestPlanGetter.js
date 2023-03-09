@@ -218,31 +218,33 @@ export class TestPlanGetter {
         var totalFail = 0;
         var totalPending = 0;
         var xComponent = [];
-        var yComponent =[];
-        var componentData ={};
+        var yComponent = [];
+        var componentData = {};
         var allTestCase = await TestPlanData.ListOfTestCases;
         for (let i = 0; i < await allTestCase.length; i++) {
             var component = await allTestCase[i]['component'];
             if (!await xComponent.includes(await component)) {
                 xComponent.push(await component);
-                componentData[await component] ={}
-                componentData[await component]['pass']=0;
-                componentData[await component]['fail']=0;
-                componentData[await component]['pending']=0;
+                componentData[await component] = {}
+                componentData[await component]['pass'] = 0;
+                componentData[await component]['fail'] = 0;
+                componentData[await component]['pending'] = 0;
             }
             var status = await allTestCase[i]['status'];
             switch (await status) {
                 case "Pending":
                     totalPending = await Number(await totalPending) + 1;
-                    componentData[await component]['pending'] = await Number(componentData[await component]['pending'])+1;
+                    componentData[await component]['pending'] = await Number(componentData[await component]['pending']) + 1;
                     break;
                 case "Pass":
                     totalPass = await Number(await totalPass) + 1;
-                    componentData[await component]['pass'] = await Number(componentData[await component]['pass'])+1;
+                    componentData[await component]['pass'] = await Number(componentData[await component]['pass']) + 1;
                     break;
                 case "Fail":
                     totalFail = await Number(await totalFail) + 1
-                    componentData[await component]['fail'] = await Number(componentData[await component]['fail'])+1;
+                    componentData[await component]['fail'] = await Number(componentData[await component]['fail']) + 1;
+                    break;
+                default:
                     break;
             }
         }
@@ -250,11 +252,10 @@ export class TestPlanGetter {
         TestPlanData.ExecutionSummaryData.push(await totalFail)
         TestPlanData.ExecutionSummaryData.push(await totalPending)
         TestPlanData.ExecutedComponentXaxis = await xComponent;
-        var allPassForComponent =[]
-        var allFailForComponent =[]
-        var allpendingForComponent =[]
-        for(let i=0;i<await xComponent.length;i++)
-        {
+        var allPassForComponent = []
+        var allFailForComponent = []
+        var allpendingForComponent = []
+        for (let i = 0; i < await xComponent.length; i++) {
             var compName = await xComponent[i];
             allPassForComponent.push(await componentData[await compName]['pass']);
             allFailForComponent.push(await componentData[await compName]['fail']);
@@ -292,5 +293,5 @@ export class TestPlanGetter {
         }
     }
 }
-export default new TestPlanGetter;
+export default new TestPlanGetter();
 

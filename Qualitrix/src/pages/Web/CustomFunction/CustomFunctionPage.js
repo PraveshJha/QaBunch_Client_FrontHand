@@ -27,7 +27,7 @@ import {
 import { CustomFunctionData } from './CustomFunctionData'
 import ConfigGetter from '../Configuration/ConfigGetter';
 import CustomFunctionGetter from './CustomFunctionGetter';
-import { Config, Users } from '../../../QAautoMATER/Config';
+import { Config } from '../../../QAautoMATER/Config';
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -39,7 +39,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CommonTestDataHeaderTable, CustomFunctionDependentHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CustomFunctionDependentHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -52,7 +52,6 @@ import {
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
-import { ResizableBox } from 'react-resizable';
 
 class CustomFunctionPage extends React.Component {
   notificationSystem = React.createRef();
@@ -878,12 +877,12 @@ class CustomFunctionPage extends React.Component {
     CustomFunctionData.IsOrModalVisible = false;
   }
 
-  selectExistingOR = async (event) => {
-    var dataChoice = await event;
-    if (this.state.componentName !== await dataChoice) {
+  // selectExistingOR = async (event) => {
+  //   var dataChoice = await event;
+  //   if (this.state.componentName !== await dataChoice) {
 
-    }
-  }
+  //   }
+  // }
 
   selectExistingOR = async (event) => {
     var dataChoice = await event;
@@ -957,7 +956,7 @@ class CustomFunctionPage extends React.Component {
     if (locatorProperty === '') {
       this.setState({ isErrorOnLocatorProperty: true });
     }
-    if (elementName == '' || locator == '' || locatorProperty == '') {
+    if (elementName === '' || locator === '' || locatorProperty === '') {
       return await this.getNotification('error', "Elelemnet Name, locator and locator property can not be blank.");
     }
     if (this.state.isErrorOnElementName) {
@@ -1323,7 +1322,7 @@ class CustomFunctionPage extends React.Component {
                     <Col lg={12} md={12} sm={12} xs={12}>
                       <Form>
                         <FormGroup row>
-                        <img src={this.state.stepScreenshot}></img>
+                        <img alt ='stepscreenshot' src={this.state.stepScreenshot}></img>
                         </FormGroup>
                         <FormGroup row>
                         <ReactJson name={false} collapseStringsAfterLength={20} displayDataTypes={false} indentWidth={0} enableClipboard={true} iconStyle="circle" src={this.state.debugDetails} />
