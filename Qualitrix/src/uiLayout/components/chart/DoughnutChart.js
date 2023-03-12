@@ -41,7 +41,8 @@ const DoughnutChart  = ({
         backgroundColor: listOfColor,
         borderColor: listOfColor,
         borderWidth: 2,
-        cutout:90,
+        cutout:'80%',
+        borderRadius:10
       },
     ],
   };
