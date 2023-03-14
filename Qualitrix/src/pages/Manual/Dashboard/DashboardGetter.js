@@ -52,6 +52,17 @@ export class DashboardGetter {
                 DashboardData.ComponentTestCaseCountYaxisData =[]
                 DashboardData.ComponentTestCaseCountXaxisData= await componentTestCaseData['key'];
                 DashboardData.ComponentTestCaseCountYaxisData.push(await componentTestCaseData['value']);
+                var defectPriorityData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['defectprioritydata']);
+                DashboardData.DefectPriorityDataXaxis = await defectPriorityData['key']
+                DashboardData.DefectPriorityDataYaxis = await defectPriorityData['value']
+                var defectComponentTestData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['defectComponentData']);
+                DashboardData.DefectComponentDataXaxis =[];
+                DashboardData.DefectComponentDataYAxis =[];
+                DashboardData.DefectComponentDataXaxis= await defectComponentTestData['key'];
+                DashboardData.DefectComponentDataYAxis.push(await defectComponentTestData['value']);
+                var defectStatusData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['defectStatusData']);
+                DashboardData.DefectStatusDataXaxis = await defectStatusData['key']
+                DashboardData.DefectStatusDataYaxis = await defectStatusData['value']
                 return await allDashBoardData;
             }
             catch (error) {
@@ -65,6 +76,12 @@ export class DashboardGetter {
                 DashboardData.TestPriorityDataYaxis =[];
                 DashboardData.ComponentTestCaseCountXaxisData = []
                 DashboardData.ComponentTestCaseCountYaxisData = []
+                DashboardData.DefectPriorityDataXaxis = []
+                DashboardData.DefectPriorityDataYaxis = []
+                DashboardData.DefectComponentDataXaxis =[];
+                DashboardData.DefectComponentDataYAxis =[];
+                DashboardData.DefectStatusDataXaxis = []
+                DashboardData.DefectStatusDataYaxis = []
             }
         }
     }

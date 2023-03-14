@@ -57,4 +57,5 @@ export var CustomFunctionData = {
     DebugDetails:{Step:'',Status:'',Message:''},
     StepScreenshot:'',
     CommonTestDataWithKeyValue:{},
+    NewElementToAddinOR:{},
 };

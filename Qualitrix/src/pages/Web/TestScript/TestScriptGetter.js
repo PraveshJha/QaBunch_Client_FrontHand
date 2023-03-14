@@ -81,7 +81,9 @@ export class TestScriptGetter {
         var allKeys = await Object.keys(await orData);
         TestScriptData.AllORKey = [];
         for (let i = 0; i < await allKeys.length; i++) {
-          TestScriptData.AllORKey.push(await allKeys[i]);
+          var keyName = await allKeys[i];
+          TestScriptData.TestScriptORData[await keyName]= TestScriptData.AllORData[await keyName];
+          TestScriptData.AllORKey.push(await keyName);
         }
       }
       catch (error) {
@@ -106,12 +108,15 @@ export class TestScriptGetter {
         var commonData = await serverResponse['data'];
         var allCommonKeys = await Object.keys(await commonData);
         var allCommonTestDataRow = [];
+        var allCommonKeyPair ={};
         for (let i = 0; i < await allCommonKeys.length; i++) {
           var keyName = await allCommonKeys[i];
           var rowDetails = { id: i + 1, key: await keyName, value: await commonData[await keyName] };
           allCommonTestDataRow.push(await rowDetails);
+          allCommonKeyPair[await keyName] = await commonData[await keyName];
         }
         TestScriptData.AllCommonTestData = await allCommonTestDataRow;
+        TestScriptData.CommonTestDataWithKeyValue = await allCommonKeyPair;
         var nonEditableRows = [];
         for (let i = 0; i < await allCommonTestDataRow.length; i++) {
           nonEditableRows.push(i + 1);

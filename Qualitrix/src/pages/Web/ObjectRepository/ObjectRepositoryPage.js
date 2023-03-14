@@ -207,6 +207,10 @@ class ObjectRepositoryPage extends React.Component {
                         mode: 'click',
                         blurToSave: true,
                         afterSaveCell: (oldValue, newValue, row, column) => {
+                          if(column.dataField ==='name')
+                          {
+                            row.name = row.name.toString().trim().toUpperCase();
+                          }
                           var rowNo = Number(row.id) - 1;
                           var elementName = this.state.allORTableData[rowNo]['name'];
                           if (elementName !== undefined) {

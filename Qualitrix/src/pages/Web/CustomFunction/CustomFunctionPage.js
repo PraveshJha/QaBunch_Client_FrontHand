@@ -52,6 +52,7 @@ import {
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
+import TestScriptGetter from '../../Web/TestScript/TestScriptGetter';
 
 class CustomFunctionPage extends React.Component {
   notificationSystem = React.createRef();
@@ -1259,7 +1260,40 @@ class CustomFunctionPage extends React.Component {
                             row.value = newValue.toUpperCase();
                           }
                         }
-                        this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps })
+                        if (column.dataField === 'stepdefinition') {
+                          var testStep = row.stepdefinition;
+                          if (testStep.trim() !== '') {
+                            if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
+                              this.setState({isPageLoading:true})
+                              var myData = TestScriptGetter.getactionandElementFromTestStep(testStep);
+                              Promise.resolve(myData).then((values) => {
+                                this.setState({isPageLoading:false})
+                                var actionName = values.actionName
+                                if (actionName !== '') {
+                                  var elementName = values.orLogicalName;
+                                  var locator = values.primaryLocator;
+                                  var locatorProperty = values.primaryLocatorProperty;
+                                  row.action = actionName;
+                                  var isKeyAlreadyPresent = CustomFunctionData.TestScriptORData[elementName];
+                                  var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
+                                  if (isKeyAlreadyPresent === undefined) {
+                                    CustomFunctionData.NewElementToAddinOR[elementName.toUpperCase()] =  newElementAdd;
+                                    CustomFunctionData.AllORData[elementName] = {};
+                                    CustomFunctionData.AllORData[elementName] = newElementAdd;
+                                    if (!CustomFunctionData.AllORKey.includes(elementName)) {
+                                      CustomFunctionData.AllORKey.push(elementName)
+                                    }
+                                  }
+                                  CustomFunctionData.ListOfTestSteps[Number(row.id) - 1]['action'] = actionName;
+                                  CustomFunctionData.ListOfTestSteps[Number(row.id) - 1]['element'] = elementName;
+                                  this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
+                                }
+                              })
+                              this.setState({isPageLoading:false})
+                            }
+                          }
+                        }
+                       this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps })
                       },
                       onStartEdit: (row, column, rowIndex, columnIndex) => {
                         if (columnIndex === 3) {

@@ -14,4 +14,13 @@ export var DashboardData = {
     ComponentTestCaseCountXaxisData:[],
     ComponentTestCaseCountYaxisData:[],
     ColorCodeForComponentTestCaseCount:[],
+    DefectPriorityDataXaxis:[],
+    DefectPriorityDataYaxis:[],
+    ColorCodeOfDefectPriority:[],
+    DefectComponentDataXaxis:[],
+    DefectComponentDataYAxis:[],
+    ColorCodeForDefectComponentData:[],
+    DefectStatusDataXaxis:[],
+    DefectStatusDataYaxis:[],
+    ColorCodeOfDefectStatus:[],
 };

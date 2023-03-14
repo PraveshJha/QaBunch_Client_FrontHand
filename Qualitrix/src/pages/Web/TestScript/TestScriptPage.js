@@ -1374,8 +1374,10 @@ class TestScriptPage extends React.Component {
                             if (testStep.trim() !== '') {
                               if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
                                 this.setState({ isPageLoading: true });
+                                this.setState({isPageLoading:true})
                                 var myData = TestScriptGetter.getactionandElementFromTestStep(testStep);
                                 Promise.resolve(myData).then((values) => {
+                                  this.setState({isPageLoading:false})
                                   var actionName = values.actionName
                                   if (actionName !== '') {
                                     var elementName = values.orLogicalName;
@@ -1397,7 +1399,6 @@ class TestScriptPage extends React.Component {
                                     this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
                                   }
                                 })
-                                this.setState({ isPageLoading: false });
                               }
                             }
                           }
@@ -1500,11 +1501,22 @@ class TestScriptPage extends React.Component {
                                         blurToSave: true,
                                         nonEditableRows: () => this.state.commonTestDataNonEditableRows,
                                         afterSaveCell: (oldValue, newValue, row, column) => {
-                                          var keyName = row.key.toString().trim().toUpperCase();
-                                          var keyValue = row.value.toString().trim();
-                                          if (keyName !== '' && keyValue !== '') {
-                                            TestScriptData.TestDataToAdd[keyName] = keyValue;
+                                          if(column.dataField ==='key')
+                                          {
+                                            row.key = row.key.toString().trim().toUpperCase();
                                           }
+                                          var keyName = row.key.toString().trim();
+                                          if (keyName !== '') {
+                                            try{
+                                            var keyValue =''
+                                             keyValue = row.value.toString().trim();
+                                            }
+                                            catch(error)
+                                            {}
+                                            TestScriptData.TestDataToAdd[keyName] = keyValue;
+                                            TestScriptData.CommonTestDataWithKeyValue[keyName] = keyValue;
+                                          }
+                                          
                                         },
                                       })}
                                       pagination={paginationFactory()}

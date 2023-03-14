@@ -54,7 +54,16 @@ class DefectPage extends React.Component {
       colorCodeForTestPriority:DashboardData.ColorCodeForTestPriority,
       componentTestCaseCountXaxisData:DashboardData.ComponentTestCaseCountXaxisData,
       componentTestCaseCountYaxisData:DashboardData.ComponentTestCaseCountYaxisData,
-      colorCodeForComponentTestCaseCount:DashboardData.ColorCodeForComponentTestCaseCount
+      colorCodeForComponentTestCaseCount:DashboardData.ColorCodeForComponentTestCaseCount,
+      defectPriorityDataXaxis:DashboardData.DefectPriorityDataXaxis,
+      defectPriorityDataYaxis:DashboardData.DefectPriorityDataYaxis,
+      colorCodeOfDefectPriority:DashboardData.ColorCodeOfDefectPriority,
+      defectComponentDataXaxis:DashboardData.DefectComponentDataXaxis,
+      defectComponentDataYAxis:DashboardData.DefectComponentDataYAxis,
+      colorCodeForDefectComponentData:DashboardData.ColorCodeForDefectComponentData,
+      defectStatusDataXaxis:DashboardData.DefectStatusDataXaxis,
+      defectStatusDataYaxis:DashboardData.DefectStatusDataYaxis,
+      colorCodeOfDefectStatus:DashboardData.ColorCodeOfDefectStatus
 
     };
 
@@ -87,6 +96,18 @@ class DefectPage extends React.Component {
     this.setState({ componentTestCaseCountYaxisData: DashboardData.ComponentTestCaseCountYaxisData })
     DashboardData.ColorCodeForComponentTestCaseCount = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.ComponentTestCaseCountXaxisData.length);
     this.setState({ colorCodeForComponentTestCaseCount: DashboardData.ColorCodeForComponentTestCaseCount })
+    this.setState({ defectPriorityDataXaxis: DashboardData.DefectPriorityDataXaxis })
+    this.setState({ defectPriorityDataYaxis: DashboardData.DefectPriorityDataYaxis })
+    DashboardData.ColorCodeOfDefectPriority = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectPriorityDataXaxis.length);
+    this.setState({ colorCodeOfDefectPriority: DashboardData.ColorCodeOfDefectPriority })
+    this.setState({ defectComponentDataXaxis: DashboardData.DefectComponentDataXaxis })
+    this.setState({ defectComponentDataYAxis: DashboardData.DefectComponentDataYAxis })
+    DashboardData.ColorCodeForDefectComponentData = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectComponentDataXaxis.length);
+    this.setState({ colorCodeForDefectComponentData: DashboardData.ColorCodeForDefectComponentData })
+    this.setState({ defectStatusDataXaxis: DashboardData.DefectStatusDataXaxis })
+    this.setState({ defectStatusDataYaxis: DashboardData.DefectStatusDataYaxis })
+    DashboardData.ColorCodeOfDefectStatus = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectStatusDataXaxis.length);
+    this.setState({ colorCodeOfDefectStatus: DashboardData.ColorCodeOfDefectStatus })
 
     this.setState({ isPageLoading: false })
 
@@ -213,14 +234,14 @@ class DefectPage extends React.Component {
               </Card>
             </Col>
           </Row>
-          {/* <Row>
+          <Row>
             <Col lg={3} md={6} sm={6} xs={12}>
               <Card>
                 <CardHeader>Defect Count based on Priority
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <DoughnutChart color={this.state.colorCodeForAutomatedGraph} labels={['Automated', 'Not Automated','Not a right candidate']} data={this.state.automatedandNotAutomatedData}></DoughnutChart>
+                    <DoughnutChart color={this.state.colorCodeOfDefectPriority} labels={this.state.defectPriorityDataXaxis} data={this.state.defectPriorityDataYaxis}></DoughnutChart>
                   </Col>
                 </CardBody>
               </Card>
@@ -231,7 +252,7 @@ class DefectPage extends React.Component {
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <DoughnutChart color={this.state.colorCodeForTestPriority} labels={this.state.testPriorityDataXaxis} data={this.state.testPriorityDataYaxis}></DoughnutChart>
+                    <DoughnutChart color={this.state.colorCodeOfDefectStatus} labels={this.state.defectStatusDataXaxis} data={this.state.defectStatusDataYaxis}></DoughnutChart>
                   </Col>
                 </CardBody>
               </Card>
@@ -243,12 +264,12 @@ class DefectPage extends React.Component {
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <BarChart labels={this.state.componentTestCaseCountXaxisData} data={this.state.componentTestCaseCountYaxisData} color={this.state.colorCodeForComponentTestCaseCount}></BarChart>
+                    <BarChart labels={this.state.defectComponentDataXaxis} data={this.state.defectComponentDataYAxis} color={this.state.colorCodeForDefectComponentData}></BarChart>
                   </Col>
                 </CardBody>
               </Card>
             </Col>
-          </Row> */}
+          </Row>
         </Fade>
       </Page>
 
