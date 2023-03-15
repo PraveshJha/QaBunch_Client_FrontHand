@@ -943,6 +943,13 @@ class CustomFunctionPage extends React.Component {
       if (await dataChoice.toString().trim() === '') {
         this.setState({ isErrorOnLocatorProperty: true });
       }
+      if(this.state.locator.trim() !=='' && this.state.orElementName.trim() !=='')
+      {
+        var orElementName = this.state.orElementName.trim();
+        var newElementAdd = { locator: this.state.locator, locatorproperty: await dataChoice, alternatexpath: '' } 
+        CustomFunctionData.NewElementToAddinOR[await orElementName] = await newElementAdd;
+        CustomFunctionData.AllORData[await orElementName] = await newElementAdd;
+      }
     }
   }
 
@@ -971,6 +978,7 @@ class CustomFunctionPage extends React.Component {
     var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
     if (isKeyAlreadyPresent === undefined) {
       CustomFunctionData.AllORData[elementName] = {};
+      CustomFunctionData.NewElementToAddinOR[await elementName] = await newElementAdd;
       CustomFunctionData.AllORData[elementName] = newElementAdd;
       if (!CustomFunctionData.AllORKey.includes(await elementName)) {
         CustomFunctionData.AllORKey.push(elementName)
@@ -1327,6 +1335,7 @@ class CustomFunctionPage extends React.Component {
                                 }
                               }
                             }
+                            this.setState({isErrorOnLocatorProperty:false})
                             this.setState({ orElementName: CustomFunctionData.ORElementName })
                             this.setState({ locator: CustomFunctionData.Locator })
                             this.setState({ locatorProperty: CustomFunctionData.LocatorProperty })
@@ -1344,7 +1353,7 @@ class CustomFunctionPage extends React.Component {
           </Col>
         </Row>
         <Draggable>
-          <Offcanvas style={{width:600,height: '300px'}} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
+          <Offcanvas style={{width:1000,height: '400px'}} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
             <OffcanvasHeader style={{'background-color': 'lightblue'}} toggle={this.toggleInspectorWindow.bind(this)}>
               Please watch your debug action
             </OffcanvasHeader>

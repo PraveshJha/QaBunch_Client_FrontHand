@@ -1427,6 +1427,7 @@ class TestScriptPage extends React.Component {
                                 }
                                 catch (error) { }
                               }
+                              this.setState({isErrorOnLocatorProperty:false})
                               this.setState({ orElementName: TestScriptData.ORElementName })
                               this.setState({ locator: TestScriptData.Locator })
                               this.setState({ locatorProperty: TestScriptData.LocatorProperty })
@@ -1586,7 +1587,7 @@ class TestScriptPage extends React.Component {
             </UncontrolledAccordion >
           </Row>
           <Draggable>
-            <Offcanvas style={{ width: 600, height: '300px', 'background-color': 'lightblue' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
+            <Offcanvas style={{ width: 1000, height: '400px', 'background-color': 'lightblue' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
               <OffcanvasHeader style={{ 'background-color': 'lightblue' }} toggle={this.toggleInspectorWindow.bind(this)}>
                 Please watch your debug action
               </OffcanvasHeader>
