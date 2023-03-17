@@ -330,21 +330,12 @@ export class CustomFunctionGetter {
       }
     }
     var newElement = CustomFunctionData.NewElementToAddinOR;
-    console.log(await newElement);
-    // for (let i = 0; i < await allData.length; i++) {
-    //   var value = await allData[i]['value'].toString().trim();
-    //   var element = await allData[i]['element'].toString().trim().toUpperCase();
-    //   if (await value.toString().toUpperCase().trim().includes('ARGS.')) {
-    //     allArguments.push(await value);
-    //     value = value.toUpperCase();
-    //   }
-    //   if (element !== '') {
-    //     if (await CustomFunctionData.TestScriptORData[element] !== undefined) {
-    //       newElement[await element] = await CustomFunctionData.TestScriptORData[element];
-    //     }
-    //   }
-
-    // }
+    for (let i = 0; i < await allData.length; i++) {
+      var value = await allData[i]['value'].toString().trim();
+      if (await value.toString().toUpperCase().trim().includes('ARGS.')) {
+        allArguments.push(await value);
+      }
+     }
     output['argumentList'] = await allArguments;
     output['newelement'] = await newElement;
     return output;
