@@ -128,6 +128,54 @@ export class DataGeneratorUtility {
         return faker.random.alpha(stringLength);
     }
 
+    async  extractNumberFromString(inputString,removeDot=true) {
+        if(await removeDot)
+        {
+            return await inputString.replace(/[^0-9]/g,"");
+        }
+        else{
+            return await inputString.replace(/[^0-9.]/g,"");
+        }
+    }
+    
+    async  splitAndSaveIndexValue(inputString,splitKeyword,indexToSave) {
+        return await inputString.split(await splitKeyword)[await indexToSave];
+    }
+    
+    async  addTwoNumber(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(Number(await number1)+Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  subtractTwoNumber(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(Number(await number1)-Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  multiplyTwoNumber(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(Number(await number1)*Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  devideTwoNumber(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(Number(await number1)/Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  reminderTwoNumber(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(Number(await number1)%Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  getPercentage(number1,number2,numberToShowafterDecimal=0) {
+        return await Math.round(await Number(await number2)*100/await Number(await number1)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  addPercentageInNumber(number1,number2,numberToShowafterDecimal=0) {
+        var number2 = await Math.round((await Number(await number1)*await Number(await number2)/100)).toFixed(await numberToShowafterDecimal)
+        return await Math.round(Number(await number1)+Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+    
+    async  subtractPercentageInNumber(number1,number2,numberToShowafterDecimal=0) {
+        var number2 = await Math.round((await Number(await number1)*await Number(await number2)/100)).toFixed(await numberToShowafterDecimal)
+        return await Math.round(Number(await number1)-Number(await number2)).toFixed(await numberToShowafterDecimal)
+    }
+
     //#endregion [Generic Method]
 }
 export default new DataGeneratorUtility;
