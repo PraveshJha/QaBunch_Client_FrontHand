@@ -7,4 +7,5 @@ export var ConfigData = {
     IsErrorOnNewTestCycle:false,
     EnvUrlList:[],
     SelectedRowFromUrlTable:-1,
+    IsNameValidforUrlTable:true,
 };

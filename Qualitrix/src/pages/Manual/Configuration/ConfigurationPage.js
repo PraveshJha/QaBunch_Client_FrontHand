@@ -45,6 +45,7 @@ class ConfigurationPage extends React.Component {
     //****** Environment Configuration  ***********************************************************
     envUrlList: ConfigData.EnvUrlList,
     selectedRowFromUrlTable:ConfigData.SelectedRowFromUrlTable,
+    isNameValidforUrlTable:ConfigData.IsNameValidforUrlTable,
 
 
   };
@@ -62,6 +63,7 @@ class ConfigurationPage extends React.Component {
     //****** Env Configuration  ***********************************************************
     this.setState({ envUrlList: ConfigData.EnvUrlList })
     this.setState({selectedRowFromUrlTable:ConfigData.SelectedRowFromUrlTable})
+    this.setState({isNameValidforUrlTable:ConfigData.IsNameValidforUrlTable});
 
   }
 
@@ -209,7 +211,7 @@ saveUrlTableData = async (event) => {
 
   }
   else {
-    return await this.getNotification('error', "Please add the correct Component and URL in 'ADD NEW ENVIRONMENT' table");
+    return await this.getNotification('error', "Please add the correct value in Environment and URL column");
   }
 }
 

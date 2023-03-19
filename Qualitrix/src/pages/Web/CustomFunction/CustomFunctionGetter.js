@@ -329,14 +329,31 @@ export class CustomFunctionGetter {
 
       }
     }
-    var newElement = CustomFunctionData.NewElementToAddinOR;
+    var newElement = await this.getListOfNewElementFromTestSteps(await allData)
+    //var newElement = CustomFunctionData.NewElementToAddinOR;
     for (let i = 0; i < await allData.length; i++) {
       var value = await allData[i]['value'].toString().trim();
       if (await value.toString().toUpperCase().trim().includes('ARGS.')) {
         allArguments.push(await value);
       }
      }
+     newElement = await newElement['newelement']
     output['argumentList'] = await allArguments;
+    output['newelement'] = await newElement;
+    return output;
+  }
+  async getListOfNewElementFromTestSteps(allData) {
+    var output = {};
+    var newElement = {};
+    for (let i = 0; i < await allData.length; i++) {
+      var element = await allData[i]['element'].toString().trim().toUpperCase();
+      if (await element !== '') {
+        if (await CustomFunctionData.TestScriptORData[element] !== undefined) {
+          newElement[await element] = await CustomFunctionData.TestScriptORData[await element];
+        }
+      }
+
+    }
     output['newelement'] = await newElement;
     return output;
   }
