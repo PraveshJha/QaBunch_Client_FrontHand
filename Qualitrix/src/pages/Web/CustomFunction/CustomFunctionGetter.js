@@ -322,7 +322,11 @@ export class CustomFunctionGetter {
           var allParams = await param.toString().split(',');
           if (await allParams.length > 0) {
             for (let j = 0; j < await allParams.length; j++) {
-              allArguments.push(await allParams[j].toUpperCase());
+              var allParamInAction = await allParams[j].toUpperCase().trim().split(',');
+              for(let k=0;k<await allParamInAction.length;k++)
+              {
+                allArguments.push(await allParamInAction[k].trim());
+              }
             }
           }
         }
@@ -334,12 +338,17 @@ export class CustomFunctionGetter {
     for (let i = 0; i < await allData.length; i++) {
       var value = await allData[i]['value'].toString().trim();
       if (await value.toString().toUpperCase().trim().includes('ARGS.')) {
-        allArguments.push(await value);
+        var allParamInAction = await value.toString().toUpperCase().trim().split(',');
+        for(let j=0;j<await allParamInAction.length;j++)
+        {
+          allArguments.push(await allParamInAction[j].trim());
+        }
       }
      }
      newElement = await newElement['newelement']
     output['argumentList'] = await allArguments;
     output['newelement'] = await newElement;
+    console.log(await output);
     return output;
   }
   async getListOfNewElementFromTestSteps(allData) {
