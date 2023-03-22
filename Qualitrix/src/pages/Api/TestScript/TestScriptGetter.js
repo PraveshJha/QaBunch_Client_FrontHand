@@ -154,7 +154,7 @@ export class TestScriptGetter {
                 if (await totalDepApi > 0) {
                     allDataSetResults["Dependendt Api Response Result"] = await dependendentResponse;
                 }
-                assertionData = await DataGetter.convertRandomDataandSessionVariable(await assertionData, await testid);
+                assertionData = await DataGetter.convertRandomDataandSessionVariable(await assertionData, await testid, await SessionVariable);
                 assertionData = await SetData.addNewKeyInExistingJsonArray(await assertionData, 'actual');
                 assertionData = await ExecutionLabDataGetter.updateAssertionTable(ResponseData, assertionData);
                 assertionResultsForAllDataSet = await ExecutionLabDataGetter.updateAssertionTableForAllDataset(await assertionResultsForAllDataSet, await assertionData);

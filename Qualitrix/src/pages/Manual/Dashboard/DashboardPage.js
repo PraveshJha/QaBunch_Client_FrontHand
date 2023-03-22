@@ -270,6 +270,43 @@ class DefectPage extends React.Component {
               </Card>
             </Col>
           </Row>
+          <Row>
+            {/* <Col lg={2} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Test Execution Count
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <DoughnutChart color={this.state.colorCodeOfDefectPriority} labels={this.state.defectPriorityDataXaxis} data={this.state.defectPriorityDataYaxis}></DoughnutChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col> */}
+            {/* <Col lg={5} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Pass Fail Pending
+                  <small> Component wise</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.defectComponentDataXaxis} data={this.state.defectComponentDataYAxis} color={this.state.colorCodeForDefectComponentData}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={5} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Executed
+                  <small> By</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.defectComponentDataXaxis} data={this.state.defectComponentDataYAxis} color={this.state.colorCodeForDefectComponentData}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col> */}
+          </Row>
         </Fade>
       </Page>
 

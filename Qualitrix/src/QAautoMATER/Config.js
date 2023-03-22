@@ -3,7 +3,7 @@ export const Config = {
 	"SelectedProject": '',
 	"isDemo": false,
 	"ErrorMessage": '',
-	"backendAPI": 'https://localhost:3002/',
+	"backendAPI": 'https://localhost:3001/',
 	"remoteBackendAPI": 'https://20.235.248.112:3002/', // http://20.235.248.112:3001/ or https://qaautomaterapi.vercel.app/
 	"backendServiceAt": "remote", //local or remote
 	"fileSystemtechniques": "api", //local or api,

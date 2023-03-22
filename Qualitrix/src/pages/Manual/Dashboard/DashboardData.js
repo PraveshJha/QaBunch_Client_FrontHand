@@ -23,4 +23,7 @@ export var DashboardData = {
     DefectStatusDataXaxis:[],
     DefectStatusDataYaxis:[],
     ColorCodeOfDefectStatus:[],
+    TestPlanTotalDataXaxis:[],
+    TestPlanTotalDataYaxis:[],
+    ColorCodeOfTestPlanTotalData:[],
 };
