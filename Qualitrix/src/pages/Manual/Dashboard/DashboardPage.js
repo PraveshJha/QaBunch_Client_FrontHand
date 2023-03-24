@@ -47,23 +47,51 @@ class DefectPage extends React.Component {
       passPercentageInLastExecution: DashboardData.PassPercentageInLastExecution,
 
       //************Dought Data*******************************************************
-      automatedandNotAutomatedData:DashboardData.AutomatedandNotAutomatedData,
-      colorCodeForAutomatedGraph:DashboardData.ColorCodeForAutomatedGraph,
-      testPriorityDataXaxis:DashboardData.TestPriorityDataXaxis,
-      testPriorityDataYaxis:DashboardData.TestPriorityDataYaxis,
-      colorCodeForTestPriority:DashboardData.ColorCodeForTestPriority,
-      componentTestCaseCountXaxisData:DashboardData.ComponentTestCaseCountXaxisData,
-      componentTestCaseCountYaxisData:DashboardData.ComponentTestCaseCountYaxisData,
-      colorCodeForComponentTestCaseCount:DashboardData.ColorCodeForComponentTestCaseCount,
-      defectPriorityDataXaxis:DashboardData.DefectPriorityDataXaxis,
-      defectPriorityDataYaxis:DashboardData.DefectPriorityDataYaxis,
-      colorCodeOfDefectPriority:DashboardData.ColorCodeOfDefectPriority,
-      defectComponentDataXaxis:DashboardData.DefectComponentDataXaxis,
-      defectComponentDataYAxis:DashboardData.DefectComponentDataYAxis,
-      colorCodeForDefectComponentData:DashboardData.ColorCodeForDefectComponentData,
-      defectStatusDataXaxis:DashboardData.DefectStatusDataXaxis,
-      defectStatusDataYaxis:DashboardData.DefectStatusDataYaxis,
-      colorCodeOfDefectStatus:DashboardData.ColorCodeOfDefectStatus
+      automatedandNotAutomatedData: DashboardData.AutomatedandNotAutomatedData,
+      colorCodeForAutomatedGraph: DashboardData.ColorCodeForAutomatedGraph,
+      testPriorityDataXaxis: DashboardData.TestPriorityDataXaxis,
+      testPriorityDataYaxis: DashboardData.TestPriorityDataYaxis,
+      colorCodeForTestPriority: DashboardData.ColorCodeForTestPriority,
+      componentTestCaseCountXaxisData: DashboardData.ComponentTestCaseCountXaxisData,
+      componentTestCaseCountYaxisData: DashboardData.ComponentTestCaseCountYaxisData,
+      colorCodeForComponentTestCaseCount: DashboardData.ColorCodeForComponentTestCaseCount,
+      defectPriorityDataXaxis: DashboardData.DefectPriorityDataXaxis,
+      defectPriorityDataYaxis: DashboardData.DefectPriorityDataYaxis,
+      colorCodeOfDefectPriority: DashboardData.ColorCodeOfDefectPriority,
+      defectComponentDataXaxis: DashboardData.DefectComponentDataXaxis,
+      defectComponentDataYAxis: DashboardData.DefectComponentDataYAxis,
+      colorCodeForDefectComponentData: DashboardData.ColorCodeForDefectComponentData,
+      defectStatusDataXaxis: DashboardData.DefectStatusDataXaxis,
+      defectStatusDataYaxis: DashboardData.DefectStatusDataYaxis,
+      colorCodeOfDefectStatus: DashboardData.ColorCodeOfDefectStatus,
+
+      //************Test Plan Data*******************************************************
+      testPlanTotalDataXaxis: DashboardData.TestPlanTotalDataXaxis,
+      testPlanTotalDataYaxis: DashboardData.TestPlanTotalDataYaxis,
+      colorCodeOfTestPlanTotalData: DashboardData.ColorCodeOfTestPlanTotalData,
+
+      //************Test Plan Component Pass Fail******************************************
+      testPlanExecutedComponentXaxis: DashboardData.TestPlanExecutedComponentXaxis,
+      testPlanExecutedComponentYaxis: DashboardData.TestPlanExecutedComponentYaxis,
+
+      //************Test Plan Test Suite Pass Fail******************************************
+      testPlanTestSuiteXaxis: DashboardData.TestPlanTestSuiteXaxis,
+      testPlanTestSuiteYaxis: DashboardData.TestPlanTestSuiteYaxis,
+
+      //************Test case created By User ******************************************
+      testCaseCreatedByXaxis: DashboardData.TestCaseCreatedByXaxis,
+      testCaseCreatedByYaxis: DashboardData.TestCaseCreatedByYaxis,
+      colorCodeOfTestCaseCreatedBy :DashboardData.ColorCodeOfTestCaseCreatedBy,
+
+      //************Defect created By User ******************************************
+      defectCreatedByXaxis: DashboardData.DefectCreatedByXaxis,
+      defectCreatedByYaxis: DashboardData.DefectCreatedByYaxis,
+      colorCodeOfDefectCreatedBy :DashboardData.ColorCodeOfDefectCreatedBy,
+
+      //************Test Case Executed By ******************************************
+      testCaseExecutedByXaxis: DashboardData.TestCaseExecutedByXaxis,
+      testCaseExecutedByYaxis: DashboardData.TestCaseExecutedByYaxis,
+      colorCodeOfTestCaseExecutedBy :DashboardData.ColorCodeOfTestCaseExecutedBy,
 
     };
 
@@ -108,6 +136,38 @@ class DefectPage extends React.Component {
     this.setState({ defectStatusDataYaxis: DashboardData.DefectStatusDataYaxis })
     DashboardData.ColorCodeOfDefectStatus = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectStatusDataXaxis.length);
     this.setState({ colorCodeOfDefectStatus: DashboardData.ColorCodeOfDefectStatus })
+
+    //************Test Plan Data*******************************************************
+    this.setState({ testPlanTotalDataXaxis: DashboardData.TestPlanTotalDataXaxis })
+    this.setState({ testPlanTotalDataYaxis: DashboardData.TestPlanTotalDataYaxis })
+    DashboardData.ColorCodeOfTestPlanTotalData = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestPlanTotalDataXaxis.length);
+    this.setState({ colorCodeOfTestPlanTotalData: DashboardData.ColorCodeOfTestPlanTotalData })
+
+    //************Test Plan Component Pass Fail******************************************
+    this.setState({ testPlanExecutedComponentXaxis: DashboardData.TestPlanExecutedComponentXaxis })
+    this.setState({ testPlanExecutedComponentYaxis: DashboardData.TestPlanExecutedComponentYaxis })
+
+    //************Test Plan Test Suite Pass Fail******************************************
+    this.setState({ testPlanTestSuiteXaxis: DashboardData.TestPlanTestSuiteXaxis })
+    this.setState({ testPlanTestSuiteYaxis: DashboardData.TestPlanTestSuiteYaxis })
+
+    //************Test Case Created BY *******************************************************
+    this.setState({ testCaseCreatedByXaxis: DashboardData.TestCaseCreatedByXaxis })
+    this.setState({ testCaseCreatedByYaxis: DashboardData.TestCaseCreatedByYaxis })
+    DashboardData.ColorCodeOfTestCaseCreatedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestCaseCreatedByXaxis.length);
+    this.setState({ colorCodeOfTestCaseCreatedBy: DashboardData.ColorCodeOfTestCaseCreatedBy })
+
+    //************Defect Created BY *******************************************************
+    this.setState({ defectCreatedByXaxis: DashboardData.DefectCreatedByXaxis })
+    this.setState({ defectCreatedByYaxis: DashboardData.DefectCreatedByYaxis })
+    DashboardData.ColorCodeOfDefectCreatedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectCreatedByXaxis.length);
+    this.setState({ colorCodeOfDefectCreatedBy: DashboardData.ColorCodeOfDefectCreatedBy })
+
+    //************Test Case Executed By *******************************************************
+    this.setState({ testCaseExecutedByXaxis: DashboardData.TestCaseExecutedByXaxis })
+    this.setState({ testCaseExecutedByYaxis: DashboardData.TestCaseExecutedByYaxis })
+    DashboardData.ColorCodeOfTestCaseExecutedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestCaseExecutedByXaxis.length);
+    this.setState({ colorCodeOfTestCaseExecutedBy: DashboardData.ColorCodeOfTestCaseExecutedBy })
 
     this.setState({ isPageLoading: false })
 
@@ -205,7 +265,7 @@ class DefectPage extends React.Component {
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <DoughnutChart color={this.state.colorCodeForAutomatedGraph} labels={['Automated', 'Not Automated','Not a right candidate']} data={this.state.automatedandNotAutomatedData}></DoughnutChart>
+                    <DoughnutChart color={this.state.colorCodeForAutomatedGraph} labels={['Automated', 'Not Automated', 'Not a right candidate']} data={this.state.automatedandNotAutomatedData}></DoughnutChart>
                   </Col>
                 </CardBody>
               </Card>
@@ -271,41 +331,79 @@ class DefectPage extends React.Component {
             </Col>
           </Row>
           <Row>
-            {/* <Col lg={2} md={6} sm={6} xs={12}>
+            <Col lg={2} md={6} sm={6} xs={12}>
               <Card>
                 <CardHeader>Test Execution Count
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <DoughnutChart color={this.state.colorCodeOfDefectPriority} labels={this.state.defectPriorityDataXaxis} data={this.state.defectPriorityDataYaxis}></DoughnutChart>
-                  </Col>
-                </CardBody>
-              </Card>
-            </Col> */}
-            {/* <Col lg={5} md={6} sm={6} xs={12}>
-              <Card>
-                <CardHeader>Pass Fail Pending
-                  <small> Component wise</small>
-                </CardHeader>
-                <CardBody>
-                  <Col>
-                    <BarChart labels={this.state.defectComponentDataXaxis} data={this.state.defectComponentDataYAxis} color={this.state.colorCodeForDefectComponentData}></BarChart>
+                    <DoughnutChart color={this.state.colorCodeOfTestPlanTotalData} labels={this.state.testPlanTotalDataXaxis} data={this.state.testPlanTotalDataYaxis}></DoughnutChart>
                   </Col>
                 </CardBody>
               </Card>
             </Col>
             <Col lg={5} md={6} sm={6} xs={12}>
               <Card>
-                <CardHeader>Executed
-                  <small> By</small>
+                <CardHeader>Pass Fail Pending
+                  <small> Component wise</small>
                 </CardHeader>
                 <CardBody>
                   <Col>
-                    <BarChart labels={this.state.defectComponentDataXaxis} data={this.state.defectComponentDataYAxis} color={this.state.colorCodeForDefectComponentData}></BarChart>
+                    <BarChart labels={this.state.testPlanExecutedComponentXaxis} label={['Pass', 'Fail', 'Pending']} data={this.state.testPlanExecutedComponentYaxis} color={['#17E798', '#F38295', '#ffcc00']}></BarChart>
                   </Col>
                 </CardBody>
               </Card>
-            </Col> */}
+            </Col>
+            <Col lg={5} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Pass Fail Pending
+                  <small> By Test Plan</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.testPlanTestSuiteXaxis} label={['Pass', 'Fail', 'Pending']} data={this.state.testPlanTestSuiteYaxis} color={['#17E798', '#F38295', '#ffcc00']}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={4} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Test Case
+                  <small> Created By</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.testCaseCreatedByXaxis} data={this.state.testCaseCreatedByYaxis} color={this.state.colorCodeOfTestCaseCreatedBy}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={4} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Test Case
+                  <small> Executed By</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.testCaseExecutedByXaxis} data={this.state.testCaseExecutedByYaxis} color={this.state.colorCodeOfTestCaseExecutedBy}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={4} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>Defect
+                  <small> Created By</small>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BarChart labels={this.state.defectCreatedByXaxis} data={this.state.defectCreatedByYaxis} color={this.state.colorCodeOfDefectCreatedBy}></BarChart>
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
           </Row>
         </Fade>
       </Page>

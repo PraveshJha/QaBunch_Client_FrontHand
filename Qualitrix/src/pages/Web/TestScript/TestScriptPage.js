@@ -128,63 +128,62 @@ class TestScriptPage extends React.Component {
 
   }
   componentWillMount = async () => {
-    this.setState({isPageLoading:true})
+    this.setState({ isPageLoading: true })
     window.scrollTo(0, 0);
     await TestScriptGetter.loadTestScriptPage();
-    try{
-    //**** Basic Details ********************************************************
-    this.setState({ allComponentList: TestScriptData.AllComponentList });
-    this.setState({ selectedComponent: TestScriptData.SelectedComponent });
-    this.setState({ allTestId: TestScriptData.AllTestId });
-    this.setState({ testId: TestScriptData.TestId });
-    this.setState({ testName: TestScriptData.TestName });
-    this.setState({ isErrorOnTestName: TestScriptData.IsErrorOnTestName });
-    this.setState({ isValidComponentName: TestScriptData.IsValidComponentName });
-    this.setState({ isRenameButtonDisabled: TestScriptData.IsRenameButtonDisabled });
-    this.setState({ newName: TestScriptData.NewName });
-    this.setState({ isErrorOnNewName: TestScriptData.IsErrorOnNewName });
-    this.setState({ isNewNameSectionDisplayed: TestScriptData.IsNewNameSectionDisplayed });
-    
-    //**** Debug your Test *************************************************************
-    this.setState({ appUrl: TestScriptData.AppUrl });
-    this.setState({ isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl });
-    this.setState({ testingMethod: TestScriptData.TestingMethod });
-    this.setState({ screenOptionList: TestScriptData.ScreenOptionList });
-    this.setState({ selectedScreenOption: TestScriptData.SelectedScreenOption });
-    this.setState({ deviceList: TestScriptData.DeviceList });
-    this.setState({ selectedDevice: TestScriptData.SelectedDevice });
+    try {
+      //**** Basic Details ********************************************************
+      this.setState({ allComponentList: TestScriptData.AllComponentList });
+      this.setState({ selectedComponent: TestScriptData.SelectedComponent });
+      this.setState({ allTestId: TestScriptData.AllTestId });
+      this.setState({ testId: TestScriptData.TestId });
+      this.setState({ testName: TestScriptData.TestName });
+      this.setState({ isErrorOnTestName: TestScriptData.IsErrorOnTestName });
+      this.setState({ isValidComponentName: TestScriptData.IsValidComponentName });
+      this.setState({ isRenameButtonDisabled: TestScriptData.IsRenameButtonDisabled });
+      this.setState({ newName: TestScriptData.NewName });
+      this.setState({ isErrorOnNewName: TestScriptData.IsErrorOnNewName });
+      this.setState({ isNewNameSectionDisplayed: TestScriptData.IsNewNameSectionDisplayed });
 
-    //**** Dependendent Custom function *************************************************************
-    this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction });
-    this.setState({ selectedRowFromDependentCustomFunctionTable: TestScriptData.SelectedRowFromDependentCustomFunctionTable });
+      //**** Debug your Test *************************************************************
+      this.setState({ appUrl: TestScriptData.AppUrl });
+      this.setState({ isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl });
+      this.setState({ testingMethod: TestScriptData.TestingMethod });
+      this.setState({ screenOptionList: TestScriptData.ScreenOptionList });
+      this.setState({ selectedScreenOption: TestScriptData.SelectedScreenOption });
+      this.setState({ deviceList: TestScriptData.DeviceList });
+      this.setState({ selectedDevice: TestScriptData.SelectedDevice });
+
+      //**** Dependendent Custom function *************************************************************
+      this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction });
+      this.setState({ selectedRowFromDependentCustomFunctionTable: TestScriptData.SelectedRowFromDependentCustomFunctionTable });
 
 
-    //**** Test Steps *************************************************************
-    this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps });
-    this.setState({ selectedRowFromTestStepsTable: TestScriptData.SelectedRowFromTestStepsTable });
+      //**** Test Steps *************************************************************
+      this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps });
+      this.setState({ selectedRowFromTestStepsTable: TestScriptData.SelectedRowFromTestStepsTable });
 
-    //**** Test script Test Data *************************************************************
-    this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData });
-    this.setState({ selectedRowFromTestDataSetTable: TestScriptData.SelectedRowFromTestDataSetTable });
-    this.setState({ allCommonTestData: TestScriptData.AllCommonTestData })
-    this.setState({ selectedRowFromCommonTestDataTable: TestScriptData.SelectedRowFromCommonTestDataTable })
-    this.setState({ commonTestDataNonEditableRows: TestScriptData.CommonTestDataNonEditableRows })
-    this.setState({ newlyAddedCommonTestData: TestScriptData.NewlyAddedCommonTestData })
-    this.setState({ selectedRowFromDynamicDataTable: TestScriptData.SelectedRowFromDynamicDataTable })
-    this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader });
-    this.setState({ isErrorOnColumnName: TestScriptData.IsErrorOnColumnName });
-    this.setState({ columnName: TestScriptData.ColumnName });
+      //**** Test script Test Data *************************************************************
+      this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData });
+      this.setState({ selectedRowFromTestDataSetTable: TestScriptData.SelectedRowFromTestDataSetTable });
+      this.setState({ allCommonTestData: TestScriptData.AllCommonTestData })
+      this.setState({ selectedRowFromCommonTestDataTable: TestScriptData.SelectedRowFromCommonTestDataTable })
+      this.setState({ commonTestDataNonEditableRows: TestScriptData.CommonTestDataNonEditableRows })
+      this.setState({ newlyAddedCommonTestData: TestScriptData.NewlyAddedCommonTestData })
+      this.setState({ selectedRowFromDynamicDataTable: TestScriptData.SelectedRowFromDynamicDataTable })
+      this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader });
+      this.setState({ isErrorOnColumnName: TestScriptData.IsErrorOnColumnName });
+      this.setState({ columnName: TestScriptData.ColumnName });
 
-    //**** OR Data Modal *************************************************************
-    this.setState({ allORData: TestScriptData.AllORData });
-    this.setState({ allORKey: TestScriptData.AllORKey });
-    //**** Test Steps *************************************************************
-    this.setState({ isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps });
-    this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps });
-    this.setState({isPageLoading:false})
+      //**** OR Data Modal *************************************************************
+      this.setState({ allORData: TestScriptData.AllORData });
+      this.setState({ allORKey: TestScriptData.AllORKey });
+      //**** Test Steps *************************************************************
+      this.setState({ isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps });
+      this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps });
+      this.setState({ isPageLoading: false })
     }
-    catch(error)
-    {
+    catch (error) {
     }
   }
 
@@ -584,7 +583,7 @@ class TestScriptPage extends React.Component {
       var dataAfterDelete = await DataGetter.updateTableAfterDeleteRowId(allDataFromTable, this.state.selectedRowFromTestStepsTable)
       this.setState({ listOfTestSteps: await dataAfterDelete });
       TestScriptData.ListOfTestSteps = await dataAfterDelete;
-      this.setState({selectedRowFromTestStepsTable:await Number(selectedRowId)-1})
+      this.setState({ selectedRowFromTestStepsTable: await Number(selectedRowId) - 1 })
     }
     else {
       return await this.getNotification('error', "No row is selected for delete");
@@ -1034,7 +1033,7 @@ class TestScriptPage extends React.Component {
     this.setState({ isErrorOnExternalTestSteps: false })
     var dataChoice = await event.target.value;
     if (this.state.externalTestSteps !== await dataChoice) {
-      this.setState({externalTestSteps:await dataChoice})
+      this.setState({ externalTestSteps: await dataChoice })
       TestScriptData.ExternalTestSteps = await await dataChoice;
     }
 
@@ -1051,11 +1050,11 @@ class TestScriptPage extends React.Component {
     var isSaved = await TestScriptGetter.generateAutomatedStep();
     this.setState({ isPageLoading: false });
     if (await isSaved) {
-      this.setState({testName:TestScriptData.TestName});
-      this.setState({listOfTestSteps:TestScriptData.ListOfTestSteps});
-      this.setState({dependentCustomFunction:TestScriptData.DependentCustomFunction});
-      this.setState({testDataTableHeader:TestScriptData.TestDataTableHeader})
-      this.setState({listOfTestScriptData:TestScriptData.ListOfTestScriptData})
+      this.setState({ testName: TestScriptData.TestName });
+      this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps });
+      this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction });
+      this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader })
+      this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData })
       await this.getNotification('success', 'Automated step generated , Please dubug your test steps before saving the test scripts');
     }
     else {
@@ -1116,7 +1115,7 @@ class TestScriptPage extends React.Component {
                             Paste Manual Test Steps
                           </Label>
                           <Col>
-                            <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value ={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
+                            <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
                             </Input>
                           </Col>
                           <Col>
@@ -1374,10 +1373,10 @@ class TestScriptPage extends React.Component {
                             if (testStep.trim() !== '') {
                               if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
                                 this.setState({ isPageLoading: true });
-                                this.setState({isPageLoading:true})
+                                this.setState({ isPageLoading: true })
                                 var myData = TestScriptGetter.getactionandElementFromTestStep(testStep);
                                 Promise.resolve(myData).then((values) => {
-                                  this.setState({isPageLoading:false})
+                                  this.setState({ isPageLoading: false })
                                   var actionName = values.actionName
                                   if (actionName !== '') {
                                     var elementName = values.orLogicalName;
@@ -1427,11 +1426,11 @@ class TestScriptPage extends React.Component {
                                 }
                                 catch (error) { }
                               }
-                              this.setState({isErrorOnLocatorProperty:false})
+                              this.setState({ isErrorOnLocatorProperty: false })
                               this.setState({ orElementName: TestScriptData.ORElementName })
                               this.setState({ locator: TestScriptData.Locator })
                               this.setState({ locatorProperty: TestScriptData.LocatorProperty })
-                              this.setState({ rowIndexForOR: Number(row.id)-1 })
+                              this.setState({ rowIndexForOR: Number(row.id) - 1 })
                               TestScriptData.IsOrModalVisible = true;
                               this.setState({ isOrModalVisible: TestScriptData.IsOrModalVisible });
                             }
@@ -1502,22 +1501,20 @@ class TestScriptPage extends React.Component {
                                         blurToSave: true,
                                         nonEditableRows: () => this.state.commonTestDataNonEditableRows,
                                         afterSaveCell: (oldValue, newValue, row, column) => {
-                                          if(column.dataField ==='key')
-                                          {
+                                          if (column.dataField === 'key') {
                                             row.key = row.key.toString().trim().toUpperCase();
                                           }
                                           var keyName = row.key.toString().trim();
                                           if (keyName !== '') {
-                                            try{
-                                            var keyValue =''
-                                             keyValue = row.value.toString().trim();
+                                            try {
+                                              var keyValue = ''
+                                              keyValue = row.value.toString().trim();
                                             }
-                                            catch(error)
-                                            {}
+                                            catch (error) { }
                                             TestScriptData.TestDataToAdd[keyName] = keyValue;
                                             TestScriptData.CommonTestDataWithKeyValue[keyName] = keyValue;
                                           }
-                                          
+
                                         },
                                       })}
                                       pagination={paginationFactory()}
@@ -1599,7 +1596,7 @@ class TestScriptPage extends React.Component {
                       <Col lg={12} md={12} sm={12} xs={12}>
                         <Form>
                           <FormGroup row>
-                            <img alt ='stepscreenshot' src={this.state.stepScreenshot}></img>
+                            <img alt='stepscreenshot' src={this.state.stepScreenshot}></img>
                           </FormGroup>
                           <FormGroup row>
                             <ReactJson name={false} collapseStringsAfterLength={20} displayDataTypes={false} indentWidth={0} enableClipboard={true} iconStyle="circle" src={this.state.debugDetails} />

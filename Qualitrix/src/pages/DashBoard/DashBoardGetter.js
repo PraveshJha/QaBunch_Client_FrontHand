@@ -28,11 +28,11 @@ export class DashBoardGetter {
                 daysCounterForDevepeonet = await Number(await allconfigData['DefaultSaveDaysToDevelopment']);
             }
             catch (error) {
-                 daysCounterForDevepeonet = 0;
+                daysCounterForDevepeonet = 0;
             }
             var reportTrailCount = 0;
             try {
-                 reportTrailCount = await Number(await allconfigData['DefaultReportTrailCount']);
+                reportTrailCount = await Number(await allconfigData['DefaultReportTrailCount']);
             }
             catch (error) {
                 reportTrailCount = 0;
@@ -180,7 +180,7 @@ export class DashBoardGetter {
     }
 
     async getModuleWiseScripts(dashboardData) {
-        var yaxisData =[];
+        var yaxisData = [];
         var dataValue = [];
         if (Config.isDemo) {
             DashBoardData.ModuleScriptCountXaxis = await DataGeneratorUtility.getStringArray(12);
@@ -204,8 +204,8 @@ export class DashBoardGetter {
     }
 
     async getTestDevelopmentCountDayWise(dayCounterForDevelopment, dashboardData) {
-        var pastDate =[];
-        var allPastDateItem=[];
+        var pastDate = [];
+        var allPastDateItem = [];
         if (Config.isDemo) {
             var testScripts = [];
             testScripts.push(await DataGeneratorUtility.getNumberArray(dayCounterForDevelopment, 0, 20));
@@ -372,13 +372,12 @@ export class DashBoardGetter {
                         DashBoardData.ExistingReportExecutionPlatform = await executionData['screen'];
                         DashBoardData.ExistingReportExecutionDevice = await executionData['devicebrowser'];
                     }
-                    DashBoardData.ExistingReportTestExecutionTime=await executionData['totalExecutionTime'] +' Seconds';
+                    DashBoardData.ExistingReportTestExecutionTime = await executionData['totalExecutionTime'] + ' Seconds';
                     var triggerFrom = await executionData['triggerFrom'];
-                    if(await triggerFrom ===undefined)
-                    {
-                        triggerFrom = 'QAautoMATER UI' 
+                    if (await triggerFrom === undefined) {
+                        triggerFrom = 'QAautoMATER UI'
                     }
-                    DashBoardData.ExistingReportExecutionStartFrom=await triggerFrom;
+                    DashBoardData.ExistingReportExecutionStartFrom = await triggerFrom;
                 }
                 catch (error) { }
             }
@@ -405,7 +404,7 @@ export class DashBoardGetter {
             yaxisData.push(failData);
             DashBoardData.ExecutionYaxisInLastXResults = yaxisData;
             DashBoardData.ExecutionTimeXaxisInLastXResults = await DataGeneratorUtility.getListOfDateDate(reportTrailCount);
-             yaxisData = [];
+            yaxisData = [];
             var randomNumber = await DataGeneratorUtility.getNumberArray(reportTrailCount, 10, 60);
             yaxisData.push(randomNumber)
             DashBoardData.ExecutionTimeYaxisInLastXResults = yaxisData;
@@ -438,9 +437,21 @@ export class DashBoardGetter {
                     var allComponentFailedData = await reportData['allComponnetFailureData'];
                     var failureData = await this.getTotalFailComponentCount(await allComponentFailedData);
                     var allModuleFailedWithUpdatedValue = await this.updateModuleFailComponent(await failureData);
-                    var totalFailedComponent = await GetData.getAllKeyValueInJsonArrayFromJsonObject(allModuleFailedWithUpdatedValue);
-                    componentFaildData.push(await totalFailedComponent['value']);
-                    DashBoardData.FailedComponentInLastXResults = componentFaildData;
+                    var allXaxis = await DashBoardData.ModuleScriptCountXaxis;
+                    for (let p = 0; p < await allXaxis.length; p++) {
+                        var comName = await allXaxis[p];
+                        try {
+                            var dataToPush = allModuleFailedWithUpdatedValue[await comName];
+                            if (await dataToPush === undefined) {
+                                dataToPush = 0;
+                            }
+                        }
+                        catch (error) {
+                            dataToPush = 0;
+                        }
+                        componentFaildData.push(await dataToPush);
+                    }
+                    DashBoardData.FailedComponentInLastXResults.push(await componentFaildData);
                 }
             }
             catch (error) { }
@@ -493,27 +504,22 @@ export class DashBoardGetter {
 
     async getTotalFailComponentCount(allFailedComponentList) {
         var allFailedComponent = {};
-        for(let i=0;i<await allFailedComponentList.length;i++)
-        {
+        for (let i = 0; i < await allFailedComponentList.length; i++) {
             var allComponentData = await allFailedComponentList[i];
             var failcomponentData = await Object.keys(await allComponentData);
-            if(await failcomponentData.length >0)
-            {
-                for(let j=0;j<await failcomponentData.length;j++)
-                {
+            if (await failcomponentData.length > 0) {
+                for (let j = 0; j < await failcomponentData.length; j++) {
                     var componnetName = await failcomponentData[j];
                     var componneFailCount = await allComponentData[await componnetName];
-                    if(Number(await componneFailCount) >0)
-                    {
-                        if(await allFailedComponent[await componnetName] === undefined)
-                        {
-                            allFailedComponent[await componnetName] =0;
+                    if (Number(await componneFailCount) > 0) {
+                        if (await allFailedComponent[await componnetName] === undefined) {
+                            allFailedComponent[await componnetName] = 0;
                         }
-                        allFailedComponent[await componnetName] = Number(await allFailedComponent[await componnetName]) +1;
+                        allFailedComponent[await componnetName] = Number(await allFailedComponent[await componnetName]) + 1;
                     }
-                    else{
-                        allFailedComponent[await componnetName] =0;
-                    }
+                    // else{
+                    //     allFailedComponent[await componnetName] =0;
+                    // }
                 }
             }
         }

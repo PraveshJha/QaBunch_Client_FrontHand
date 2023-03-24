@@ -63,6 +63,28 @@ export class DashboardGetter {
                 var defectStatusData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['defectStatusData']);
                 DashboardData.DefectStatusDataXaxis = await defectStatusData['key']
                 DashboardData.DefectStatusDataYaxis = await defectStatusData['value']
+                var testPlanTotalData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['testPlanTotalTestData']);
+                DashboardData.TestPlanTotalDataXaxis = await testPlanTotalData['key']
+                DashboardData.TestPlanTotalDataYaxis = await testPlanTotalData['value']
+                DashboardData.TestPlanExecutedComponentXaxis = await allDashBoardData['testPlanComponentPassFailXaxis']
+                DashboardData.TestPlanExecutedComponentYaxis = await allDashBoardData['testPlanComponentPassFailYaxis'];
+                DashboardData.TestPlanTestSuiteXaxis = await allDashBoardData['testPlanPassFailXaxis']
+                DashboardData.TestPlanTestSuiteYaxis = await allDashBoardData['testPlanPassFailYaxis'];
+                var testcaseCreatedByData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['testCaseCreationByUser']);
+                DashboardData.TestCaseCreatedByXaxis =[];
+                DashboardData.TestCaseCreatedByYaxis =[]
+                DashboardData.TestCaseCreatedByXaxis = await testcaseCreatedByData['key']
+                DashboardData.TestCaseCreatedByYaxis.push(await testcaseCreatedByData['value']);
+                var defectCreatedByData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['defectCreationByUser']);
+                DashboardData.DefectCreatedByXaxis =[];
+                DashboardData.DefectCreatedByYaxis =[]
+                DashboardData.DefectCreatedByXaxis = await defectCreatedByData['key']
+                DashboardData.DefectCreatedByYaxis.push(await defectCreatedByData['value']);
+                var testExecutedByData  = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await allDashBoardData['testCaseExecutedByUser']);
+                DashboardData.TestCaseExecutedByXaxis =[];
+                DashboardData.TestCaseExecutedByYaxis =[]
+                DashboardData.TestCaseExecutedByXaxis = await testExecutedByData['key']
+                DashboardData.TestCaseExecutedByYaxis.push(await testExecutedByData['value']);
                 return await allDashBoardData;
             }
             catch (error) {
@@ -82,6 +104,18 @@ export class DashboardGetter {
                 DashboardData.DefectComponentDataYAxis =[];
                 DashboardData.DefectStatusDataXaxis = []
                 DashboardData.DefectStatusDataYaxis = []
+                DashboardData.TestPlanTotalDataXaxis = []
+                DashboardData.TestPlanTotalDataYaxis = []
+                DashboardData.TestPlanExecutedComponentXaxis = []
+                DashboardData.TestPlanExecutedComponentYaxis = []
+                DashboardData.TestPlanTestSuiteXaxis = []
+                DashboardData.TestPlanTestSuiteYaxis = []
+                DashboardData.TestCaseCreatedByXaxis = []
+                DashboardData.TestCaseCreatedByYaxis = []
+                DashboardData.DefectCreatedByXaxis =[];
+                DashboardData.DefectCreatedByYaxis =[];
+                DashboardData.TestCaseExecutedByXaxis =[];
+                DashboardData.TestCaseExecutedByYaxis =[]
             }
         }
     }
