@@ -180,76 +180,74 @@ export class DataGetter {
     }
 
     async getRandomDataValue(requestBodyData) {
-        try{
-        var actualData = requestBodyData;
-        var keyList = await GetData.getAllDynamicDataKeyList(await requestBodyData, "{{RandomData.");
-        if (await keyList.length > 0) {
-            var actualDataInString = await JSON.stringify(await actualData);
-            for (let i = 0; i < await keyList.length; i++) {
-                var methodName = '';
-                var param = ''
-                var methodNamewithParam = await keyList[i];
-                if (await methodNamewithParam.includes('||')) {
-                    methodName = methodNamewithParam.split('||')[0];
-                    param = methodNamewithParam.split('||')[1];
+        try {
+            var actualData = requestBodyData;
+            var keyList = await GetData.getAllDynamicDataKeyList(await requestBodyData, "{{RandomData.");
+            if (await keyList.length > 0) {
+                var actualDataInString = await JSON.stringify(await actualData);
+                for (let i = 0; i < await keyList.length; i++) {
+                    var methodName = '';
+                    var param = ''
+                    var methodNamewithParam = await keyList[i];
+                    if (await methodNamewithParam.includes('||')) {
+                        methodName = methodNamewithParam.split('||')[0];
+                        param = methodNamewithParam.split('||')[1];
+                    }
+                    else {
+                        methodName = await methodNamewithParam;
+                    }
+                    var dataToReplace = await DynamicDataGetter.getValueFromDynamicData(await methodName, await param);
+                    actualDataInString = actualDataInString.replaceAll('{{RandomData.' + methodNamewithParam + '}}', dataToReplace);
                 }
-                else {
-                    methodName = await methodNamewithParam;
-                }
-                var dataToReplace = await DynamicDataGetter.getValueFromDynamicData(await methodName, await param);
-                actualDataInString = actualDataInString.replaceAll('{{RandomData.' + methodNamewithParam + '}}', dataToReplace);
+                return await JSON.parse(actualDataInString);
             }
-            return await JSON.parse(actualDataInString);
+            else {
+                return requestBodyData;
+            }
         }
-        else {
-            return requestBodyData;
-        }
-    }
-    catch(error)
-    {
+        catch (error) {
 
-    }
-     return await requestBodyData
+        }
+        return await requestBodyData
     }
 
-    async getSessionVariableValue(requestBodyData, testId,SessionVariable) {
-        try{
-        var actualData = requestBodyData;
-        var keyList = await GetData.getAllDynamicDataKeyList(requestBodyData, "{{");
-        if (keyList.length > 0) {
-            var actualDataInString = await JSON.stringify(await actualData);
-            for (let i = 0; i < await keyList.length; i++) {
-                var variableName = await keyList[i];
-                var dataToReplace = await SessionVariable[testId][variableName];
-                if (await dataToReplace === undefined) {
-                    var allsessionVarKeys = await Object.keys(await SessionVariable);
-                    for (let j = 0; j < await allsessionVarKeys.length; j++) {
-                        var keyName = await allsessionVarKeys[j];
-                        if (await testId !== keyName) {
-                             dataToReplace = await SessionVariable[await keyName][await variableName];
-                            if (await dataToReplace !== undefined) {
-                                break;
+    async getSessionVariableValue(requestBodyData, testId, SessionVariable) {
+        try {
+            var actualData = requestBodyData;
+            var keyList = await GetData.getAllDynamicDataKeyList(requestBodyData, "{{");
+            if (keyList.length > 0) {
+                var actualDataInString = await JSON.stringify(await actualData);
+                for (let i = 0; i < await keyList.length; i++) {
+                    var variableName = await keyList[i];
+                    var dataToReplace = await SessionVariable[testId][variableName];
+                    if (await dataToReplace === undefined) {
+                        var allsessionVarKeys = await Object.keys(await SessionVariable);
+                        for (let j = 0; j < await allsessionVarKeys.length; j++) {
+                            var keyName = await allsessionVarKeys[j];
+                            if (await testId !== keyName) {
+                                dataToReplace = await SessionVariable[await keyName][await variableName];
+                                if (await dataToReplace !== undefined) {
+                                    break;
+                                }
                             }
                         }
                     }
+                    actualDataInString = await actualDataInString.replaceAll('{{' + variableName + '}}', dataToReplace);
                 }
-                actualDataInString = await actualDataInString.replaceAll('{{' + variableName + '}}', dataToReplace);
+                return await JSON.parse(await actualDataInString);
             }
-            return await JSON.parse(await actualDataInString);
+            else {
+                return requestBodyData;
+            }
         }
-        else {
-            return requestBodyData;
-        }
-    }
-    catch(error)
-    {}
-    return await requestBodyData;
+        catch (error) { }
+        return await requestBodyData;
 
     }
 
-    async convertRandomDataandSessionVariable(requestBodyData, testid,sessionVariable) {
+    async convertRandomDataandSessionVariable(requestBodyData, testid, sessionVariable) {
         requestBodyData = await this.getRandomDataValue(await requestBodyData);
-        requestBodyData = await this.getSessionVariableValue(await requestBodyData, await testid,await sessionVariable);
+        requestBodyData = await this.getSessionVariableValue(await requestBodyData, await testid, await sessionVariable);
         return requestBodyData;
     }
 
@@ -320,18 +318,18 @@ export class DataGetter {
                         var requestHeaderList = await testScriptData['RequestHeader'];
                         var methodName = await testScriptData['HttpMethod'];
                         var requestHeader = await GetData.jsonObjectGetallKeyPairvalue(requestHeaderList, 'key', 'value');
-                        requestHeader = await this.convertRandomDataandSessionVariable(await requestHeader, await testid,await SessionVariable);
+                        requestHeader = await this.convertRandomDataandSessionVariable(await requestHeader, await testid, await SessionVariable);
                         var requestBody = await testScriptData['RequestBody']["1"];
-                        requestBody = await this.convertRandomDataandSessionVariable(await requestBody, await testid,await SessionVariable);
-                        requestedUrl = await this.convertRandomDataandSessionVariable(await requestedUrl, await testid,await SessionVariable);
-                        var ResponseData ={}
+                        requestBody = await this.convertRandomDataandSessionVariable(await requestBody, await testid, await SessionVariable);
+                        requestedUrl = await this.convertRandomDataandSessionVariable(await requestedUrl, await testid, await SessionVariable);
+                        var ResponseData = {}
                         if (await testingType === 'Unit Testing') {
-                             ResponseData = await this.getMockedResponse(await requestedUrl, await methodName, await requestHeader, await requestBody, await component, await testid, await depTestName, 'Api');
+                            ResponseData = await this.getMockedResponse(await requestedUrl, await methodName, await requestHeader, await requestBody, await component, await testid, await depTestName, 'Api');
                         }
                         else {
-                             ResponseData = await this.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
+                            ResponseData = await this.callRestApi(await requestedUrl, await methodName, await requestHeader, await requestBody);
                         }
-                        
+
                         for (let varCounter = 0; varCounter < allSequnce.length; varCounter++) {
                             var varName = await allChildItems[allSequnce[varCounter]]['variable'];
                             var varValue = await allChildItems[allSequnce[varCounter]]['key'];
@@ -473,7 +471,7 @@ export class DataGetter {
     async getMockedResponse(apiUrl, methodName, requestHeader, requestBody, componentName, testId, testName, testingType) {
         var responsData = {}
         var isRequestBodySent = false;
-        var response ={};
+        var response = {};
         switch (methodName.trim().toLocaleLowerCase()) {
             case "post":
             case "put":
@@ -556,6 +554,47 @@ export class DataGetter {
                 Config.ErrorMessage = await error.message;
             }
         }
+    }
+
+    async getArgumentListFromParameter(parameter) {
+        var allOutPut = [];
+        var keywordToFind = ''
+        if (await parameter.includes('+ARGS.')) {
+            keywordToFind = '+ARGS.'
+        }
+        else if (await parameter.includes('ARGS.')) {
+            keywordToFind = 'ARGS.'
+        }
+        else {
+            return await allOutPut;
+        }
+        if (await parameter.includes(await keywordToFind)) {
+            for (let i = 0; i < 10; i++) {
+                try {
+                    var argsName = await parameter.split(await keywordToFind)[1].trim();
+                    if(await argsName.includes('+'))
+                    {
+                        argsName = await argsName.split('+')[0].trim();
+                        var replaceKeyWord = await keywordToFind + await argsName+'+';
+                    }
+                    else if(await argsName.includes(','))
+                    {
+                        argsName = await argsName.split(',')[0].trim();
+                        var replaceKeyWord = await keywordToFind + await argsName;
+                    }
+                    else{
+                        var replaceKeyWord = await keywordToFind + await argsName;
+                    }
+                    var argsToSave = 'ARGS.' + await argsName;
+                    if (!await allOutPut.includes(await argsToSave)) {
+                        allOutPut.push(await argsToSave);
+                    }
+                    parameter = await parameter.replace(await replaceKeyWord, "");
+                }
+                catch (error) { }
+            }
+        }
+        return await allOutPut;
     }
 
 }

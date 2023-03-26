@@ -16,6 +16,7 @@ export class CustomFunctionGetter {
       allconfigData = await ConfigGetter.readConfigurationFile('Web');
       CustomFunctionData.AllConfigData = await allconfigData;
     }
+    await this.initializeCustomPage();
     await this.getCustomFunctionList();
     await this.getallORDATA();
     await DataGetter.GetAllActions();
@@ -322,10 +323,15 @@ export class CustomFunctionGetter {
           var allParams = await param.toString().split(',');
           if (await allParams.length > 0) {
             for (let j = 0; j < await allParams.length; j++) {
-              var allParamInAction = await allParams[j].toUpperCase().trim().split(',');
-              for(let k=0;k<await allParamInAction.length;k++)
+              var allParamInAction = await allParams[j].trim();
+              var paramToSave = await DataGetter.getArgumentListFromParameter(await allParamInAction);
+              for(let k=0;j<await paramToSave.length;k++)
               {
-                allArguments.push(await allParamInAction[k].trim());
+                var argsParamName = await paramToSave[k];
+                if(!await allArguments.includes(await argsParamName))
+                {
+                  allArguments.push(await argsParamName);
+                }
               }
             }
           }
@@ -337,18 +343,19 @@ export class CustomFunctionGetter {
     //var newElement = CustomFunctionData.NewElementToAddinOR;
     for (let i = 0; i < await allData.length; i++) {
       var value = await allData[i]['value'].toString().trim();
-      if (await value.toString().toUpperCase().trim().includes('ARGS.')) {
-        var allParamInAction = await value.toString().toUpperCase().trim().split(',');
-        for(let j=0;j<await allParamInAction.length;j++)
+      var paramToSave = await DataGetter.getArgumentListFromParameter(await value);
+      for(let j=0;j<await paramToSave.length;j++)
+      {
+        var argsParamName = await paramToSave[j];
+        if(!await allArguments.includes(await argsParamName))
         {
-          allArguments.push(await allParamInAction[j].trim());
+          allArguments.push(await argsParamName);
         }
       }
      }
      newElement = await newElement['newelement']
     output['argumentList'] = await allArguments;
     output['newelement'] = await newElement;
-    console.log(await output);
     return output;
   }
   async getListOfNewElementFromTestSteps(allData) {
@@ -592,6 +599,30 @@ export class CustomFunctionGetter {
       }
     }
     return await allOrData;
+  }
+  async initializeCustomPage() {
+    var allconfigData = null;
+    if (!await Config.isDemo) {
+      allconfigData = await ConfigGetter.readConfigurationFile('Web');
+      CustomFunctionData.AllConfigData = await allconfigData;
+      try {
+        var defaultEnv = await allconfigData['DefaultSelectedEnvironment'];
+        var allEnv = await allconfigData['Environment'];
+        if (await allEnv.length > 0) {
+          if (await defaultEnv === '' || await defaultEnv === undefined) {
+            defaultEnv = await allEnv[0]['name'];
+          }
+          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name',await defaultEnv)
+          if(await index > -1)
+          {
+             var appUrl = await allEnv[await index]['url'];
+             CustomFunctionData.AppUrl = await appUrl;
+          }
+        }
+      }
+      catch (error) { }
+    }
+
   }
 }
 

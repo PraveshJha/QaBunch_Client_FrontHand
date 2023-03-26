@@ -26,4 +26,6 @@ export var TestPlanData = {
     ListOfUsers:[],
     SelectedTestCase:[],
     UpdatedTestRowData:{},
+    UpdatedRemarksData:{},
+    DeletedTestID:{},
 };

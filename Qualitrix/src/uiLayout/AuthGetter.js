@@ -37,7 +37,7 @@ export class AuthGetter {
                         {
                             backendServiceUrl = Config.remoteBackendAPI;
                         }
-                         userDetails['errorMessage'] = "Your network is blocking QAautoMATER backend service "+await backendServiceUrl+" Please allow."
+                         userDetails['errorMessage'] = "Your Browser is blocking application which has Self-Signed Certificate , Please open  "+await backendServiceUrl+" url in new tab and Proceed."
                     }
                     Users.isUserExistOnServer = false;
                     Config.ErrorMessage = await userDetails['errorMessage'];

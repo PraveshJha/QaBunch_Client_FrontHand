@@ -221,6 +221,7 @@ class TestPlanPage extends React.Component {
     var dataChoice = await event;
     if (TestPlanData.ListOfRemarksDataForTestCase[await testid] !== await dataChoice) {
       TestPlanData.ListOfRemarksDataForTestCase[await testid] = await dataChoice;
+      TestPlanData.UpdatedRemarksData[await testid]= await dataChoice;
     }
 
   };
@@ -297,7 +298,7 @@ class TestPlanPage extends React.Component {
     await event.preventDefault();
     if (!this.state.isUserSelectedNewTestPlan) {
       var selectedTestPlan = await this.state.selectedTestPlan;
-      if (await selectedTestPlan ==='') {
+      if (await selectedTestPlan === '') {
         return await this.getNotification('error', 'Please select test plan before delete.');
       }
       this.setState({ isPageLoading: true });
@@ -326,20 +327,57 @@ class TestPlanPage extends React.Component {
   loadTestCase = async (event) => {
     await event.preventDefault();
     await this.setState({ isPageLoading: true })
-    await TestPlanGetter.loadAllTestCaseFromComponent(TestPlanData.SelectedPlaceHolder);
-    this.setState({ listOfTestCases: TestPlanData.ListOfTestCases })
+    if (!await TestPlanData.IsUserSelectedNewTestPlan) {
+      await TestPlanGetter.getTestPlanDetail(TestPlanData.SelectedTestCycle, TestPlanData.SelectedTestPlan);
+      var existingTestCase = TestPlanData.ListOfTestCases;
+    }
     TestPlanData.SelectedTestCase = [];
+    await TestPlanGetter.loadAllTestCaseFromComponent('All');
+    var newListOfTestCase = TestPlanData.ListOfTestCases;
+    if (!await TestPlanData.IsUserSelectedNewTestPlan) {
+      for (let i = 0; i < await existingTestCase.length; i++) {
+        var testId = await existingTestCase[i]['testid'];
+        var status = await existingTestCase[i]['status'];
+        for (let j = 0; j < await newListOfTestCase.length; j++) {
+          if (await testId === await newListOfTestCase[j]['testid']) {
+            newListOfTestCase[j]['status'] = await status;
+            TestPlanData.SelectedTestCase.push(await newListOfTestCase[j]['id'])
+            break;
+          }
+        }
+      }
+    }
+    TestPlanData.ListOfTestCases = await newListOfTestCase;
+    this.setState({ listOfTestCases: TestPlanData.ListOfTestCases })
     this.setState({ selectedTestCase: TestPlanData.SelectedTestCase })
     await this.setState({ isPageLoading: false })
   };
 
   handleOnSelect = async (row, isSelect) => {
+    var testId = await row.testid;
     if (await isSelect) {
       this.setState(() => ({ selectedTestCase: [...this.state.selectedTestCase, row.id] }));
       TestPlanData.SelectedTestCase = await [...this.state.selectedTestCase, row.id];
+      if (TestPlanData.UpdatedTestRowData[await testId] === undefined) {
+        TestPlanData.UpdatedTestRowData[await testId] = {};
+        TestPlanData.UpdatedTestRowData[await testId]['id'] = await row.id;
+        TestPlanData.UpdatedTestRowData[await testId]['component'] = await row.component;
+        TestPlanData.UpdatedTestRowData[await testId]['testid'] = await row.testid;
+        TestPlanData.UpdatedTestRowData[await testId]['testname'] = await row.testname;
+        TestPlanData.UpdatedTestRowData[await testId]['assignto'] = await row.assignto;
+        TestPlanData.UpdatedTestRowData[await testId]['status'] = await row.status;
+        TestPlanData.UpdatedTestRowData[await testId]['executedBy'] = '';
+      }
+      var istestScriptWilldeleted = await TestPlanData.DeletedTestID[await testId];
+      if(await istestScriptWilldeleted !== undefined)
+      {
+        delete TestPlanData.DeletedTestID[await testId];
+      }
+
     } else {
       this.setState(() => ({ selectedTestCase: this.state.selectedTestCase.filter(x => x !== row.id) }));
       TestPlanData.SelectedTestCase = await this.state.selectedTestCase.filter(x => x !== row.id)
+      TestPlanData.DeletedTestID[await testId]='delete';
     }
 
   }
@@ -349,9 +387,35 @@ class TestPlanPage extends React.Component {
     if (isSelect) {
       this.setState(() => ({ selectedTestCase: ids, }));
       TestPlanData.SelectedTestCase = ids;
+      for (let i = 0; i < await TestPlanData.SelectedTestCase.length; i++) {
+        var testId = TestPlanData.ListOfTestCases[i]['testid'];
+        if (TestPlanData.UpdatedTestRowData[await testId] === undefined) {
+          TestPlanData.UpdatedTestRowData[await testId] = {};
+          TestPlanData.UpdatedTestRowData[await testId]['id'] = await Number(i)+1;;
+          TestPlanData.UpdatedTestRowData[await testId]['component'] = await TestPlanData.ListOfTestCases[i]['component'];
+          TestPlanData.UpdatedTestRowData[await testId]['testid'] = await testId;
+          TestPlanData.UpdatedTestRowData[await testId]['testname'] =  await TestPlanData.ListOfTestCases[i]['testname'];
+          TestPlanData.UpdatedTestRowData[await testId]['assignto'] = await TestPlanData.ListOfTestCases[i]['assignto'];
+          TestPlanData.UpdatedTestRowData[await testId]['status'] =  await TestPlanData.ListOfTestCases[i]['status'];
+          var executedBy = await TestPlanData.ListOfTestCases[i]['executedBy']
+          if(await executedBy === undefined)
+          {
+            TestPlanData.UpdatedTestRowData[await testId]['executedBy'] = '';
+          }
+          else{
+            TestPlanData.UpdatedTestRowData[await testId]['executedBy'] = await executedBy;
+          }
+          TestPlanData.DeletedTestID ={};
+        }
+      }
     } else {
       this.setState(() => ({ selectedTestCase: [] }));
       TestPlanData.SelectedTestCase = [];
+      TestPlanData.UpdatedTestRowData = {};
+      for (let i = 0; i < await TestPlanData.SelectedTestCase.length; i++) {
+        var testId = TestPlanData.ListOfTestCases[i]['testid'];
+        TestPlanData.DeletedTestID[await testId] = 'delete';
+      }
     }
   }
 
@@ -383,13 +447,18 @@ class TestPlanPage extends React.Component {
       return await this.getNotification('error', 'Please choose test case before saving test plan');
     }
     if (!await isNewTestPlan) {
-      if (await Object.keys(TestPlanData.UpdatedTestRowData).length === 0 && await Object.keys(TestPlanData.ListOfRemarksDataForTestCase).length === 0) {
+      if (await Object.keys(TestPlanData.UpdatedTestRowData).length === 0 && await Object.keys(TestPlanData.UpdatedRemarksData).length === 0 && await Object.keys(TestPlanData.DeletedTestID).length === 0) {
         return await this.getNotification('warning', 'No Changes to save.');
       }
     }
     this.setState({ isPageLoading: true });
     var isSaved = await TestPlanGetter.saveTestPlan(await newTestPlanName);
     if (await isSaved) {
+      TestPlanData.IsUserSelectedNewTestPlan = false;
+      this.setState({isUserSelectedNewTestPlan:false});
+      TestPlanData.UpdatedTestRowData ={};
+      TestPlanData.DeletedTestID ={};
+      TestPlanData.UpdatedRemarksData ={};
       await this.getNotification('success', 'Test plan ' + newTestPlanName + ' is successfully saved.');
     }
     else {
@@ -533,13 +602,13 @@ class TestPlanPage extends React.Component {
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
                     Test Cases
-                    <div className="d-flex justify-content-between align-items-center">
+                    {/* <div className="d-flex justify-content-between align-items-center">
                       <Col>
                         <Input type="select" name="placeHolder" value={this.state.selectedPlaceHolder} onChange={this.selectPlaceHolder.bind(this)}>
                           <DropDownOptions options={this.state.listOfPlaceHolder} />
                         </Input>
                       </Col>
-                    </div>
+                    </div> */}
                     <ButtonGroup size="sm">
                       <Button color='dark' name="loadtestCases" onClick={this.loadTestCase.bind(this)}>
                         <small>Load Test Cases</small>

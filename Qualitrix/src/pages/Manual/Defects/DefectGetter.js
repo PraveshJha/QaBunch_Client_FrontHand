@@ -40,7 +40,6 @@ export class DefectGetter {
                 var lastStep = await defectDetails[await defectDetails.length - 1]['stepdefinition'];
                 var exceptionMessage = await defectDetails[await defectDetails.length - 1]['testdata'];
                 var imageData = await defectDetails[await defectDetails.length - 1]['screenshot'];
-                console.log(await imageData);
                 DefectData.DefectTitle = await lastStep;
 
                 //create Steps

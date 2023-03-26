@@ -182,8 +182,10 @@ export class TestPlanGetter {
                 else {
                     testBody['testExecutionDetails'] = await TestPlanData.UpdatedTestRowData;
                 }
-                testBody['testExecutionEvidence'] = await TestPlanData.ListOfRemarksDataForTestCase;
+                testBody['deleteTestCase'] = await TestPlanData.DeletedTestID;
+                testBody['testExecutionEvidence'] = await TestPlanData.UpdatedRemarksData;
                 testBody['createdBy'] = await Users.userEmail;
+                console.log(await testBody);
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {
@@ -202,7 +204,6 @@ export class TestPlanGetter {
     }
 
     async getselectedTestCase(selectedTestId) {
-        console.log(await selectedTestId)
         var output = [];
         var allTestCaseList = TestPlanData.ListOfTestCases;
         for (let i = 0; i < await selectedTestId.length; i++) {

@@ -194,6 +194,7 @@ export class GetData {
 
 
 
+
     //#endregion [Data Getter]
 }
 export default new GetData;
