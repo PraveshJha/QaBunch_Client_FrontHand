@@ -26,6 +26,7 @@ import { DoughnutChart, BarChart, LineChart } from '../../../uiLayout/components
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 
 
+
 class DefectPage extends React.Component {
   notificationSystem = React.createRef();
   constructor(props) {

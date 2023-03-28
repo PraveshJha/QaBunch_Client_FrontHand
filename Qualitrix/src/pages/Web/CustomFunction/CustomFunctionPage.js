@@ -1219,9 +1219,9 @@ class CustomFunctionPage extends React.Component {
                                         blurToSave: true,
                                         afterSaveCell: (oldValue, newValue, row, column) => {
                                           if (column.dataField === 'parameter') {
-                                            if (newValue.toLowerCase().includes('args.')) {
-                                              row.parameter = newValue.toUpperCase();
-                                            }
+                                            // if (newValue.toLowerCase().includes('args.')) {
+                                            //   row.parameter = newValue.toUpperCase();
+                                            // }
                                           }
                                           this.setState({ dependentCustomFunction: CustomFunctionData.DependentCustomFunction })
                                         }
@@ -1265,7 +1265,8 @@ class CustomFunctionPage extends React.Component {
                         }
                         if (column.dataField === 'value') {
                           if (newValue.toLowerCase().includes('args.')) {
-                            row.value = newValue.toUpperCase();
+                            var re = new RegExp('args.', 'gi');
+                            row.value=  row.value.replace(re,'ARGS.');
                           }
                         }
                         if (column.dataField === 'stepdefinition') {

@@ -204,6 +204,7 @@ class TestDataPage extends React.Component {
                         mode: 'click',
                         blurToSave: true,
                         afterSaveCell: (oldValue, newValue, row, column) => {
+                          row.key = row.key.toString().trim().toUpperCase();
                           var keyName = row.key.toString().trim().toUpperCase();
                           var keyValue = row.value.toString().trim();
                           if(keyName !=='' && keyValue !=='')

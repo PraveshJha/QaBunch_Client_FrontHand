@@ -597,6 +597,10 @@ export class DataGetter {
         return await allOutPut;
     }
 
+    async ConvertArgsKeyintoUpperCase(parameter) {
+        return await parameter;
+    }
+
 }
 export default new DataGetter();
 

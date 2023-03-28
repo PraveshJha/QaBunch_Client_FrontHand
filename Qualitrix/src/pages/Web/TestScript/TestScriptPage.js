@@ -53,12 +53,15 @@ import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
 
+
+
 class TestScriptPage extends React.Component {
   notificationSystem = React.createRef();
   constructor(props) {
     super(props);
+   
     this.state = {
-
+      
       //****** Page Loader ***********************************************************
       isPageLoading: false,
 
@@ -1061,12 +1064,11 @@ class TestScriptPage extends React.Component {
       return await this.getNotification('error', 'Unable to generate test step because of ' + Config.ErrorMessage);
     }
   }
-
-
+ 
   //****************** End /********************************** */
 
   render() {
-
+    
     //****** Select Test Steps********************************
     const selectTestSteps = {
       mode: 'radio',
@@ -1094,6 +1096,7 @@ class TestScriptPage extends React.Component {
       onSelect: this.selectRadioButtonFromCustomFunctionTable,
       selected: [this.state.selectedRowFromDependentCustomFunctionTable]
     };
+    
     return (
       <Page
         className="testscriptpage"
@@ -1435,7 +1438,6 @@ class TestScriptPage extends React.Component {
                               this.setState({ isOrModalVisible: TestScriptData.IsOrModalVisible });
                             }
                           }
-
                         }
                       })}
                     />

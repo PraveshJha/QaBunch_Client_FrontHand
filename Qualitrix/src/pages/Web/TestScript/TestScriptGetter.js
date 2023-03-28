@@ -6,7 +6,11 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
+import {
+  Button,
+} from 'reactstrap';
 const selectedProject = Config.SelectedProject;
+
 
 export class TestScriptGetter {
 
@@ -813,6 +817,30 @@ export class TestScriptGetter {
     catch (error) { }
 
     return await lineNumber;
+  }
+
+  async uploadFileToServer(filePath) {
+    if (await Config.isDemo) {
+      await new Promise(wait => setTimeout(wait, 3000));
+      return true;
+    }
+    else {
+      try {
+        var backendAPI = await Config.backendAPI;
+        if (Config.backendServiceAt === 'remote') {
+          backendAPI = await Config.remoteBackendAPI;
+        }
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, 'content-type': filePath.type, };
+        console.log('its my header')
+        console.log(await headers)
+        var serverResponse = await restAPI.post(backendAPI + 'fileupload/project/' + await selectedProject, await headers,await filePath);
+        var allAIDetails = await serverResponse['data'];
+        return await allAIDetails;
+      }
+      catch (error) {
+        Config.ErrorMessage = await error.message;
+      }
+    }
   }
 
 }
