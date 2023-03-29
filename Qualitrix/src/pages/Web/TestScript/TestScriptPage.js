@@ -53,15 +53,13 @@ import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
 
-
-
 class TestScriptPage extends React.Component {
   notificationSystem = React.createRef();
   constructor(props) {
     super(props);
-   
+
     this.state = {
-      
+
       //****** Page Loader ***********************************************************
       isPageLoading: false,
 
@@ -127,6 +125,9 @@ class TestScriptPage extends React.Component {
       isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps,
       externalTestSteps: TestScriptData.ExternalTestSteps,
 
+      //**** File Upload *************************************************************
+      isFileUploadButtonDisplayed:TestScriptData.IsFileUploadButtonDisplayed,
+
     };
 
   }
@@ -185,6 +186,9 @@ class TestScriptPage extends React.Component {
       this.setState({ isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps });
       this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps });
       this.setState({ isPageLoading: false })
+
+      //**** File Upload *************************************************************
+      this.setState({ isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed })
     }
     catch (error) {
     }
@@ -539,6 +543,15 @@ class TestScriptPage extends React.Component {
     if (await isSelect) {
       TestScriptData.SelectedRowFromTestStepsTable = await row.id;
       this.setState({ selectedRowFromTestStepsTable: await row.id });
+      if(await row.action ==='FileUpload')
+      {
+        this.setState({isFileUploadButtonDisplayed:true});
+        TestScriptData.IsFileUploadButtonDisplayed = true;
+      }
+      else{
+        this.setState({isFileUploadButtonDisplayed:false});
+        TestScriptData.IsFileUploadButtonDisplayed = false;
+      }
     }
   }
 
@@ -1064,11 +1077,50 @@ class TestScriptPage extends React.Component {
       return await this.getNotification('error', 'Unable to generate test step because of ' + Config.ErrorMessage);
     }
   }
- 
+
+  onChangeHandler = async (event) => {
+    event.preventDefault()
+    var selectedRow = await this.state.selectedRowFromTestStepsTable;
+    if(await selectedRow === undefined || await selectedRow === '')
+    {
+      return await this.getNotification('error', 'Please select test step before uploading the file.');
+    }
+    var selectId = await Number(await selectedRow);
+    if(await selectId > 0)
+    {
+      var actionName = await TestScriptData.ListOfTestSteps[await Number(selectId)-1]['action'];
+      if(await actionName ==='FileUpload')
+      {
+          this.setState({isPageLoading:true})
+          var selectedFile = await event.target.files[0];
+          var fileUploadDetails = await TestScriptGetter.uploadFileToServer(await selectedFile);
+          if(await fileUploadDetails['isSuccess'])
+          {
+             this.setState({isFileUploadButtonDisplayed:false});
+             TestScriptData.IsFileUploadButtonDisplayed = false;
+             TestScriptData.ListOfTestSteps[await Number(selectId)-1]['value'] = await fileUploadDetails['fileName'];
+             this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
+             await this.getNotification('success', 'File is saved on server , now you can debug and execute your test scripts');
+          }
+          else{
+            await this.getNotification('error', 'Unable to upload file because of '+await fileUploadDetails['errorMessage']);
+          }
+          this.setState({isPageLoading:false})
+      }
+      else{
+        return await this.getNotification('error', 'File Upload is only valid for method FileUpload');
+      }
+    }
+    else{
+      return await this.getNotification('error', 'Selected Test step number '+ selectId+ ' is not Valid. Please refresh the page and try again.');
+    }
+  }
+
+
   //****************** End /********************************** */
 
   render() {
-    
+
     //****** Select Test Steps********************************
     const selectTestSteps = {
       mode: 'radio',
@@ -1096,7 +1148,7 @@ class TestScriptPage extends React.Component {
       onSelect: this.selectRadioButtonFromCustomFunctionTable,
       selected: [this.state.selectedRowFromDependentCustomFunctionTable]
     };
-    
+
     return (
       <Page
         className="testscriptpage"
@@ -1277,6 +1329,9 @@ class TestScriptPage extends React.Component {
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
                     Automate Manual Test Steps
+                    <div className="d-flex justify-content-between align-items-center">
+                      <Input style={{ visibility: this.state.isFileUploadButtonDisplayed ? 'visible' : 'hidden' }} type="file" name="sampleFile" onChange={this.onChangeHandler.bind(this)} />
+                    </div>
                     <ButtonGroup size="sm">
                       <Button color='dark' onClick={this.addNewTestStep.bind(this)}>
                         <small>Add Step</small>
@@ -1372,6 +1427,8 @@ class TestScriptPage extends React.Component {
                             }
                           }
                           else if (column.dataField === 'stepdefinition') {
+                            this.setState({isFileUploadButtonDisplayed:false});
+                            TestScriptData.IsFileUploadButtonDisplayed = false;
                             var testStep = row.stepdefinition;
                             if (testStep.trim() !== '') {
                               if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
@@ -1438,6 +1495,7 @@ class TestScriptPage extends React.Component {
                               this.setState({ isOrModalVisible: TestScriptData.IsOrModalVisible });
                             }
                           }
+
                         }
                       })}
                     />

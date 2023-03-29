@@ -454,7 +454,7 @@ export class TestScriptGetter {
           }
         }
          headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId + '@' + TestScriptData.TestName + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
+         serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
          saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -513,8 +513,8 @@ export class TestScriptGetter {
       try {
         var componentName = TestScriptData.SelectedComponent;
         var existingTestId = TestScriptData.TestId;
-        var oldName = TestScriptData.TestName;
-        var newtestName = TestScriptData.NewName;
+        var oldName = TestScriptData.TestName.trim();
+        var newtestName = TestScriptData.NewName.trim();
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -830,10 +830,10 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, 'content-type': filePath.type, };
-        console.log('its my header')
-        console.log(await headers)
-        var serverResponse = await restAPI.post(backendAPI + 'fileupload/project/' + await selectedProject, await headers,await filePath);
+        let formData = new FormData();
+        formData.append('file', await filePath);
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,'Content-Type':'multipart/form-data'};
+        var serverResponse = await restAPI.post(backendAPI + 'fileupload/project/' + await selectedProject, await headers,await formData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
       }

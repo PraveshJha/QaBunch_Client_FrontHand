@@ -55,4 +55,5 @@ export var TestScriptData = {
     CommonTestDataWithKeyValue:{},
     IsErrorOnExternalTestSteps:false,
     ExternalTestSteps:'',
+    IsFileUploadButtonDisplayed:false,
 };

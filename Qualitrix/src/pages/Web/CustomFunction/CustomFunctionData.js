@@ -58,4 +58,5 @@ export var CustomFunctionData = {
     StepScreenshot:'',
     CommonTestDataWithKeyValue:{},
     NewElementToAddinOR:{},
+    IsFileUploadButtonDisplayed:false,
 };
