@@ -52,6 +52,11 @@ export var ExecutionTableHeader = [{
 			};
 		};
 	},
+	filter: textFilter(
+		{
+			className: 'test-classname',
+			placeholder: 'Status',
+	})
 }
 ];
 export var ResponseAsserionTableHeader = [{

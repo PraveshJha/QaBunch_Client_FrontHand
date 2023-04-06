@@ -395,8 +395,8 @@ class TestScriptPage extends React.Component {
 
   renameTestId = async (event) => {
     await event.preventDefault();
-    var existingTestId = TestScriptData.TestId;
-    var existingComponent = TestScriptData.ComponentName;
+    var existingTestId = TestScriptData.TestId.trim();
+    var existingComponent = TestScriptData.ComponentName.trim();
     if (existingTestId.toString().trim() === '') {
       return await this.getNotification('error', "Please choose any existing TestId from 'BASIC DETAILS' section.");
     }

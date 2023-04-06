@@ -14,6 +14,7 @@ export class RestApi {
     }
 
     async get(url, requestHeader) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -33,6 +34,7 @@ export class RestApi {
     }
 
     async post(url, requestHeader, requestBody) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -80,6 +82,7 @@ export class RestApi {
     }
 
     async put(url, requestHeader, requestBody) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -99,6 +102,7 @@ export class RestApi {
     }
 
     async patch(url, requestHeader, requestBody) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -118,6 +122,7 @@ export class RestApi {
     }
 
     async delete(url, requestHeader) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -137,6 +142,7 @@ export class RestApi {
     }
 
     async head(url, requestHeader) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {
@@ -156,6 +162,7 @@ export class RestApi {
     }
 
     async options(url, requestHeader) {
+        requestHeader['Access-Control-Allow-Origin']= '*';
         var Response;
         try {
             let config = {

@@ -546,10 +546,10 @@ export class TestScriptGetter {
             return true;
         }
         else {
-            var componentName = TestScriptData.ComponentName;
-            var existingTestId = TestScriptData.TestId;
-            var newTestId = TestScriptData.NewTestId;
-            var testName = TestScriptData.TestName;
+            var componentName = TestScriptData.ComponentName.trim();
+            var existingTestId = TestScriptData.TestId.trim();
+            var newTestId = TestScriptData.NewTestId.trim();
+            var testName = TestScriptData.TestName.trim();
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
