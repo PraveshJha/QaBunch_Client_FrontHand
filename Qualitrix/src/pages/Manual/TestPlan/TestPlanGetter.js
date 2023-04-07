@@ -185,7 +185,6 @@ export class TestPlanGetter {
                 testBody['deleteTestCase'] = await TestPlanData.DeletedTestID;
                 testBody['testExecutionEvidence'] = await TestPlanData.UpdatedRemarksData;
                 testBody['createdBy'] = await Users.userEmail;
-                console.log(await testBody);
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {

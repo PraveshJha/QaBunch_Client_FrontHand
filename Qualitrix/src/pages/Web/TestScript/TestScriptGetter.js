@@ -472,7 +472,7 @@ export class TestScriptGetter {
       var element = await allData[i]['element'].toString().trim().toUpperCase();
       if (element !== '') {
         if (await TestScriptData.TestScriptORData[element] !== undefined) {
-          newElement[await element] = await TestScriptData.TestScriptORData[element];
+          newElement[await element] = await TestScriptData.TestScriptORData[await element];
         }
       }
 
@@ -679,14 +679,16 @@ export class TestScriptGetter {
             var values = await serverResponse['data'];
             var actionName = await values.actionName;
             if (actionName !== '') {
-              var elementName = await values.orLogicalName;
+              var elementName = await values.orLogicalName.trim().toUpperCase();
               var locator = await values.primaryLocator;
               var locatorProperty = await values.primaryLocatorProperty;
               var isKeyAlreadyPresent = TestScriptData.TestScriptORData[await elementName];
               var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: '' }
               if (await isKeyAlreadyPresent === undefined) {
-                TestScriptData.AllORData[elementName] = {};
-                TestScriptData.AllORData[elementName] = await newElementAdd;
+                TestScriptData.AllORData[await elementName] = {};
+                TestScriptData.AllORData[await elementName] = await newElementAdd;
+                TestScriptData.TestScriptORData[await elementName] = {};
+                TestScriptData.TestScriptORData[await elementName] = await newElementAdd;
                 if (!TestScriptData.AllORKey.includes(await elementName)) {
                   TestScriptData.AllORKey.push(await elementName)
                 }

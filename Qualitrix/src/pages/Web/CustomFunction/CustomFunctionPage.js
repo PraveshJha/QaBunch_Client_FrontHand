@@ -1339,6 +1339,8 @@ class CustomFunctionPage extends React.Component {
                                       CustomFunctionData.NewElementToAddinOR[elementName.toUpperCase()] = newElementAdd;
                                       CustomFunctionData.AllORData[elementName] = {};
                                       CustomFunctionData.AllORData[elementName] = newElementAdd;
+                                      CustomFunctionData.TestScriptORData[elementName] = {};
+                                      CustomFunctionData.TestScriptORData[elementName] = newElementAdd;
                                       if (!CustomFunctionData.AllORKey.includes(elementName)) {
                                         CustomFunctionData.AllORKey.push(elementName)
                                       }

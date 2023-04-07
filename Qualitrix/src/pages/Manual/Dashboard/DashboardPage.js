@@ -191,6 +191,74 @@ class DefectPage extends React.Component {
     if (await this.state.selectedTestCycle !== await dataChoice) {
       DashboardData.SelectedTestCycle = await dataChoice;
       this.setState({ selectedTestCycle: await dataChoice });
+      await DashboardGetter.getDashBoardData(await dataChoice);
+      this.setState({ isPageLoading: true })
+    
+      //************Widget Data*******************************************************
+      this.setState({ totalTestCase: DashboardData.TotalTestCase })
+      this.setState({ totalDefects: DashboardData.TotalDefects })
+      this.setState({ totalTestPlan: DashboardData.TotalTestPlan })
+      this.setState({ totalTestCaseOnLastExecution: DashboardData.TotalTestCaseOnLastExecution })
+      this.setState({ passPercentageInLastExecution: DashboardData.PassPercentageInLastExecution })
+  
+      //************Dought Data*******************************************************
+      this.setState({ automatedandNotAutomatedData: DashboardData.AutomatedandNotAutomatedData })
+      DashboardData.ColorCodeForAutomatedGraph = await DataGeneratorUtility.gerHexaColorCodeForArray(3);
+      this.setState({ colorCodeForAutomatedGraph: DashboardData.ColorCodeForAutomatedGraph })
+      this.setState({ testPriorityDataXaxis: DashboardData.TestPriorityDataXaxis })
+      this.setState({ testPriorityDataYaxis: DashboardData.TestPriorityDataYaxis })
+      DashboardData.ColorCodeForTestPriority = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestPriorityDataXaxis.length);
+      this.setState({ colorCodeForTestPriority: DashboardData.ColorCodeForTestPriority })
+      this.setState({ componentTestCaseCountXaxisData: DashboardData.ComponentTestCaseCountXaxisData })
+      this.setState({ componentTestCaseCountYaxisData: DashboardData.ComponentTestCaseCountYaxisData })
+      DashboardData.ColorCodeForComponentTestCaseCount = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.ComponentTestCaseCountXaxisData.length);
+      this.setState({ colorCodeForComponentTestCaseCount: DashboardData.ColorCodeForComponentTestCaseCount })
+      this.setState({ defectPriorityDataXaxis: DashboardData.DefectPriorityDataXaxis })
+      this.setState({ defectPriorityDataYaxis: DashboardData.DefectPriorityDataYaxis })
+      DashboardData.ColorCodeOfDefectPriority = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectPriorityDataXaxis.length);
+      this.setState({ colorCodeOfDefectPriority: DashboardData.ColorCodeOfDefectPriority })
+      this.setState({ defectComponentDataXaxis: DashboardData.DefectComponentDataXaxis })
+      this.setState({ defectComponentDataYAxis: DashboardData.DefectComponentDataYAxis })
+      DashboardData.ColorCodeForDefectComponentData = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectComponentDataXaxis.length);
+      this.setState({ colorCodeForDefectComponentData: DashboardData.ColorCodeForDefectComponentData })
+      this.setState({ defectStatusDataXaxis: DashboardData.DefectStatusDataXaxis })
+      this.setState({ defectStatusDataYaxis: DashboardData.DefectStatusDataYaxis })
+      DashboardData.ColorCodeOfDefectStatus = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectStatusDataXaxis.length);
+      this.setState({ colorCodeOfDefectStatus: DashboardData.ColorCodeOfDefectStatus })
+  
+      //************Test Plan Data*******************************************************
+      this.setState({ testPlanTotalDataXaxis: DashboardData.TestPlanTotalDataXaxis })
+      this.setState({ testPlanTotalDataYaxis: DashboardData.TestPlanTotalDataYaxis })
+      DashboardData.ColorCodeOfTestPlanTotalData = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestPlanTotalDataXaxis.length);
+      this.setState({ colorCodeOfTestPlanTotalData: DashboardData.ColorCodeOfTestPlanTotalData })
+  
+      //************Test Plan Component Pass Fail******************************************
+      this.setState({ testPlanExecutedComponentXaxis: DashboardData.TestPlanExecutedComponentXaxis })
+      this.setState({ testPlanExecutedComponentYaxis: DashboardData.TestPlanExecutedComponentYaxis })
+  
+      //************Test Plan Test Suite Pass Fail******************************************
+      this.setState({ testPlanTestSuiteXaxis: DashboardData.TestPlanTestSuiteXaxis })
+      this.setState({ testPlanTestSuiteYaxis: DashboardData.TestPlanTestSuiteYaxis })
+  
+      //************Test Case Created BY *******************************************************
+      this.setState({ testCaseCreatedByXaxis: DashboardData.TestCaseCreatedByXaxis })
+      this.setState({ testCaseCreatedByYaxis: DashboardData.TestCaseCreatedByYaxis })
+      DashboardData.ColorCodeOfTestCaseCreatedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestCaseCreatedByXaxis.length);
+      this.setState({ colorCodeOfTestCaseCreatedBy: DashboardData.ColorCodeOfTestCaseCreatedBy })
+  
+      //************Defect Created BY *******************************************************
+      this.setState({ defectCreatedByXaxis: DashboardData.DefectCreatedByXaxis })
+      this.setState({ defectCreatedByYaxis: DashboardData.DefectCreatedByYaxis })
+      DashboardData.ColorCodeOfDefectCreatedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.DefectCreatedByXaxis.length);
+      this.setState({ colorCodeOfDefectCreatedBy: DashboardData.ColorCodeOfDefectCreatedBy })
+  
+      //************Test Case Executed By *******************************************************
+      this.setState({ testCaseExecutedByXaxis: DashboardData.TestCaseExecutedByXaxis })
+      this.setState({ testCaseExecutedByYaxis: DashboardData.TestCaseExecutedByYaxis })
+      DashboardData.ColorCodeOfTestCaseExecutedBy = await DataGeneratorUtility.gerHexaColorCodeForArray(DashboardData.TestCaseExecutedByXaxis.length);
+      this.setState({ colorCodeOfTestCaseExecutedBy: DashboardData.ColorCodeOfTestCaseExecutedBy })
+  
+      this.setState({ isPageLoading: false })
     }
   };
 

@@ -1439,7 +1439,7 @@ class TestScriptPage extends React.Component {
                                   this.setState({ isPageLoading: false })
                                   var actionName = values.actionName
                                   if (actionName !== '') {
-                                    var elementName = values.orLogicalName;
+                                    var elementName = values.orLogicalName.trim().toUpperCase();
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
                                     row.action = actionName;
@@ -1448,6 +1448,8 @@ class TestScriptPage extends React.Component {
                                     if (isKeyAlreadyPresent === undefined) {
                                       TestScriptData.AllORData[elementName] = {};
                                       TestScriptData.AllORData[elementName] = newElementAdd;
+                                      TestScriptData.TestScriptORData[elementName] = {};
+                                      TestScriptData.TestScriptORData[elementName] = newElementAdd;
                                       if (!TestScriptData.AllORKey.includes(elementName)) {
                                         TestScriptData.AllORKey.push(elementName)
                                       }
