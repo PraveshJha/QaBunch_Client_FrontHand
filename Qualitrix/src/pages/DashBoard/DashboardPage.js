@@ -583,7 +583,7 @@ class DashboardPage extends React.Component {
         className="DashboardPage"
         title="Dashboard"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <Row>
             {/* <ButtonGroups>

@@ -318,7 +318,7 @@ class ExecutionLabPage extends React.Component {
         title="Api Test Execution Lab"
       >
         <NotificationSystem ref={this.notificationSystem} />
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Row>
           <Col lg={6} md={6} sm={6} xs={12}>
             <Card>

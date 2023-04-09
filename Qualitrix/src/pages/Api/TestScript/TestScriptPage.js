@@ -1213,8 +1213,8 @@ class TestScriptPage extends React.Component {
         className="APITestScriptPage"
         title="Api Test Script"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black"  />}
-        <Fade in={!this.state.isPageLoading}> 
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black"  />}
+        <Fade in={!this.state.isPageLoading} className="APITestScriptPage"> 
         <NotificationSystem ref={this.notificationSystem} />
         <Row>
           <Col lg={6} md={6} sm={6} xs={12}>

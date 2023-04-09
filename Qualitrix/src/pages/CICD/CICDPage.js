@@ -458,7 +458,7 @@ class CICDPage extends React.Component {
         className="ciccdpage"
         title="Integrate with CI/CD tool"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <NotificationSystem ref={this.notificationSystem} />
           <Row>

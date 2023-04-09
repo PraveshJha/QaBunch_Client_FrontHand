@@ -374,7 +374,7 @@ class MockRepoPage extends React.Component {
         className="MockrepositoryPage"
         title="Mock repository"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}> 
         <NotificationSystem ref={this.notificationSystem} />
         <Row>

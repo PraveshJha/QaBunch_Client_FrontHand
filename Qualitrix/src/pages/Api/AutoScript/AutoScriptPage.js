@@ -233,7 +233,7 @@ class AutoScriptPage extends React.Component {
         className="AutoScriptPage"
         title="Autoscript development using documentation"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <NotificationSystem ref={this.notificationSystem} />
           <h6>This feature allow you to create all test scripts in a single click using API documentation tool like swagger</h6>

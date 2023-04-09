@@ -270,7 +270,7 @@ class DefectPage extends React.Component {
         className="dashboard"
         title="Dashboard"
       >
-        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='100%' color="black" />}
+        {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <NotificationSystem ref={this.notificationSystem} />
           <Row>

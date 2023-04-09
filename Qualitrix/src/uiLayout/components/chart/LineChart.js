@@ -4,7 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility'
-Chart.register(ChartDataLabels);
+//Chart.register(ChartDataLabels);
 const LineChart = ({
   ...restProps
 }) => {
@@ -63,8 +63,8 @@ const LineChart = ({
             }
           },
         },
-        formatter: function(value, context) {                  
-          return value;
+        formatter: function(value) {                  
+          return '\n\n' + value;
         }
       }
     },
