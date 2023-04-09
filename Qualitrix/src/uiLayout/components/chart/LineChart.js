@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from '../../../utils/propTypes';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility'
-ChartJS.register(ArcElement, Tooltip, Legend);
+Chart.register(ChartDataLabels);
 const LineChart = ({
   ...restProps
 }) => {
@@ -53,6 +54,19 @@ const LineChart = ({
         position: 'bottom',
         display:labelvisible,
       },
+      datalabels: {
+        color: 'black',
+        labels: {
+          title: {
+            font: {
+              weight: 'bold'
+            }
+          },
+        },
+        formatter: function(value, context) {                  
+          return value;
+        }
+      }
     },
   };
   var data = {

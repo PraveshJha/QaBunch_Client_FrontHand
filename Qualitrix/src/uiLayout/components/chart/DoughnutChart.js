@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from '../../../utils/propTypes';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Doughnut } from 'react-chartjs-2';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility'
 ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ChartDataLabels);
 const DoughnutChart  = ({
   ...restProps
 })  => {
@@ -29,8 +31,21 @@ const DoughnutChart  = ({
     plugins: {
       legend: {
         position: 'bottom',
-        display:false,
+        display: true,
       },
+      datalabels: {
+        color: 'white',
+        labels: {
+          title: {
+            font: {
+              weight: 'bold'
+            }
+          },
+        },
+        formatter: function(value, context) {                  
+          return value;
+        }
+      }
     },
   };
   var data = {

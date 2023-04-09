@@ -1,9 +1,10 @@
 import React from 'react';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Bar } from 'react-chartjs-2';
 import PropTypes from '../../../utils/propTypes';
 import Chart from 'chart.js/auto';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
-
+Chart.register(ChartDataLabels);
 const BarChart =  ({
   ...restProps
 }) => {
@@ -53,8 +54,21 @@ const BarChart =  ({
       legend: {
         position: 'bottom',
         display: labelvisible,
-      },
+      }
     },
+    datalabels: {
+      color: 'black',
+      labels: {
+        title: {
+          font: {
+            weight: 'bold'
+          }
+        },
+      },
+      formatter: function(value, context) {                  
+        return value;
+      }
+    }
   };
   return <Bar options={options} data={data} />;
 
