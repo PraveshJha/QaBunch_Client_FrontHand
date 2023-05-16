@@ -260,6 +260,172 @@ export class TestCaseGetter {
         }
     }
 
+    async getColumnNameIfValid(columnInfo) {
+        var output = {};
+        output['isvalid'] = false;
+        output['component'] = -1;
+        output['teststeps'] = -1;
+        output['expectedresult'] = -1;
+        output['priority'] = -1;
+        output['name'] = -1;
+        const allColumnInfo = await columnInfo.map(columnInfo => columnInfo.toLowerCase());
+        for (let i = 0; i < await allColumnInfo.length; i++) {
+            if (await allColumnInfo[i].includes('screen') || await allColumnInfo[i].includes('component') || await allColumnInfo[i].includes('module') || await allColumnInfo[i].includes('page')) {
+                output['component'] = await i;
+            }
+            if (await allColumnInfo[i].includes('step')) {
+                output['teststeps'] = await i;
+            }
+            if (await allColumnInfo[i].includes('expected result')) {
+                output['expectedresult'] = await i;
+            }
+            if (await allColumnInfo[i].includes('priority')) {
+                output['priority'] = await i;
+            }
+            if (await allColumnInfo[i].includes('name') && await allColumnInfo[i].includes('test case')) {
+                output['name'] = await i;
+            }
+        }
+        if (await Number(output['component']) > -1 && await Number(output['teststeps'] > -1)) {
+            output['isvalid'] = true;
+        }
+        return await output;
+
+    }
+
+    async getMaxRangeForTestCase(columnIndex, rowIndex, rowInfo) {
+        var maxRange = -1;
+        var rowMaxLength = await rowInfo.length;
+        for (let i = await rowIndex + 1; i < await rowMaxLength; i++) {
+            if (await rowInfo[i][columnIndex] !== undefined) {
+                return await i - 1;
+            }
+        }
+        return await rowMaxLength;
+    }
+
+    async saveTestCaseWithTestAttribute(testcaseName, component, priority, testSteps, expectedResults) {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 2000));
+            return true;
+        }
+        else {
+            var testBody = {}
+            testBody['testCaseName'] = await testcaseName;
+            testBody['placeHolder'] = await component;
+            testBody['priority'] = await priority;
+            testBody['testingType'] = 'Functional';
+            testBody['automationType'] = 'Not Automated';
+            testBody['testCycle'] = await TestCaseData.TestCaseTestCycle;
+            testBody['references'] = ''
+            testBody['testPrecondition'] = '';
+            testBody['testcaseData'] = '';
+            testBody['testSteps'] = await testSteps;
+            testBody['testExpectedResult'] = await expectedResults;
+            testBody['createdBy'] = await Users.userEmail;
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.post(await backendApi + 'manualtestcase/project/' + selectedProject + '/createnewtestcase', await headers, await testBody);
+            var saveFile = await serverResponse['data'];
+            Config.ErrorMessage = await saveFile['errorMessage'];
+            return await saveFile['isFileSaved'];
+        }
+    }
+
+    async createPlaceHolderFromExcelFile(allComponent) {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 2000));
+            return true;
+        }
+        else {
+            var basePath = await selectedProject;
+            var allPathDetails = await allComponent.split('/');
+            for (let j = 0; j < await allPathDetails.length; j++) {
+                var firstFolderName = await allPathDetails[j].trim();
+                //@ my first placeholder
+                console.log(await basePath);
+                var isComponentAlreadyExist = await this.isComponetWithSubComponentAlreadyExist(await basePath, await firstFolderName);
+                if (await !isComponentAlreadyExist) {
+                    var isPlaceHOlderCreated = await this.createNewPlaceHolderFromExcelSheet(await basePath, await firstFolderName);
+                }
+                basePath = await basePath + '/' + await firstFolderName
+            }
+        }
+    }
+
+    async isComponetWithSubComponentAlreadyExist(directoryName, folderNameToAdd) {
+        var folderTreeData = await TestCaseData.FolderTreeData;
+        var actualTReeData = await folderTreeData;
+        var allChildNodes = await directoryName.split('/');
+        for (let i = 0; i < await allChildNodes.length; i++) {
+            var keyNameToFind = await allChildNodes[i];
+            for (let j = 0; j < await actualTReeData.length; j++) {
+                var keyNameData = await actualTReeData[j]['key'];
+                if (await keyNameData.toLowerCase().trim() === keyNameToFind.toLocaleLowerCase().trim()) {
+                    actualTReeData = await actualTReeData[j]['nodes'];
+                    break;
+                }
+            }
+        }
+        for (let i = 0; i < await actualTReeData.length; i++) {
+            if (await folderNameToAdd.toLowerCase().trim() === await actualTReeData[i]['key'].toLowerCase().trim()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    async createNewPlaceHolderFromExcelSheet(relativePath, newPlaceHolderName) {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 2000));
+            return true;
+        }
+        else {
+            var testBody = {}
+            testBody['newPlaceHolderName'] = await newPlaceHolderName;
+            testBody['relativePath'] = await relativePath;
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.post(await backendApi + 'manualtestcase/project/' + selectedProject + '/addnewtesttree', await headers, await testBody);
+            var saveFile = await serverResponse['data'];
+            Config.ErrorMessage = await saveFile['errorMessage'];
+            if (await saveFile['isFileSaved']) {
+                TestCaseData.FolderTreeData = await saveFile['testTreeData'];
+            }
+            return await saveFile['isFileSaved'];
+        }
+    }
+
+    async createPathForComponent(allFolderPath) {
+        try {
+            var outPut = ''
+            allFolderPath = await allFolderPath.replaceAll('(', '/');
+            allFolderPath = await allFolderPath.replaceAll(')', '/');
+            var allPathDetails = await allFolderPath.split('/');
+            for (let i = 0; i < await allPathDetails.length; i++) {
+                var name = await allPathDetails[i].trim();
+                name = await name.replace(/[^a-zA-z0-9 ]/g, "").trim();
+                if (name !== '') {
+                    outPut = await outPut + '/' + await name;
+                }
+            }
+            outPut = await outPut.substring(1);
+            return await outPut;
+        }
+        catch (error) {
+            return ''
+        }
+
+    }
+
 }
 export default new TestCaseGetter;
 

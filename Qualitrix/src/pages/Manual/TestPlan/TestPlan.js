@@ -518,7 +518,7 @@ class TestPlanPage extends React.Component {
                         </Input>
                       </Col>
                       {!this.state.isUserSelectedNewTestPlan && (<Label sm={2}>
-                        Test Plan*
+                        Test Suite*
                       </Label>
                       )}
                       {!this.state.isUserSelectedNewTestPlan && (<Col>
@@ -529,7 +529,7 @@ class TestPlanPage extends React.Component {
                       </Col>
                       )}
                       {this.state.isUserSelectedNewTestPlan && (<Label sm={2}>
-                        New Test Plan*
+                        New Test Suite*
                       </Label>
                       )}
                       {this.state.isUserSelectedNewTestPlan && (<Col>

@@ -21,7 +21,11 @@ import {
   NavLink,
   TabContent,
   TabPane,
-  ModalFooter
+  ModalFooter,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  UncontrolledAccordion,
 } from 'reactstrap';
 import { TestCaseData } from './TestCaseData'
 import TestCaseGetter from './TestCaseGetter';
@@ -40,6 +44,7 @@ import { TestCaseTableHeader, TestCaseCommentHeader, TestCaseHistoryHeader } fro
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
 import TreeMenu from 'react-simple-tree-menu';
 import '../../../../node_modules/react-simple-tree-menu/dist/main.css';
+import { OutTable, ExcelRenderer } from 'react-excel-renderer';
 const selectedProject = Config.SelectedProject;
 
 class TestCasePagePage extends React.Component {
@@ -779,6 +784,111 @@ class TestCasePagePage extends React.Component {
     await window.open("/ui/testscript", "_blank");
   }
 
+  uploadExcelWorkBook = async (event) => {
+
+    await event.preventDefault();
+    await this.setState({ bulkUploadFile: await event.target.files[0] })
+  }
+
+  importTestCases = async (event) => {
+
+    await event.preventDefault();
+    if (this.state.bulkUploadFile === null || this.state.bulkUploadFile === '' || this.state.bulkUploadFile === undefined) {
+      return await this.getNotification('error', 'Please upload excel file for manual test cases.');
+    }
+    var fileName = this.state.bulkUploadFile['name'];
+    var fileExtension = await fileName.split('.').pop();
+    if (await fileExtension.trim().toLowerCase() !== "xlsx") {
+      return await this.getNotification('error', 'Please upload excel file , supported version is xlsx');
+    }
+    var excelInfo = await ExcelRenderer(await this.state.bulkUploadFile);
+    var rowInfo = await excelInfo.rows;
+    var columnInfo = await excelInfo.rows[0];
+    var colOndexDetails = await TestCaseGetter.getColumnNameIfValid(await columnInfo);
+    if (!await colOndexDetails['isvalid']) {
+      return await this.getNotification('error', 'Excel file is not in correct format , Please  make sure excel has component and test step column');
+    }
+    let initialLine = 1;
+    var componentIndex = await Number(await colOndexDetails['component']);
+    var testStepsIndex = await Number(await colOndexDetails['teststeps']);
+    var expectedResultIndex = await colOndexDetails['expectedresult'];
+    var priorityIndex = await colOndexDetails['priority'];
+    var nameindex = await colOndexDetails['name'];
+    var allPlaceHolder = {};
+    var totalTestCaseCreated = 0;
+    this.setState({ isPageLoading: true });
+    for (let i = await initialLine; i < await rowInfo.length; i++) {
+      var testStep = ''
+      var expectedResults = ''
+      var lastexpectedResults = '';
+      var componentName = await rowInfo[i][componentIndex];
+      var testName = await rowInfo[i][nameindex];
+      var testPriority = await rowInfo[i][priorityIndex];
+      var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await componentIndex, await i, await rowInfo);
+      if (await componentName !== undefined || await componentName !== '') {
+        var testStepNumber = 1;
+        for (let j = initialLine; j < Number(await maxRange); j++) {
+          var onebyOneTestStep = await rowInfo[j][testStepsIndex];
+          var onebyOneExpectedResult = await rowInfo[j][expectedResultIndex];
+          if (await onebyOneTestStep !== undefined) {
+            onebyOneTestStep = await testStepNumber + '. ' + await onebyOneTestStep
+            testStep = await testStep + '\n ' + await onebyOneTestStep;
+            if (await onebyOneExpectedResult !== undefined) {
+              lastexpectedResults = await onebyOneExpectedResult;
+              onebyOneExpectedResult = await testStepNumber + '. ' + await onebyOneExpectedResult
+              expectedResults = await expectedResults + '\n ' + await onebyOneExpectedResult;
+            }
+            testStepNumber = Number(await testStepNumber) + 1
+          }
+
+        }
+        //create Test Info
+        var priority = '';
+        if (await testPriority === undefined) {
+          if (Number(await testStepNumber) < 5) {
+            priority = 'Low';
+          }
+          else if (Number(await testStepNumber) >= 5 && Number(await testStepNumber) <= 10) {
+            priority = 'Medium';
+          }
+          else if (Number(await testStepNumber) >= 10 && Number(await testStepNumber) <= 15) {
+            priority = 'High';
+          }
+          else {
+            priority = 'Critical';
+          }
+        }
+        else{
+          priority = await testPriority;
+        }
+        if (await testName === undefined) {
+          testName = await lastexpectedResults;
+        }
+        var counter = 1;
+        counter = await Number(await counter) + 1;
+        componentName= await TestCaseGetter.createPathForComponent(await componentName);
+        await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
+        var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testStep, await expectedResults);
+        if (await isTestCaseCreated) {
+          totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)
+        }
+
+
+      }
+      i = Number(await maxRange);
+      initialLine = i;
+    }
+    this.setState({ isPageLoading: false });
+    if (Number(await totalTestCaseCreated) > 0) {
+      //await window.location.reload();
+      await this.getNotification('success', await Number(totalTestCaseCreated) + ' Manual test cases imported from the excel file');
+
+    }
+    else {
+      return await this.getNotification('error', 'NO test case imported from the excel file, Please make sure you have correct excel template');
+    }
+  }
+
 
 
   //****************** End */********************************** */
@@ -795,8 +905,7 @@ class TestCasePagePage extends React.Component {
         this.setState({ updatedTestCycle: row.cycle });
         // Call API for Rest value
         Promise.resolve(TestCaseGetter.getTestIdDetails()).then((testDetails) => {
-          if(Object.keys(testDetails).length ===0)
-          {
+          if (Object.keys(testDetails).length === 0) {
             return this.getNotification('error', 'Test case does not exist on Server, Please refresh the page and try again.');
           }
           TestCaseData.UpdatedTestName = testDetails['testCaseName'];
@@ -836,6 +945,35 @@ class TestCasePagePage extends React.Component {
         {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <NotificationSystem ref={this.notificationSystem} />
+          {(Users.isSuperAdmin) && ( <Row>
+            <Col lg={12} md={12} sm={12} xs={12}>
+              <UncontrolledAccordion >
+                <AccordionItem>
+                  <AccordionHeader targetId="1">Upload your existing Manual Test case</AccordionHeader>
+                  <AccordionBody accordionId="1">
+                    <Row>
+                      <Col lg={12} md={12} sm={12} xs={12}>
+                        <FormGroup row>
+                          <Col>
+                            <Input type="file" name="bulkUpload" onChange={this.uploadExcelWorkBook.bind(this)}>
+                            </Input>
+                          </Col>
+                          <Col>
+                            <ButtonGroup size="sm">
+                              <Button color='dark' onClick={this.importTestCases.bind(this)}>
+                                <small>Import</small>
+                              </Button>
+                            </ButtonGroup>
+                          </Col>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </AccordionBody>
+                </AccordionItem>
+              </UncontrolledAccordion >
+            </Col>
+          </Row>
+          )}
           <Row>
             <Col lg={8} md={8} sm={12} xs={12}>
               <Card>

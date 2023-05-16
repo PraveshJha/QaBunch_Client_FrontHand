@@ -127,6 +127,7 @@ class TestScriptPage extends React.Component {
 
       //**** File Upload *************************************************************
       isFileUploadButtonDisplayed:TestScriptData.IsFileUploadButtonDisplayed,
+      bulkUploadFile:TestScriptData.BulkUploadFile,
 
     };
 
@@ -189,6 +190,7 @@ class TestScriptPage extends React.Component {
 
       //**** File Upload *************************************************************
       this.setState({ isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed })
+      this.setState({ bulkUploadFile: TestScriptData.BulkUploadFile })
     }
     catch (error) {
     }

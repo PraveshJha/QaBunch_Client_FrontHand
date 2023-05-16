@@ -153,12 +153,9 @@ export class ExecutionLabDataGetter {
       var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
       var serverResponse = await restAPI.post(backendAPI + 'executor/project/' + selectedProject, await headers, await executionParams);
       var allExecutionDetails = await serverResponse['data'];
-     // console.log(await allExecutionDetails);
       if (await allExecutionDetails['globalError'] !== '') {
         ExecutionLabData.IsGlobalError = true;
         ExecutionLabData.GlobalErrorMessage = await allExecutionDetails['globalError'];
-        //console.log(await ExecutionLabData.GlobalErrorMessage);
-       // return;
       }
       var testExecutionDetails = await allExecutionDetails['listOfTestScipts'];
       var allAssertionData = await allExecutionDetails['testscriptAssertionData'];

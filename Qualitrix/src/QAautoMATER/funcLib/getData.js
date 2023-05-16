@@ -191,6 +191,44 @@ export class GetData {
         }
     }
 
+    async isLocalApplication(appUr)
+    {
+        var applicationUrl = await appUr.toString().toLowerCase();
+        if(await applicationUrl.includes('http://localhost'))
+        {
+            return true;
+        }
+        else if(await applicationUrl.includes('https://localhost'))
+        {
+            return true;
+        }
+        else if(await applicationUrl.includes('https://www.localhost'))
+        {
+            return true;
+        }
+        else if(await applicationUrl.includes('http://www.localhost'))
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    async generateLOcalApplicationUrl(appUrl)
+    {
+        var isLocalApp = await this.isLocalApplication(await appUrl);
+        if(await isLocalApp)
+        {
+            // const ngrok = require('ngrok');
+            // const url = await ngrok.connect(3000);
+            // return await url;
+        }
+        else{
+            return await appUrl;
+        }
+    }
+
 
 
 

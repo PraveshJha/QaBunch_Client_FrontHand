@@ -74,6 +74,7 @@ export class AuthGetter {
                 Users.userToken = 'Bearer ' + await userDetails['token'];
                 Users.firstName = await userDetails['firstName'];
                 Users.lastName = await userDetails['lastName'];
+                Users.isSuperAdmin = await userDetails['isSuperAdmin'];
                 return true;
             }
             else {

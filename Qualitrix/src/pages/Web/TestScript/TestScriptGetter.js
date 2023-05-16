@@ -9,6 +9,7 @@ import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import {
   Button,
 } from 'reactstrap';
+import  Matcher  from '../../../QAautoMATER/funcLib/matcher';
 const selectedProject = Config.SelectedProject;
 
 
@@ -239,6 +240,7 @@ export class TestScriptGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var dataforSend = {};
+        appUrl = await GetData.generateLOcalApplicationUrl(await appUrl);
         dataforSend['applicationurl'] = await appUrl;
         dataforSend['screen'] = await screen;
         dataforSend['browser'] = await device;

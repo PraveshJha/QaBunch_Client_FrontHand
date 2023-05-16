@@ -56,4 +56,5 @@ export var TestScriptData = {
     IsErrorOnExternalTestSteps:false,
     ExternalTestSteps:'',
     IsFileUploadButtonDisplayed:false,
+    BulkUploadFile:'',
 };
