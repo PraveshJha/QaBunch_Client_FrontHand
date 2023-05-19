@@ -7,7 +7,7 @@ export const Config = {
 	"remoteBackendAPI": 'https://20.235.248.112:3002/', // http://20.235.248.112:3001/ or https://qaautomaterapi.vercel.app/
 	"backendServiceAt": "remote", //local or remote
 	"fileSystemtechniques": "api", //local or api,
-	"isManualComponentDisplayed":true,
+	"isManualComponentDisplayed": true,
 };
 export const Users = {
 	"userEmail": localStorage.getItem('UserEmail'),
@@ -19,9 +19,9 @@ export const Users = {
 	"userPassword": '',
 	"isUserPasswordValid": false,
 	"userToken": localStorage.getItem('Token'),
-	"isSuperAdmin" : false,
-	"firstName":'',
-	"lastName":'',
-	"image":'',
-	"expiresOn":'',
+	"isSuperAdmin": false,
+	"firstName": '',
+	"lastName": '',
+	"image": '',
+	"expiresOn": '',
 };

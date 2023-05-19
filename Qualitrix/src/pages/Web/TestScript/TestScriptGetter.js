@@ -629,7 +629,7 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,account:Users.userSelectedAccount };
         var serverResponse = await restAPI.get(backendAPI + 'aistep/step/' + await testStep, await headers);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
@@ -653,7 +653,7 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,account:Users.userSelectedAccount };
         var allSteps = await TestScriptData.ExternalTestSteps;
         var lines = await allSteps.split('\n');
         var isBDD = false;
