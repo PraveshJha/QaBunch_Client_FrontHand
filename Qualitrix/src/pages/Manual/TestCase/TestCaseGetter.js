@@ -268,6 +268,9 @@ export class TestCaseGetter {
         output['expectedresult'] = -1;
         output['priority'] = -1;
         output['name'] = -1;
+        output['testdata'] = -1;
+        output['precondition'] = -1;
+        output['reference'] = -1;
         const allColumnInfo = await columnInfo.map(columnInfo => columnInfo.toLowerCase());
         for (let i = 0; i < await allColumnInfo.length; i++) {
             if (await allColumnInfo[i].includes('screen') || await allColumnInfo[i].includes('component') || await allColumnInfo[i].includes('module') || await allColumnInfo[i].includes('page')) {
@@ -276,40 +279,61 @@ export class TestCaseGetter {
             if (await allColumnInfo[i].includes('step')) {
                 output['teststeps'] = await i;
             }
-            if (await allColumnInfo[i].includes('expected result')) {
+            if (await allColumnInfo[i].includes('expected result') || await allColumnInfo[i].includes('expectedresult')) {
                 output['expectedresult'] = await i;
             }
             if (await allColumnInfo[i].includes('priority')) {
                 output['priority'] = await i;
             }
-            if (await allColumnInfo[i].includes('name') && await allColumnInfo[i].includes('test case')) {
+            if (await allColumnInfo[i].includes('name') && (await allColumnInfo[i].includes('test case') || await allColumnInfo[i].includes('testcase'))) {
                 output['name'] = await i;
             }
+            if (await allColumnInfo[i].includes('testdata') || await allColumnInfo[i].includes('test data')) {
+                output['testdata'] = await i;
+            }
+            if (await allColumnInfo[i].includes('precondition')) {
+                output['precondition'] = await i;
+            }
+            if (await allColumnInfo[i].includes('reference')) {
+                output['reference'] = await i;
+            }
         }
-        if (await Number(output['component']) > -1 && await Number(output['teststeps'] > -1)) {
+        if (await Number(output['component']) > -1 && await Number(output['teststeps'] > -1) && await Number(output['name'] > -1) && await Number(output['expectedresult'] > -1)) {
             output['isvalid'] = true;
         }
         return await output;
 
     }
 
-    async getMaxRangeForTestCase(columnIndex, rowIndex, rowInfo) {
-        var maxRange = -1;
-        var rowMaxLength = await rowInfo.length;
-        for (let i = await rowIndex + 1; i < await rowMaxLength; i++) {
-            if (await rowInfo[i][columnIndex] !== undefined) {
-                return await i - 1;
-            }
+    async getMaxRangeForTestCase(rowIndex,componentColumnIndex,maxRowLenth,rowInfo) {
+        var rangeSet =-1;
+        if(await rowIndex === await maxRowLenth)
+        {
+            return await rowIndex;
         }
-        return await rowMaxLength;
+        else{
+            for(let i= Number(await rowIndex)+1;i<maxRowLenth;i++)
+            {
+                var componentName = await rowInfo[i][await componentColumnIndex];
+                if( await componentName !== '' && await componentName !== undefined)
+                {
+                    return await i
+                }
+            }
+            return await maxRowLenth;
+        }
     }
 
-    async saveTestCaseWithTestAttribute(testcaseName, component, priority, testSteps, expectedResults) {
+    async saveTestCaseWithTestAttribute(testcaseName, component, priority, testSteps, expectedResults,testData,reference,testPrecondition) {
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 2000));
             return true;
         }
         else {
+            if( await testcaseName ==='' || await component ==='' )
+            {
+                return ;
+            }
             var testBody = {}
             testBody['testCaseName'] = await testcaseName;
             testBody['placeHolder'] = await component;
@@ -317,9 +341,9 @@ export class TestCaseGetter {
             testBody['testingType'] = 'Functional';
             testBody['automationType'] = 'Not Automated';
             testBody['testCycle'] = await TestCaseData.TestCaseTestCycle;
-            testBody['references'] = ''
-            testBody['testPrecondition'] = '';
-            testBody['testcaseData'] = '';
+            testBody['references'] = await reference;
+            testBody['testPrecondition'] = await testPrecondition;
+            testBody['testcaseData'] = await testData;
             testBody['testSteps'] = await testSteps;
             testBody['testExpectedResult'] = await expectedResults;
             testBody['createdBy'] = await Users.userEmail;
@@ -347,7 +371,6 @@ export class TestCaseGetter {
             for (let j = 0; j < await allPathDetails.length; j++) {
                 var firstFolderName = await allPathDetails[j].trim();
                 //@ my first placeholder
-                console.log(await basePath);
                 var isComponentAlreadyExist = await this.isComponetWithSubComponentAlreadyExist(await basePath, await firstFolderName);
                 if (await !isComponentAlreadyExist) {
                     var isPlaceHOlderCreated = await this.createNewPlaceHolderFromExcelSheet(await basePath, await firstFolderName);

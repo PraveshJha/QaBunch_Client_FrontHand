@@ -806,45 +806,63 @@ class TestCasePagePage extends React.Component {
     var columnInfo = await excelInfo.rows[0];
     var colOndexDetails = await TestCaseGetter.getColumnNameIfValid(await columnInfo);
     if (!await colOndexDetails['isvalid']) {
-      return await this.getNotification('error', 'Excel file is not in correct format , Please  make sure excel has component and test step column');
+      return await this.getNotification('error', 'Excel file is not in correct format , Please  make sure excel column should have Component ,Test Steps and Test case Name and Expected Result column.');
     }
-    let initialLine = 1;
     var componentIndex = await Number(await colOndexDetails['component']);
     var testStepsIndex = await Number(await colOndexDetails['teststeps']);
     var expectedResultIndex = await colOndexDetails['expectedresult'];
     var priorityIndex = await colOndexDetails['priority'];
     var nameindex = await colOndexDetails['name'];
-    var allPlaceHolder = {};
+    var testdataIndex = await colOndexDetails['testdata'];
+    var preconditionIndex = await colOndexDetails['precondition'];
+    var referenceIndex = await colOndexDetails['reference'];
     var totalTestCaseCreated = 0;
     this.setState({ isPageLoading: true });
-    for (let i = await initialLine; i < await rowInfo.length; i++) {
-      var testStep = ''
-      var expectedResults = ''
-      var lastexpectedResults = '';
+    var lastExpectedResults =''
+    for (let i = 1; i < await rowInfo.length; i++) {
       var componentName = await rowInfo[i][componentIndex];
       var testName = await rowInfo[i][nameindex];
       var testPriority = await rowInfo[i][priorityIndex];
-      var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await componentIndex, await i, await rowInfo);
-      if (await componentName !== undefined || await componentName !== '') {
-        var testStepNumber = 1;
-        for (let j = initialLine; j < Number(await maxRange); j++) {
-          var onebyOneTestStep = await rowInfo[j][testStepsIndex];
-          var onebyOneExpectedResult = await rowInfo[j][expectedResultIndex];
-          if (await onebyOneTestStep !== undefined) {
-            onebyOneTestStep = await testStepNumber + '. ' + await onebyOneTestStep
-            testStep = await testStep + '\n ' + await onebyOneTestStep;
-            if (await onebyOneExpectedResult !== undefined) {
-              lastexpectedResults = await onebyOneExpectedResult;
-              onebyOneExpectedResult = await testStepNumber + '. ' + await onebyOneExpectedResult
-              expectedResults = await expectedResults + '\n ' + await onebyOneExpectedResult;
-            }
-            testStepNumber = Number(await testStepNumber) + 1
+      var testPrecondition = await rowInfo[i][preconditionIndex];
+      var testDataValue = await rowInfo[i][testdataIndex];
+      var referenceValue = await rowInfo[i][referenceIndex];
+      var testSteps = await rowInfo[i][testStepsIndex];
+      var expectedResult = await rowInfo[i][expectedResultIndex];
+      lastExpectedResults = await expectedResult;
+      var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await i, await componentIndex,await rowInfo.length, await rowInfo);
+      if( await (Number(await  maxRange)-1) !== Number(await i))
+      {
+        for(let j=i+1;j<await maxRange;j++ )
+        {
+          var onebyoneStep = await rowInfo[j][testStepsIndex];
+          if(await onebyoneStep !== undefined && await onebyoneStep !=='')
+          {
+            testSteps = await  testSteps+ "\n"+ await onebyoneStep;
           }
-
+          var onebyOneExpectedResult = await rowInfo[j][expectedResultIndex];
+          if(await onebyOneExpectedResult !== undefined && await onebyOneExpectedResult !=='')
+          {
+            expectedResult = await expectedResult + "\n"+ await onebyOneExpectedResult;
+            lastExpectedResults = await onebyOneExpectedResult
+          }
+          
+        }
+       
+      }
+      if ((await componentName !== undefined || await componentName !== '') || (await testSteps !== undefined || await testSteps !== '') ||  (await testName !== undefined || await testName !== '')) {
+        if (await testPrecondition === undefined) {
+          testPrecondition = '';
+        }
+        if (await testDataValue === undefined) {
+          testDataValue = '';
+        }
+        if (await referenceValue === undefined) {
+          referenceValue = '';
         }
         //create Test Info
         var priority = '';
         if (await testPriority === undefined) {
+          const testStepNumber = await testSteps.split(/[\r\n]+/).length;
           if (Number(await testStepNumber) < 5) {
             priority = 'Low';
           }
@@ -858,25 +876,40 @@ class TestCasePagePage extends React.Component {
             priority = 'Critical';
           }
         }
-        else{
+        else {
           priority = await testPriority;
+          switch (await priority.trim().toLocaleLowerCase()) {
+            case "p1":
+              priority = 'High';
+              break;
+            case "p2":
+              priority = 'Medium';
+              break;
+            case "p3":
+              priority = 'Low';
+              break;
+            case "p0":
+              priority = 'Critical';
+              break;
+          }
         }
-        if (await testName === undefined) {
-          testName = await lastexpectedResults;
+        if (await testName === undefined || await await testName ==='') {
+          testName = await lastExpectedResults;
         }
         var counter = 1;
         counter = await Number(await counter) + 1;
-        componentName= await TestCaseGetter.createPathForComponent(await componentName);
+        componentName = await TestCaseGetter.createPathForComponent(await componentName);
         await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
-        var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testStep, await expectedResults);
+        var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition);
         if (await isTestCaseCreated) {
           totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)
         }
 
 
       }
-      i = Number(await maxRange);
-      initialLine = i;
+      // i = Number(await maxRange);
+      // initialLine = i;
+      i = await (Number(await maxRange)-1);
     }
     this.setState({ isPageLoading: false });
     if (Number(await totalTestCaseCreated) > 0) {
@@ -945,7 +978,7 @@ class TestCasePagePage extends React.Component {
         {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>
           <NotificationSystem ref={this.notificationSystem} />
-          {(Users.isSuperAdmin) && ( <Row>
+          {(Users.isSuperAdmin) && (<Row>
             <Col lg={12} md={12} sm={12} xs={12}>
               <UncontrolledAccordion >
                 <AccordionItem>
