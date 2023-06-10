@@ -1,8 +1,7 @@
 .cr-sidebar {
-  // @include media-breakpoint-down(md) {
-  //   display: none;
-  // }
-
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
   position: fixed;
   top: 0;
   bottom: 0;
@@ -32,15 +31,17 @@
   }
 
   &::before {
-    background: 	#FFFFFF;
+    background: 	#097BF4;
     opacity: 0.33;
   }
 
   &::after {
     z-index: 3;
     // sublime light
-    background: 	#FFFFFF; /* fallback for old browsers */
+   // background: 	#07A6F6; /* fallback for old browsers */
+    //background: 	url(); /* fallback for old browsers */
     //background: linear-gradient(to bottom, #6a82fb, #fc5c7d);
+    background: linear-gradient(to bottom, #097BF4, #101011);
     opacity: 1;
   }
 
@@ -106,7 +107,7 @@
 
     .nav-item {
       margin: 5px 10px;
-      color: $black;
+      color: $white;
       border-radius: 4px;
       opacity: 0.86;
     }
@@ -115,10 +116,10 @@
       // @include media-breakpoint-down(md) {
       //   padding: .5rem;
       // }
-      color: $black;
+      color: $white;
 
       &:hover {
-        background: #4d96fb;
+        background: #101010;
       }
     }
   }

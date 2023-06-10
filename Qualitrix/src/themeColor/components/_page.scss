@@ -9,6 +9,9 @@
     display: flex;
     align-items: flex-end;
     align-self: center;
+    color: #000;
+    //background: linear-gradient(to bottom, #000000, #FFFFFF);
+    background: #deecf2
   }
 
   &__title {
@@ -34,8 +37,11 @@
     .col,
     > [class^='col-'] {
       margin-bottom: 1rem;
+     // background: #9ea0a008
     }
+    //background: #deecf2
   }
+  
 }
 
 .cr-page-spinner {
