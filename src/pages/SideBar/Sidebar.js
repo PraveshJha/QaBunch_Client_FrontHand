@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
     isUIComponentsOpen: false,
     isApiComponentsOpen: false,
     isManualComponentOpen: false,
-    isAutomationComponentOpen: true,
+    isAutomationComponentOpen: false,
   };
 
   handleClick = name => () => {
@@ -97,6 +97,7 @@ class Sidebar extends React.Component {
       this.setState({ isUIComponentsOpen: true });
     }
     this.setState({ isApiComponentsOpen: false });
+    this.setState({ isManualComponentOpen: false });
 
   };
 
@@ -108,6 +109,7 @@ class Sidebar extends React.Component {
       this.setState({ isApiComponentsOpen: true });
     }
     this.setState({ isUIComponentsOpen: false });
+    this.setState({ isManualComponentOpen: false });
   };
 
   handleManualComponentClick = () => () => {
@@ -117,6 +119,9 @@ class Sidebar extends React.Component {
     else {
       this.setState({ isManualComponentOpen: true });
     }
+    this.setState({ isApiComponentsOpen: false });
+    this.setState({ isUIComponentsOpen: false });
+    this.setState({ isAutomationComponentOpen: false });
   };
 
   handleAutomationComponentClick = () => () => {
@@ -126,6 +131,7 @@ class Sidebar extends React.Component {
     else {
       this.setState({ isAutomationComponentOpen: true });
     }
+    this.setState({ isManualComponentOpen: false });
   };
 
   render() {
@@ -134,7 +140,7 @@ class Sidebar extends React.Component {
         <div className={bem.e('background')} style={sidebarBackground} />
         <div className={bem.e('content')}>
           <Navbar>
-            <h4 className="text-black">
+            <h4 className="text-white">
               QAautoMATER
             </h4>
           </Navbar>

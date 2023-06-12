@@ -27,7 +27,7 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 
 
 
-class DefectPage extends React.Component {
+class DashboardPage extends React.Component {
   notificationSystem = React.createRef();
   constructor(props) {
     super(props);
@@ -480,4 +480,4 @@ class DefectPage extends React.Component {
     );
   }
 }
-export default DefectPage;
+export default DashboardPage;

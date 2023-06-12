@@ -1,7 +1,4 @@
 .cr-sidebar {
-  @include media-breakpoint-down(md) {
-    display: none;
-  }
   position: fixed;
   top: 0;
   bottom: 0;
@@ -9,7 +6,6 @@
   z-index: 5;
   width: $cr-sidebar-width;
   font-weight: 300;
-  color: #FFFFFF;
   background-position: center center;
   background-size: cover;
   transition: left 0.1s ease-in;
@@ -31,14 +27,14 @@
   }
 
   &::before {
-    background: 	#097BF4;
+    background: linear-gradient(to bottom, #097BF4, #101011);
     opacity: 0.33;
   }
 
   &::after {
     z-index: 3;
     // sublime light
-   // background: 	#07A6F6; /* fallback for old browsers */
+    //background: 	#07A6F6; /* fallback for old browsers */
     //background: 	url(); /* fallback for old browsers */
     //background: linear-gradient(to bottom, #6a82fb, #fc5c7d);
     background: linear-gradient(to bottom, #097BF4, #101011);

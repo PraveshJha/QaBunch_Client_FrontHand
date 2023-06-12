@@ -104,9 +104,9 @@ class DashboardPage extends React.Component {
           <Col>
           <Card>
             <CardHeader>Latest Update</CardHeader>
-            <div className="p-3 bg-info my-2 rounded"
+            <div 
              style={{
-              background: 'black'
+              background: '#097BF4'
             }}
             >
             <CardBody>

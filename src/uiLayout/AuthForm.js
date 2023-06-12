@@ -189,24 +189,24 @@ class AuthForm extends React.Component {
             <React.Suspense fallback={<PageSpinner />}>
               <Routes>
                 <Route path="/" element={<AboutUs />} />
-                <Route path="/ui/dashboard" element={<DashboardPage />} />
-                <Route path="/ui/cicd" element={<CICDPage />} />
-                <Route path="/ui/executionlab" element={<UIExecutionLab />} />
-                <Route path="/ui/configuration" element={<UIConfigurationPage />} />
-                <Route path="/ui/testdata" element={<UITestDataPage />} />
-                <Route path="/ui/or" element={<UIORPage />} />
-                <Route path="/ui/testscript" element={<UITestScriptPage />} />
-                <Route path="/ui/customfunction" element={<UICustomFunctionPage />} />
-                <Route path="/api/executionlab" element={<APIExecutionLab />} />
-                <Route path="/api/configuration" element={<APIConfiguration />} />
-                <Route path="/api/testscript" element={<APIScript />} />
-                <Route path="/api/mockdata" element={<MockRepoPage />} />
-                <Route path="/api/aiscript" element={<ApiAutoScriptPage />} />
-                <Route path="/mn/testcase" element={<ManualTCPage />} />
-                <Route path="/mn/configuration" element={<ManualConfigurationPage />} />
-                <Route path="/mn/defects" element={<DefectPage />} />
-                <Route path="/mn/testplan" element={<TestPlanPage />} />
-                <Route path="/mn/dashboard" element={<ManualDashboardPage />} />
+                <Route path="ui/dashboard" element={<DashboardPage />} />
+                <Route path="ui/cicd" element={<CICDPage />} />
+                <Route path="ui/executionlab" element={<UIExecutionLab />} />
+                <Route path="ui/configuration" element={<UIConfigurationPage />} />
+                <Route path="ui/testdata" element={<UITestDataPage />} />
+                <Route path="ui/or" element={<UIORPage />} />
+                <Route path="ui/testscript" element={<UITestScriptPage />} />
+                <Route path="ui/customfunction" element={<UICustomFunctionPage />} />
+                <Route path="api/executionlab" element={<APIExecutionLab />} />
+                <Route path="api/configuration" element={<APIConfiguration />} />
+                <Route path="api/testscript" element={<APIScript />} />
+                <Route path="api/mockdata" element={<MockRepoPage />} />
+                <Route path="api/aiscript" element={<ApiAutoScriptPage />} />
+                <Route path="mn/testcase" element={<ManualTCPage />} />
+                <Route path="mn/configuration" element={<ManualConfigurationPage />} />
+                <Route path="mn/defects" element={<DefectPage />} />
+                <Route path="mn/testplan" element={<TestPlanPage />} />
+                <Route path="mn/dashboard" element={<ManualDashboardPage />} />
               </Routes>
             </React.Suspense>
           </MainLayout>
