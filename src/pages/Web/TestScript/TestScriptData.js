@@ -57,4 +57,8 @@ export var TestScriptData = {
     ExternalTestSteps:'',
     IsFileUploadButtonDisplayed:false,
     BulkUploadFile:'',
+    ListOfTestTools:[],
+    SelectedTestTool:'QaBunch',
+    TestIdFromTestTool:'',
+    IsErroronTestToolId:false,
 };

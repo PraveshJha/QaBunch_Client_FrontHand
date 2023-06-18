@@ -124,10 +124,14 @@ class TestScriptPage extends React.Component {
       //**** Test Steps *************************************************************
       isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps,
       externalTestSteps: TestScriptData.ExternalTestSteps,
+      listOfTestTools: TestScriptData.ListOfTestTools,
+      selectedTestTool: TestScriptData.SelectedTestTool,
+      testIdFromTestTool:TestScriptData.TestIdFromTestTool,
+      isErroronTestToolId:TestScriptData.IsErroronTestToolId,
 
       //**** File Upload *************************************************************
-      isFileUploadButtonDisplayed:TestScriptData.IsFileUploadButtonDisplayed,
-      bulkUploadFile:TestScriptData.BulkUploadFile,
+      isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed,
+      bulkUploadFile: TestScriptData.BulkUploadFile,
 
     };
 
@@ -186,11 +190,16 @@ class TestScriptPage extends React.Component {
       //**** Test Steps *************************************************************
       this.setState({ isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps });
       this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps });
-      this.setState({ isPageLoading: false })
+      this.setState({ listOfTestTools: TestScriptData.ListOfTestTools });
+      this.setState({ selectedTestTool: TestScriptData.SelectedTestTool });
+      this.setState({ testIdFromTestTool: TestScriptData.TestIdFromTestTool });
+      this.setState({ isErroronTestToolId: TestScriptData.IsErroronTestToolId });
+      
 
       //**** File Upload *************************************************************
       this.setState({ isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed })
       this.setState({ bulkUploadFile: TestScriptData.BulkUploadFile })
+      this.setState({ isPageLoading: false })
     }
     catch (error) {
     }
@@ -545,13 +554,12 @@ class TestScriptPage extends React.Component {
     if (await isSelect) {
       TestScriptData.SelectedRowFromTestStepsTable = await row.id;
       this.setState({ selectedRowFromTestStepsTable: await row.id });
-      if(await row.action ==='FileUpload')
-      {
-        this.setState({isFileUploadButtonDisplayed:true});
+      if (await row.action === 'FileUpload') {
+        this.setState({ isFileUploadButtonDisplayed: true });
         TestScriptData.IsFileUploadButtonDisplayed = true;
       }
-      else{
-        this.setState({isFileUploadButtonDisplayed:false});
+      else {
+        this.setState({ isFileUploadButtonDisplayed: false });
         TestScriptData.IsFileUploadButtonDisplayed = false;
       }
     }
@@ -1083,40 +1091,120 @@ class TestScriptPage extends React.Component {
   onChangeHandler = async (event) => {
     event.preventDefault()
     var selectedRow = await this.state.selectedRowFromTestStepsTable;
-    if(await selectedRow === undefined || await selectedRow === '')
-    {
+    if (await selectedRow === undefined || await selectedRow === '') {
       return await this.getNotification('error', 'Please select test step before uploading the file.');
     }
     var selectId = await Number(await selectedRow);
-    if(await selectId > 0)
-    {
-      var actionName = await TestScriptData.ListOfTestSteps[await Number(selectId)-1]['action'];
-      if(await actionName ==='FileUpload')
-      {
-          this.setState({isPageLoading:true})
-          var selectedFile = await event.target.files[0];
-          var fileUploadDetails = await TestScriptGetter.uploadFileToServer(await selectedFile);
-          if(await fileUploadDetails['isSuccess'])
-          {
-             this.setState({isFileUploadButtonDisplayed:false});
-             TestScriptData.IsFileUploadButtonDisplayed = false;
-             TestScriptData.ListOfTestSteps[await Number(selectId)-1]['value'] = await fileUploadDetails['fileName'];
-             this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
-             await this.getNotification('success', 'File is saved on server , now you can debug and execute your test scripts');
-          }
-          else{
-            await this.getNotification('error', 'Unable to upload file because of '+await fileUploadDetails['errorMessage']);
-          }
-          this.setState({isPageLoading:false})
+    if (await selectId > 0) {
+      var actionName = await TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['action'];
+      if (await actionName === 'FileUpload') {
+        this.setState({ isPageLoading: true })
+        var selectedFile = await event.target.files[0];
+        var fileUploadDetails = await TestScriptGetter.uploadFileToServer(await selectedFile);
+        if (await fileUploadDetails['isSuccess']) {
+          this.setState({ isFileUploadButtonDisplayed: false });
+          TestScriptData.IsFileUploadButtonDisplayed = false;
+          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await fileUploadDetails['fileName'];
+          this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
+          await this.getNotification('success', 'File is saved on server , now you can debug and execute your test scripts');
+        }
+        else {
+          await this.getNotification('error', 'Unable to upload file because of ' + await fileUploadDetails['errorMessage']);
+        }
+        this.setState({ isPageLoading: false })
       }
-      else{
+      else {
         return await this.getNotification('error', 'File Upload is only valid for method FileUpload');
       }
     }
-    else{
-      return await this.getNotification('error', 'Selected Test step number '+ selectId+ ' is not Valid. Please refresh the page and try again.');
+    else {
+      return await this.getNotification('error', 'Selected Test step number ' + selectId + ' is not Valid. Please refresh the page and try again.');
     }
   }
+
+  fetchTestCaseFromTestTool = async (event) => {
+    await event.preventDefault();
+    var selectedTestTool = this.state.selectedTestTool;
+    if (await selectedTestTool === '') {
+      return await this.getNotification('error', 'Test Tool Can not be blank');
+    }
+    var selectedTestId = this.state.testIdFromTestTool.trim();
+    if (await selectedTestId === '') {
+      this.setState({isErroronTestToolId:true});
+      TestScriptData.IsErroronTestToolId = true;
+      return await this.getNotification('error', 'Test Id can not be blank.');
+    }
+    this.setState({ isPageLoading: true });
+    TestScriptData.IsErroronTestToolId = false;
+    var testDetails = await TestScriptGetter.getTestInformationFromTestTool(await selectedTestTool,await selectedTestId);
+    this.setState({ isPageLoading: false });
+    if(await testDetails['isExistingTestScript'])
+    {
+      TestScriptData.SelectedComponent = await testDetails['component'];
+      TestScriptData.IsValidComponentName = true;
+      TestScriptData.IsValidTestId = true;
+      TestScriptData.IsValidTestName = true;
+      TestScriptData.TestId = await testDetails['testId'];
+      TestScriptData.TestName = await testDetails['testName'];
+      TestScriptData.ListOfTestSteps = await testDetails['listOfTestSteps'];
+      TestScriptData.DependentCustomFunction = await testDetails['dependentCustomFunction'];
+      TestScriptData.TestDataTableHeader = await testDetails['testDataTableHeader'];
+      TestScriptData.ListOfTestScriptData = await testDetails['listOfTestScriptData'];
+      TestScriptData.ExternalTestSteps = '';
+      //****** */
+      this.setState({selectedComponent:TestScriptData.SelectedComponent})
+      this.setState({testId:TestScriptData.TestId})
+      this.setState({testName:TestScriptData.TestName})
+      this.setState({listOfTestSteps:TestScriptData.ListOfTestSteps})
+      this.setState({dependentCustomFunction:TestScriptData.DependentCustomFunction})
+      this.setState({testDataTableHeader:TestScriptData.TestDataTableHeader})
+      this.setState({listOfTestScriptData:TestScriptData.ListOfTestScriptData})
+      this.setState({externalTestSteps:TestScriptData.ExternalTestSteps})
+      return await this.getNotification('warning', Config.ErrorMessage);
+    }
+    else{
+      TestScriptData.SelectedComponent = await testDetails['component'];
+      TestScriptData.IsValidComponentName = true;
+      TestScriptData.IsValidTestId = true;
+      TestScriptData.IsValidTestName = true;
+      TestScriptData.TestId = await testDetails['testId'];
+      TestScriptData.TestName = await testDetails['testName'];
+      TestScriptData.ListOfTestSteps = await testDetails['listOfTestSteps'];
+      TestScriptData.DependentCustomFunction = await testDetails['dependentCustomFunction'];
+      TestScriptData.TestDataTableHeader = await testDetails['testDataTableHeader'];
+      TestScriptData.ListOfTestScriptData = await testDetails['listOfTestScriptData'];
+      TestScriptData.ExternalTestSteps = await testDetails['manualTestSteps'];;
+      //****** */
+      this.setState({selectedComponent:TestScriptData.SelectedComponent})
+      this.setState({testId:TestScriptData.TestId})
+      this.setState({testName:TestScriptData.TestName})
+      this.setState({listOfTestSteps:TestScriptData.ListOfTestSteps})
+      this.setState({dependentCustomFunction:TestScriptData.DependentCustomFunction})
+      this.setState({testDataTableHeader:TestScriptData.TestDataTableHeader})
+      this.setState({listOfTestScriptData:TestScriptData.ListOfTestScriptData})
+      this.setState({externalTestSteps:TestScriptData.ExternalTestSteps})
+      return await this.getNotification('warning', Config.ErrorMessage);
+    }
+  }
+
+  addTestToolId = async (event) => {
+    this.setState({ isErroronTestToolId: false })
+    var dataChoice = await event.target.value;
+    if (this.state.testIdFromTestTool !== await dataChoice) {
+      this.setState({ testIdFromTestTool: await dataChoice })
+      TestScriptData.TestIdFromTestTool = await await dataChoice;
+    }
+
+  };
+
+  selectTestTool = async (event) => {
+    var dataChoice = await event.target.value;
+    if (this.state.selectedTestTool !== await dataChoice) {
+      this.setState({ selectedTestTool: await dataChoice })
+      TestScriptData.SelectedTestTool = await await dataChoice;
+    }
+
+  };
 
 
   //****************** End /********************************** */
@@ -1163,26 +1251,69 @@ class TestScriptPage extends React.Component {
             <Col lg={12} md={12} sm={12} xs={12}>
               <UncontrolledAccordion >
                 <AccordionItem>
-                  <AccordionHeader targetId="1">Paste your manual test case</AccordionHeader>
+                  <AccordionHeader targetId="1">Choose Manual Test Case</AccordionHeader>
                   <AccordionBody accordionId="1">
-                    <Row>
-                      <Col lg={12} md={12} sm={12} xs={12}>
-                        <FormGroup row>
-                          <Label sm={4}>
-                            Paste Manual Test Steps
-                          </Label>
-                          <Col>
-                            <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
-                            </Input>
-                          </Col>
-                          <Col>
-                            <ButtonGroup size="sm">
-                              <Button color='dark' onClick={this.generateExternalTestScripts.bind(this)}>
-                                <small>Generate Automated Script</small>
-                              </Button>
-                            </ButtonGroup>
-                          </Col>
-                        </FormGroup>
+                    <Row >
+                      <Col lg={6} md={6} sm={6} xs={12}>
+                        <Card>
+                          <CardHeader>
+                            <div className="d-flex justify-content-between align-items-center">
+                              Test Management Tool
+                              <ButtonGroup size="sm">
+                                <Button color='dark' onClick={this.fetchTestCaseFromTestTool.bind(this)}>
+                                  <small>Get Test Case Details</small>
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </CardHeader>
+                          <CardBody>
+                            <Form>
+                              <FormGroup row>
+                                <Label sm={5}>
+                                  Test Tool*
+                                </Label>
+                                <Col>
+                                  <Input type="select"  name="testToolList" value={this.state.selectedTestTool} onChange={this.selectTestTool.bind(this)}>
+                                  <DropDownOptions options={this.state.listOfTestTools} />
+                                  </Input>
+                                </Col>
+                              </FormGroup>
+                              <FormGroup row>
+                                <Label sm={5}>
+                                  Test Id*
+                                </Label>
+                                <Col>
+                                  <Input type="input" invalid={this.state.isErroronTestToolId} name="thirdPartyTestId" value={this.state.testIdFromTestTool} onChange={this.addTestToolId.bind(this)}>
+                                  </Input>
+                                </Col>
+                              </FormGroup>
+                            </Form>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                      <Col lg={6} md={6} sm={6} xs={12}>
+                        <Card>
+                          <CardHeader>
+                            <div className="d-flex justify-content-between align-items-center">
+                              Manual Test Steps
+                              <ButtonGroup size="sm">
+                                <Button color='info' onClick={this.generateExternalTestScripts.bind(this)}>
+                                  <small>Generate Automated Steps</small>
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          </CardHeader>
+                          <CardBody>
+                            <Form>
+                              <FormGroup row>
+                                <Col>
+                                <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
+                                  </Input>
+                                </Col>
+                              </FormGroup>
+                            </Form>
+                          </CardBody>
+                        </Card>
                       </Col>
                     </Row>
                   </AccordionBody>
@@ -1429,7 +1560,7 @@ class TestScriptPage extends React.Component {
                             }
                           }
                           else if (column.dataField === 'stepdefinition') {
-                            this.setState({isFileUploadButtonDisplayed:false});
+                            this.setState({ isFileUploadButtonDisplayed: false });
                             TestScriptData.IsFileUploadButtonDisplayed = false;
                             var testStep = row.stepdefinition;
                             if (testStep.trim() !== '') {

@@ -41,6 +41,7 @@ export class TestScriptGetter {
       await localStorage.removeItem(await localStorage.removeItem('testId'));
     }
     catch (error) { }
+    TestScriptData.ListOfTestTools= await this.GetTestToolFromConfigurationPage();
   }
 
   async initializeTestScriptPage() {
@@ -847,6 +848,50 @@ export class TestScriptGetter {
       }
     }
   }
+
+  async GetTestToolFromConfigurationPage()
+  {
+    var allTestTool =['QaBunch'];
+    var allToolOptions = await TestScriptData.AllConfigData['Tools'];
+    for(let i=0;i<await allToolOptions.length;i++)
+    {
+      allTestTool.push(await allToolOptions[i]['tool']);
+    }
+    return await allTestTool;
+
+  }
+
+  async getTestInformationFromTestTool(testTool,testId) {
+    var headers={}
+    var serverResponse ={}
+    var testDetailsData ={};
+    if (Config.isDemo) {
+      await new Promise(wait => setTimeout(wait, 3000));
+      return true;
+    }
+    else {
+      try {
+        var backendApi = Config.backendAPI;
+        var backendServiceLocation = await Config.backendServiceAt;
+        if (backendServiceLocation === 'remote') {
+          backendApi = Config.remoteBackendAPI;
+        }
+        var testscriptData = {};
+        testscriptData['testtool'] = await testTool.trim();
+        testscriptData['testid'] = await testId.trim();
+         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+         serverResponse = await restAPI.post(backendApi + 'testtooltestinfo/project/' + selectedProject + '/gettestinfo', await headers,await testscriptData);
+         testDetailsData = await serverResponse['data'];
+         Config.ErrorMessage = await testDetailsData['errorMessage'];
+        return await testDetailsData;
+      }
+      catch (error) {
+        Config.ErrorMessage = await error.message;
+      }
+    }
+  }
+
+
 
 }
 export default new TestScriptGetter();
