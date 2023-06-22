@@ -20,7 +20,9 @@ export class TestScriptGetter {
     await this.getallORDATA();
     await this.getallCommonDATA();
     await this.renderComponent();
-    await DataGetter.GetAllActions();
+    //await DataGetter.GetAllActions();
+    var allWebActionList = await DataGetter.GetAllWebActions();
+    TestScriptData.UIActionList= await allWebActionList;
     await this.getPageFunctionList();
     if (await localStorage.getItem('testId') !== undefined && await localStorage.getItem('testId') !== null) {
       var automationSteps = await JSON.parse(await localStorage.getItem(await localStorage.getItem('testId')));
@@ -358,10 +360,6 @@ export class TestScriptGetter {
           allFuctionWithLabelAndValue.push(await optionList);
         }
         TestScriptData.PageFunctionNameListWithLabelandValue = await allFuctionWithLabelAndValue;
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/customfunctionlistwithargs', await headers);
-        var customFunctionNameWithParam = await serverResponse['data'];
-        TestScriptData.CustomFunctionNameWithListOfArgument = await customFunctionNameWithParam;
       }
       catch (error) {
         Config.ErrorMessage = await error.message;

@@ -114,52 +114,52 @@ export var EmulatorTableHeader = [{
 		}
 	}
 }
-// {
-// 	dataField: 'width',
-// 	text: 'Width',
-// 	headerStyle: { width: '60px' },
-// 	validator: async (newValue, row, column, done) => {
-// 		var format = /[^0-9]/ig;
-// 		if (await newValue.trim() === '') {
-// 			return done({
-// 				valid: false,
-// 				message: 'Width can not be blank'
-// 			});
-// 		}
-// 		else if (format.test(await newValue)) {
-// 			return done({
-// 				valid: false,
-// 				message: 'Width can be Number only.'
-// 			});
-// 		}
-// 		else {
-// 			return done();
-// 		}
-// 	}
-// },
-// {
-// 	dataField: 'height',
-// 	text: 'Height',
-// 	headerStyle: { width: '60px' },
-// 	validator: async (newValue, row, column, done) => {
-// 		var format = /[^0-9]/ig;
-// 		if (await newValue.trim() === '') {
-// 			return done({
-// 				valid: false,
-// 				message: 'Hieght can not be blank'
-// 			});
-// 		}
-// 		else if (format.test(await newValue)) {
-// 			return done({
-// 				valid: false,
-// 				message: 'Hieght can be Number only.'
-// 			});
-// 		}
-// 		else {
-// 			return done();
-// 		}
-// 	}
-// }
+	// {
+	// 	dataField: 'width',
+	// 	text: 'Width',
+	// 	headerStyle: { width: '60px' },
+	// 	validator: async (newValue, row, column, done) => {
+	// 		var format = /[^0-9]/ig;
+	// 		if (await newValue.trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Width can not be blank'
+	// 			});
+	// 		}
+	// 		else if (format.test(await newValue)) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Width can be Number only.'
+	// 			});
+	// 		}
+	// 		else {
+	// 			return done();
+	// 		}
+	// 	}
+	// },
+	// {
+	// 	dataField: 'height',
+	// 	text: 'Height',
+	// 	headerStyle: { width: '60px' },
+	// 	validator: async (newValue, row, column, done) => {
+	// 		var format = /[^0-9]/ig;
+	// 		if (await newValue.trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Hieght can not be blank'
+	// 			});
+	// 		}
+	// 		else if (format.test(await newValue)) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Hieght can be Number only.'
+	// 			});
+	// 		}
+	// 		else {
+	// 			return done();
+	// 		}
+	// 	}
+	// }
 ];
 export var TestToolTableHeader = [{
 	dataField: 'id',
@@ -421,25 +421,25 @@ export var TestScriptTableHeader = [{
 	dataField: 'action',
 	text: 'Action*',
 	headerStyle: { width: '200px' },
-	validator: async (newValue, row, column, done) => {
-		if (await newValue.trim() === '') {
-			return done({
-				valid: false,
-				message: 'Action can not be blank'
-			});
-		}
-		else {
-			return done();
-		}
-	},
-	editor: {
-		type: Type.SELECT,
-		getOptions: (setOptions) => {
-			setTimeout(() => {
-				setOptions(CustomFunctionData.AllSeleniumMethod);
-			}, 0);
-		}
-	},
+	// validator: async (newValue, row, column, done) => {
+	// 	if (await newValue.trim() === '') {
+	// 		return done({
+	// 			valid: false,
+	// 			message: 'Action can not be blank'
+	// 		});
+	// 	}
+	// 	else {
+	// 		return done();
+	// 	}
+	// },
+	// editor: {
+	// 	type: Type.SELECT,
+	// 	getOptions: (setOptions) => {
+	// 		setTimeout(() => {
+	// 			setOptions(CustomFunctionData.AllSeleniumMethod);
+	// 		}, 0);
+	// 	}
+	// },
 },
 {
 	dataField: 'element',
@@ -517,9 +517,8 @@ export var DependentCustomFunctionHeader = [
 				}
 				else {
 					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
-					if(await allAgrsList.length>0)
-					{
-						row.parameter= await allAgrsList.toString();
+					if (await allAgrsList.length > 0) {
+						row.parameter = await allAgrsList.toString();
 					}
 					return done();
 				}
@@ -611,9 +610,8 @@ export var CustomFunctionDependentHeader = [
 				}
 				else {
 					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
-					if(await allAgrsList.length>0)
-					{
-						row.parameter= await allAgrsList.toString();
+					if (await allAgrsList.length > 0) {
+						row.parameter = await allAgrsList.toString();
 					}
 					return done();
 				}
@@ -669,5 +667,16 @@ export var CustomFunctionDependentHeader = [
 	// 		}
 	// 	}
 	// }
+];
+
+export var UIActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden:true,
+}, {
+	dataField: 'action',
+	text: 'Action'
+}
 ];
 

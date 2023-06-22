@@ -49,7 +49,6 @@ export var TestScriptData = {
     NewName:'',
     IsNewNameSectionDisplayed:false,
     TestDataToAdd:{},
-    CustomFunctionNameWithListOfArgument:{},
     DebugDetails:{Step:'',Status:'',Message:''},
     StepScreenshot:'',
     CommonTestDataWithKeyValue:{},
@@ -61,4 +60,10 @@ export var TestScriptData = {
     SelectedTestTool:'QaBunch',
     TestIdFromTestTool:'',
     IsErroronTestToolId:false,
+    IsWebActionModalOpen:false,
+    UIActionList:{'ApplicationAction':[],'UIAction':[],'BrowserAction':[],'WaitAction':[],'AssertionAction':[],'SaveAction':[],'RandomAction':[]},
+    SelectedWebActionCategory:'',
+    SelectedWebActionCategoryID:0,
+    SelectedWebActionName:'',
+    SelectedWebActionRowId:-1,
 };

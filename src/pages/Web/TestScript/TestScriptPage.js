@@ -23,6 +23,11 @@ import {
   AccordionItem,
   UncontrolledAccordion,
   Fade,
+  Collapse,
+  Alert,
+  ListGroup,
+  ListGroupItem,
+  Accordion
 } from 'reactstrap';
 import { TestScriptData } from './TestScriptData'
 import ConfigGetter from '../Configuration/ConfigGetter';
@@ -39,7 +44,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader, UIActionTableHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -52,6 +57,7 @@ import {
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
+var wrap = require('word-wrap');
 
 class TestScriptPage extends React.Component {
   notificationSystem = React.createRef();
@@ -126,12 +132,20 @@ class TestScriptPage extends React.Component {
       externalTestSteps: TestScriptData.ExternalTestSteps,
       listOfTestTools: TestScriptData.ListOfTestTools,
       selectedTestTool: TestScriptData.SelectedTestTool,
-      testIdFromTestTool:TestScriptData.TestIdFromTestTool,
-      isErroronTestToolId:TestScriptData.IsErroronTestToolId,
+      testIdFromTestTool: TestScriptData.TestIdFromTestTool,
+      isErroronTestToolId: TestScriptData.IsErroronTestToolId,
 
       //**** File Upload *************************************************************
       isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed,
       bulkUploadFile: TestScriptData.BulkUploadFile,
+
+      //**** Web Action Modal *************************************************************
+      isWebActionModalOpen: TestScriptData.IsWebActionModalOpen,
+      uIActionList: TestScriptData.UIActionList,
+      selectedWebActionCategory: TestScriptData.SelectedWebActionCategory,
+      selectedWebActionCategoryID: TestScriptData.SelectedWebActionCategoryID,
+      selectedWebActionName: TestScriptData.SelectedWebActionName,
+      selectedWebActionRowId: TestScriptData.SelectedWebActionRowId,
 
     };
 
@@ -194,12 +208,22 @@ class TestScriptPage extends React.Component {
       this.setState({ selectedTestTool: TestScriptData.SelectedTestTool });
       this.setState({ testIdFromTestTool: TestScriptData.TestIdFromTestTool });
       this.setState({ isErroronTestToolId: TestScriptData.IsErroronTestToolId });
-      
+
 
       //**** File Upload *************************************************************
       this.setState({ isFileUploadButtonDisplayed: TestScriptData.IsFileUploadButtonDisplayed })
       this.setState({ bulkUploadFile: TestScriptData.BulkUploadFile })
+
+      //**** Web Action Modal *************************************************************
+      this.setState({ isWebActionModalOpen: TestScriptData.IsWebActionModalOpen })
+      this.setState({ uIActionList: TestScriptData.UIActionList })
+      this.setState({ selectedWebActionCategory: TestScriptData.SelectedWebActionCategory })
+      this.setState({ selectedWebActionCategoryID: TestScriptData.SelectedWebActionCategoryID })
+      this.setState({ selectedWebActionName: TestScriptData.SelectedWebActionName })
+      this.setState({ selectedWebActionRowId: TestScriptData.SelectedWebActionRowId })
       this.setState({ isPageLoading: false })
+
+
     }
     catch (error) {
     }
@@ -1130,16 +1154,15 @@ class TestScriptPage extends React.Component {
     }
     var selectedTestId = this.state.testIdFromTestTool.trim();
     if (await selectedTestId === '') {
-      this.setState({isErroronTestToolId:true});
+      this.setState({ isErroronTestToolId: true });
       TestScriptData.IsErroronTestToolId = true;
       return await this.getNotification('error', 'Test Id can not be blank.');
     }
     this.setState({ isPageLoading: true });
     TestScriptData.IsErroronTestToolId = false;
-    var testDetails = await TestScriptGetter.getTestInformationFromTestTool(await selectedTestTool,await selectedTestId);
+    var testDetails = await TestScriptGetter.getTestInformationFromTestTool(await selectedTestTool, await selectedTestId);
     this.setState({ isPageLoading: false });
-    if(await testDetails['isExistingTestScript'])
-    {
+    if (await testDetails['isExistingTestScript']) {
       TestScriptData.SelectedComponent = await testDetails['component'];
       TestScriptData.IsValidComponentName = true;
       TestScriptData.IsValidTestId = true;
@@ -1152,17 +1175,17 @@ class TestScriptPage extends React.Component {
       TestScriptData.ListOfTestScriptData = await testDetails['listOfTestScriptData'];
       TestScriptData.ExternalTestSteps = '';
       //****** */
-      this.setState({selectedComponent:TestScriptData.SelectedComponent})
-      this.setState({testId:TestScriptData.TestId})
-      this.setState({testName:TestScriptData.TestName})
-      this.setState({listOfTestSteps:TestScriptData.ListOfTestSteps})
-      this.setState({dependentCustomFunction:TestScriptData.DependentCustomFunction})
-      this.setState({testDataTableHeader:TestScriptData.TestDataTableHeader})
-      this.setState({listOfTestScriptData:TestScriptData.ListOfTestScriptData})
-      this.setState({externalTestSteps:TestScriptData.ExternalTestSteps})
+      this.setState({ selectedComponent: TestScriptData.SelectedComponent })
+      this.setState({ testId: TestScriptData.TestId })
+      this.setState({ testName: TestScriptData.TestName })
+      this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps })
+      this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction })
+      this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader })
+      this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData })
+      this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps })
       return await this.getNotification('warning', Config.ErrorMessage);
     }
-    else{
+    else {
       TestScriptData.SelectedComponent = await testDetails['component'];
       TestScriptData.IsValidComponentName = true;
       TestScriptData.IsValidTestId = true;
@@ -1175,14 +1198,14 @@ class TestScriptPage extends React.Component {
       TestScriptData.ListOfTestScriptData = await testDetails['listOfTestScriptData'];
       TestScriptData.ExternalTestSteps = await testDetails['manualTestSteps'];;
       //****** */
-      this.setState({selectedComponent:TestScriptData.SelectedComponent})
-      this.setState({testId:TestScriptData.TestId})
-      this.setState({testName:TestScriptData.TestName})
-      this.setState({listOfTestSteps:TestScriptData.ListOfTestSteps})
-      this.setState({dependentCustomFunction:TestScriptData.DependentCustomFunction})
-      this.setState({testDataTableHeader:TestScriptData.TestDataTableHeader})
-      this.setState({listOfTestScriptData:TestScriptData.ListOfTestScriptData})
-      this.setState({externalTestSteps:TestScriptData.ExternalTestSteps})
+      this.setState({ selectedComponent: TestScriptData.SelectedComponent })
+      this.setState({ testId: TestScriptData.TestId })
+      this.setState({ testName: TestScriptData.TestName })
+      this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps })
+      this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction })
+      this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader })
+      this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData })
+      this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps })
       return await this.getNotification('warning', Config.ErrorMessage);
     }
   }
@@ -1205,6 +1228,99 @@ class TestScriptPage extends React.Component {
     }
 
   };
+
+  toggleWebActionModal = async () => {
+    TestScriptData.SelectedWebActionName = '';
+    this.setState({ selectedWebActionName: '' })
+    TestScriptData.SelectedWebActionCategory = '';
+    TestScriptData.SelectedWebActionCategoryID = 0;
+    TestScriptData.SelectedWebActionRowId = -1;
+    this.setState({ selectedWebActionRowId: -1 })
+    this.setState({ isWebActionModalOpen: false })
+    TestScriptData.IsWebActionModalOpen = false;
+  }
+
+  selectRadioButtonFromWebActionTable = async (row, isSelect) => {
+    if (await isSelect) {
+      var rowIndex = this.state.selectedWebActionRowId;
+      var actionToBeSelect = await row.action;
+      if (await actionToBeSelect !== TestScriptData.ListOfTestSteps[rowIndex]['action']) {
+        var selectedCategory = TestScriptData.SelectedWebActionCategory;
+        TestScriptData.SelectedWebActionName = await actionToBeSelect;
+        this.setState({ selectedWebActionName: await actionToBeSelect })
+        TestScriptData.ListOfTestSteps[rowIndex]['action'] = ''
+        TestScriptData.ListOfTestSteps[rowIndex]['action'] = await TestScriptData.SelectedWebActionName;
+        if (await selectedCategory === 'ApplicationAction') {
+          try {
+            var param = await TestScriptData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['parameter'];
+            if (await param !== undefined && await param.length !== 0) {
+              TestScriptData.ListOfTestSteps[rowIndex]['value'] = await param.toString();
+            }
+          }
+          catch (error) { }
+        }
+        else if (await selectedCategory === 'SaveAction') {
+          try {
+            TestScriptData.ListOfTestSteps[rowIndex]['value'] = 'Session.VARIABLENAME'
+          }
+          catch (error) { }
+        }
+        else {
+          TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
+        }
+        this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
+      }
+
+      TestScriptData.SelectedWebActionRowId = -1;
+      this.setState({ selectedWebActionRowId: -1 })
+      TestScriptData.SelectedWebActionName = '';
+      this.setState({ selectedWebActionName: '' })
+      TestScriptData.SelectedWebActionCategory = '';
+      this.setState({ SelectedWebActionCategory: '' })
+      TestScriptData.SelectedWebActionCategoryID = 0;
+      this.setState({ selectedWebActionCategoryID: 0 })
+      TestScriptData.IsWebActionModalOpen = false;
+      this.setState({ isWebActionModalOpen: false });
+    }
+  }
+
+  showUIActionList(row) {
+    try {
+      var actionName = row.action;
+      var category = this.state.selectedWebActionCategory;
+      var example = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['example'];
+      example = wrap(example, { width: 200 });
+      var helpText = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['description']
+      var parameter = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['parameter']
+      return <div>
+        <Alert>
+          {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
+          {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
+          {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
+          {(parameter !== undefined && parameter.length !== 0) && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined && parameter.length !== 0) && (<div>{parameter.toString()}</div>)}
+        </Alert>
+      </div>
+    }
+    catch (error) { }
+  }
+
+  toggleAccordianForWebAction = async (id) => {
+    if (await this.state.selectedWebActionCategoryID !== await id) {
+      TestScriptData.SelectedWebActionCategoryID = await id;
+      this.setState({ selectedWebActionCategoryID: id })
+      var category = await DataGetter.getWebActionCategoryNameBasedOnAccordianId(await id);
+      TestScriptData.SelectedWebActionCategory = await category;
+      this.setState({ selectedWebActionCategory: await category })
+    }
+    else {
+      TestScriptData.SelectedWebActionCategory = '';
+      this.setState({ selectedWebActionCategory: '' })
+      TestScriptData.SelectedWebActionCategoryID = 0
+      this.setState({ selectedWebActionCategoryID: 0 });
+    }
+
+  }
 
 
   //****************** End /********************************** */
@@ -1237,6 +1353,17 @@ class TestScriptPage extends React.Component {
       mode: 'radio',
       onSelect: this.selectRadioButtonFromCustomFunctionTable,
       selected: [this.state.selectedRowFromDependentCustomFunctionTable]
+    };
+
+    const selectRowFromWebActionTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromWebActionTable,
+    };
+
+    const expandRow = {
+      showExpandColumn: true,
+      expandByColumnOnly: false,
+      renderer: this.showUIActionList.bind(this)
     };
 
     return (
@@ -1273,8 +1400,8 @@ class TestScriptPage extends React.Component {
                                   Test Tool*
                                 </Label>
                                 <Col>
-                                  <Input type="select"  name="testToolList" value={this.state.selectedTestTool} onChange={this.selectTestTool.bind(this)}>
-                                  <DropDownOptions options={this.state.listOfTestTools} />
+                                  <Input type="select" name="testToolList" value={this.state.selectedTestTool} onChange={this.selectTestTool.bind(this)}>
+                                    <DropDownOptions options={this.state.listOfTestTools} />
                                   </Input>
                                 </Col>
                               </FormGroup>
@@ -1307,7 +1434,7 @@ class TestScriptPage extends React.Component {
                             <Form>
                               <FormGroup row>
                                 <Col>
-                                <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
+                                  <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
                                   </Input>
                                 </Col>
                               </FormGroup>
@@ -1547,19 +1674,7 @@ class TestScriptPage extends React.Component {
                         mode: 'click',
                         blurToSave: true,
                         afterSaveCell: (oldValue, newValue, row, column, columnIndex) => {
-                          if (column.dataField === 'action') {
-                            var actionName = row.action;
-                            var customFunName = TestScriptData.CustomFunctionNameWithListOfArgument[actionName];
-                            if (customFunName !== undefined) {
-                              row.value = customFunName.toString();
-                            }
-                            else {
-                              if (row.value.toString().toLowerCase().includes('args.')) {
-                                row.value = '';
-                              }
-                            }
-                          }
-                          else if (column.dataField === 'stepdefinition') {
+                          if (column.dataField === 'stepdefinition') {
                             this.setState({ isFileUploadButtonDisplayed: false });
                             TestScriptData.IsFileUploadButtonDisplayed = false;
                             var testStep = row.stepdefinition;
@@ -1628,6 +1743,20 @@ class TestScriptPage extends React.Component {
                               this.setState({ rowIndexForOR: Number(row.id) - 1 })
                               TestScriptData.IsOrModalVisible = true;
                               this.setState({ isOrModalVisible: TestScriptData.IsOrModalVisible });
+                            }
+                          }
+                          else if (columnIndex === 2) {
+                            this.setState({ selectedWebActionRowId: Number(row.id) - 1 })
+                            TestScriptData.SelectedWebActionRowId = Number(row.id) - 1
+                            var prevState = this.state.isWebActionModalOpen;
+                            if (prevState) {
+                              TestScriptData.IsWebActionModalOpen = false;
+                              this.setState({ isWebActionModalOpen: false });
+                            }
+                            else {
+
+                              TestScriptData.IsWebActionModalOpen = true;
+                              this.setState({ isWebActionModalOpen: true });
                             }
                           }
 
@@ -1901,6 +2030,131 @@ class TestScriptPage extends React.Component {
               </Row>
             </OffcanvasBody>
           </Offcanvas>
+          <Modal size="xl" isOpen={this.state.isWebActionModalOpen} className={this.props.className} backdrop="static">
+            <ModalHeader style={{ background: '#deecf2' }} toggle={this.toggleWebActionModal.bind(this)}>Choose web action</ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col lg={12} md={12} sm={12} xs={12}>
+                  <Form>
+                    <Accordion open={this.state.selectedWebActionCategoryID} toggle={this.toggleAccordianForWebAction.bind(this)}>
+                      <AccordionItem>
+                        <AccordionHeader targetId="1">Application Method</AccordionHeader>
+                        <AccordionBody accordionId="1">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['ApplicationAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="2">UI action</AccordionHeader>
+                        <AccordionBody accordionId="2">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['UIAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="3">Browser action</AccordionHeader>
+                        <AccordionBody accordionId="3">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['BrowserAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="4">Wait</AccordionHeader>
+                        <AccordionBody accordionId="4">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['WaitAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="5">Assertion</AccordionHeader>
+                        <AccordionBody accordionId="5">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['AssertionAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="6">Store The Value</AccordionHeader>
+                        <AccordionBody accordionId="6">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['SaveAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="7">Generate Random Data</AccordionHeader>
+                        <AccordionBody accordionId="7">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['RandomAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                    </Accordion >
+                  </Form>
+                </Col>
+              </Row>
+            </ModalBody>
+          </Modal>
         </Fade>
       </Page>
 

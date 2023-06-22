@@ -34,7 +34,8 @@
     "react-widgets": "^5.8.4",
     "reactstrap": "^9.2.0",
     "sass": "^1.63.3",
-    "web-vitals": "^3.3.2"
+    "web-vitals": "^3.3.2",
+    "word-wrap": "^1.2.3"
   },
   "browser": {
     "./lib/BrowserFetcher.js": false,

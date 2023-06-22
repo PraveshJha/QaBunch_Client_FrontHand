@@ -19,7 +19,9 @@ export class CustomFunctionGetter {
     await this.initializeCustomPage();
     await this.getCustomFunctionList();
     await this.getallORDATA();
-    await DataGetter.GetAllActions();
+    //await DataGetter.GetAllActions();
+    var allWebActionList = await DataGetter.GetAllWebActions();
+    CustomFunctionData.UIActionList= await allWebActionList;
     await this.getallCommonDATA();
   }
 
@@ -49,10 +51,6 @@ export class CustomFunctionGetter {
           await allFuctionWithLabelAndValue.push(await optionList);
         }
         CustomFunctionData.CustomFunctionListWithLabelandValue = await allFuctionWithLabelAndValue;
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/customfunctionlistwithargs', await headers);
-        var customFunctionNameWithParam = await serverResponse['data'];
-        CustomFunctionData.CustomFunctionNameWithListOfArgument = await customFunctionNameWithParam;
       }
       catch (error) {
         Config.ErrorMessage = await error.message;

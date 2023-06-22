@@ -23,6 +23,8 @@ import {
   AccordionItem,
   UncontrolledAccordion,
   Fade,
+  Accordion,
+  Alert
 } from 'reactstrap';
 import { CustomFunctionData } from './CustomFunctionData'
 import ConfigGetter from '../Configuration/ConfigGetter';
@@ -39,7 +41,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CustomFunctionDependentHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CustomFunctionDependentHeader,UIActionTableHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -53,6 +55,7 @@ import GetData from '../../../QAautoMATER/funcLib/getData';
 import Draggable from 'react-draggable';
 import ReactJson from 'react-json-view'
 import TestScriptGetter from '../../Web/TestScript/TestScriptGetter';
+var wrap = require('word-wrap');
 
 class CustomFunctionPage extends React.Component {
   notificationSystem = React.createRef();
@@ -138,6 +141,14 @@ class CustomFunctionPage extends React.Component {
       //**** File Upload *************************************************************
       isFileUploadButtonDisplayed: CustomFunctionData.IsFileUploadButtonDisplayed,
 
+      //**** Web Action Modal *************************************************************
+      isWebActionModalOpen: CustomFunctionData.IsWebActionModalOpen,
+      uIActionList: CustomFunctionData.UIActionList,
+      selectedWebActionCategory: CustomFunctionData.SelectedWebActionCategory,
+      selectedWebActionCategoryID: CustomFunctionData.SelectedWebActionCategoryID,
+      selectedWebActionName: CustomFunctionData.SelectedWebActionName,
+      selectedWebActionRowId: CustomFunctionData.SelectedWebActionRowId,
+
     };
 
   }
@@ -205,6 +216,14 @@ class CustomFunctionPage extends React.Component {
 
     //**** File Upload *************************************************************
     this.setState({ isFileUploadButtonDisplayed: CustomFunctionData.IsFileUploadButtonDisplayed })
+
+    //**** Web Action Modal *************************************************************
+    this.setState({ isWebActionModalOpen: CustomFunctionData.IsWebActionModalOpen })
+    this.setState({ uIActionList: CustomFunctionData.UIActionList })
+    this.setState({ selectedWebActionCategory: CustomFunctionData.SelectedWebActionCategory })
+    this.setState({ selectedWebActionCategoryID: CustomFunctionData.SelectedWebActionCategoryID })
+    this.setState({ selectedWebActionName: CustomFunctionData.SelectedWebActionName })
+    this.setState({ selectedWebActionRowId: CustomFunctionData.SelectedWebActionRowId })
 
   }
 
@@ -1054,6 +1073,99 @@ class CustomFunctionPage extends React.Component {
     }
   }
 
+  toggleWebActionModal = async () => {
+    CustomFunctionData.SelectedWebActionName = '';
+    this.setState({ selectedWebActionName: '' })
+    CustomFunctionData.SelectedWebActionCategory = '';
+    CustomFunctionData.SelectedWebActionCategoryID = 0;
+    CustomFunctionData.SelectedWebActionRowId = -1;
+    this.setState({ selectedWebActionRowId: -1 })
+    this.setState({ isWebActionModalOpen: false })
+    CustomFunctionData.IsWebActionModalOpen = false;
+  }
+
+  selectRadioButtonFromWebActionTable = async (row, isSelect) => {
+    if (await isSelect) {
+      var rowIndex = this.state.selectedWebActionRowId;
+      var actionToBeSelect = await row.action;
+      if (await actionToBeSelect !== CustomFunctionData.ListOfTestSteps[rowIndex]['action']) {
+        var selectedCategory = CustomFunctionData.SelectedWebActionCategory;
+        CustomFunctionData.SelectedWebActionName = await actionToBeSelect;
+        this.setState({ selectedWebActionName: await actionToBeSelect })
+        CustomFunctionData.ListOfTestSteps[rowIndex]['action'] = ''
+        CustomFunctionData.ListOfTestSteps[rowIndex]['action'] = await CustomFunctionData.SelectedWebActionName;
+        if (await selectedCategory === 'ApplicationAction') {
+          try {
+            var param = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['parameter'];
+            if (await param !== undefined && await param.length !== 0) {
+              CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await param.toString();
+            }
+          }
+          catch (error) { }
+        }
+        else if (await selectedCategory === 'SaveAction') {
+          try {
+            CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = 'Session.VARIABLENAME'
+          }
+          catch (error) { }
+        }
+        else {
+          CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
+        }
+        this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
+      }
+
+      CustomFunctionData.SelectedWebActionRowId = -1;
+      this.setState({ selectedWebActionRowId: -1 })
+      CustomFunctionData.SelectedWebActionName = '';
+      this.setState({ selectedWebActionName: '' })
+      CustomFunctionData.SelectedWebActionCategory = '';
+      this.setState({ SelectedWebActionCategory: '' })
+      CustomFunctionData.SelectedWebActionCategoryID = 0;
+      this.setState({ selectedWebActionCategoryID: 0 })
+      CustomFunctionData.IsWebActionModalOpen = false;
+      this.setState({ isWebActionModalOpen: false });
+    }
+  }
+
+  showUIActionList(row) {
+    try {
+      var actionName = row.action;
+      var category = this.state.selectedWebActionCategory;
+      var example = CustomFunctionData.UIActionList['UIActionHelpText'][category][actionName]['example'];
+      example = wrap(example, { width: 200 });
+      var helpText = CustomFunctionData.UIActionList['UIActionHelpText'][category][actionName]['description']
+      var parameter = CustomFunctionData.UIActionList['UIActionHelpText'][category][actionName]['parameter']
+      return <div>
+        <Alert>
+          {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
+          {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
+          {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
+          {(parameter !== undefined && parameter.length !== 0) && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined && parameter.length !== 0) && (<div>{parameter.toString()}</div>)}
+        </Alert>
+      </div>
+    }
+    catch (error) { }
+  }
+
+  toggleAccordianForWebAction = async (id) => {
+    if (await this.state.selectedWebActionCategoryID !== await id) {
+      CustomFunctionData.SelectedWebActionCategoryID = await id;
+      this.setState({ selectedWebActionCategoryID: id })
+      var category = await DataGetter.getWebActionCategoryNameBasedOnAccordianId(await id);
+      CustomFunctionData.SelectedWebActionCategory = await category;
+      this.setState({ selectedWebActionCategory: await category })
+    }
+    else {
+      CustomFunctionData.SelectedWebActionCategory = '';
+      this.setState({ selectedWebActionCategory: '' })
+      CustomFunctionData.SelectedWebActionCategoryID = 0
+      this.setState({ selectedWebActionCategoryID: 0 });
+    }
+
+  }
+
 
   //****************** End /********************************** */
 
@@ -1075,6 +1187,15 @@ class CustomFunctionPage extends React.Component {
       mode: 'radio',
       onSelect: this.selectRadioButtonFromCustomFunctionTable,
       selected: [this.state.selectedRowFromDependentCustomFunctionTable]
+    };
+    const selectRowFromWebActionTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromWebActionTable,
+    };
+    const expandRow = {
+      showExpandColumn: true,
+      expandByColumnOnly: false,
+      renderer: this.showUIActionList.bind(this)
     };
     return (
       <Page
@@ -1303,16 +1424,6 @@ class CustomFunctionPage extends React.Component {
                         mode: 'click',
                         blurToSave: true,
                         afterSaveCell: (oldValue, newValue, row, column) => {
-                          if (column.dataField === 'action') {
-                            var actionName = row.action;
-                            var customFunName = CustomFunctionData.CustomFunctionNameWithListOfArgument[actionName];
-                            if (customFunName !== undefined) {
-                              row.value = customFunName.toString();
-                            }
-                            else {
-                              row.value = '';
-                            }
-                          }
                           if (column.dataField === 'value') {
                             if (newValue.toLowerCase().includes('args.')) {
                               var re = new RegExp('args.', 'gi');
@@ -1395,6 +1506,20 @@ class CustomFunctionPage extends React.Component {
                               this.setState({ rowIndexForOR: rowIndex })
                               CustomFunctionData.IsOrModalVisible = true;
                               this.setState({ isOrModalVisible: CustomFunctionData.IsOrModalVisible });
+                            }
+                          }
+                          else if (columnIndex === 2) {
+                            this.setState({ selectedWebActionRowId: Number(row.id) - 1 })
+                            CustomFunctionData.SelectedWebActionRowId = Number(row.id) - 1
+                            var prevState = this.state.isWebActionModalOpen;
+                            if (prevState) {
+                              CustomFunctionData.IsWebActionModalOpen = false;
+                              this.setState({ isWebActionModalOpen: false });
+                            }
+                            else {
+
+                              CustomFunctionData.IsWebActionModalOpen = true;
+                              this.setState({ isWebActionModalOpen: true });
                             }
                           }
                         }
@@ -1542,6 +1667,131 @@ class CustomFunctionPage extends React.Component {
               </Row>
             </OffcanvasBody>
           </Offcanvas>
+          <Modal size="xl" isOpen={this.state.isWebActionModalOpen} className={this.props.className} backdrop="static">
+            <ModalHeader style={{ background: '#deecf2' }} toggle={this.toggleWebActionModal.bind(this)}>Choose web action</ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col lg={12} md={12} sm={12} xs={12}>
+                  <Form>
+                    <Accordion open={this.state.selectedWebActionCategoryID} toggle={this.toggleAccordianForWebAction.bind(this)}>
+                      <AccordionItem>
+                        <AccordionHeader targetId="1">Application Method</AccordionHeader>
+                        <AccordionBody accordionId="1">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['ApplicationAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="2">UI action</AccordionHeader>
+                        <AccordionBody accordionId="2">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['UIAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="3">Browser action</AccordionHeader>
+                        <AccordionBody accordionId="3">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['BrowserAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="4">Wait</AccordionHeader>
+                        <AccordionBody accordionId="4">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['WaitAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="5">Assertion</AccordionHeader>
+                        <AccordionBody accordionId="5">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['AssertionAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="6">Store The Value</AccordionHeader>
+                        <AccordionBody accordionId="6">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['SaveAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                      <AccordionItem>
+                        <AccordionHeader targetId="7">Generate Random Data</AccordionHeader>
+                        <AccordionBody accordionId="7">
+                          <BootstrapTable
+                            keyField='id'
+                            data={this.state.uIActionList['RandomAction']}
+                            columns={UIActionTableHeader}
+                            wrapperClasses="table-responsive"
+                            striped
+                            hover
+                            condensed
+                            selectRow={selectRowFromWebActionTable}
+                            expandRow={expandRow}
+                          />
+                        </AccordionBody>
+                      </AccordionItem>
+                    </Accordion >
+                  </Form>
+                </Col>
+              </Row>
+            </ModalBody>
+          </Modal>
         </Fade>
       </Page>
 

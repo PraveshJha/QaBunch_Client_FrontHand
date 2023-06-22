@@ -572,17 +572,15 @@ export class DataGetter {
             for (let i = 0; i < 10; i++) {
                 try {
                     var argsName = await parameter.split(await keywordToFind)[1].trim();
-                    if(await argsName.includes('+'))
-                    {
+                    if (await argsName.includes('+')) {
                         argsName = await argsName.split('+')[0].trim();
-                        var replaceKeyWord = await keywordToFind + await argsName+'+';
+                        var replaceKeyWord = await keywordToFind + await argsName + '+';
                     }
-                    else if(await argsName.includes(','))
-                    {
+                    else if (await argsName.includes(',')) {
                         argsName = await argsName.split(',')[0].trim();
                         var replaceKeyWord = await keywordToFind + await argsName;
                     }
-                    else{
+                    else {
                         var replaceKeyWord = await keywordToFind + await argsName;
                     }
                     var argsToSave = 'ARGS.' + await argsName;
@@ -599,6 +597,59 @@ export class DataGetter {
 
     async ConvertArgsKeyintoUpperCase(parameter) {
         return await parameter;
+    }
+
+    async GetAllWebActions() {
+        if (await Config.isDemo) {
+            CustomFunctionData.AllSeleniumMethod = [{ label: 'LaunchApplication', value: 'LaunchApplication' }, { label: 'Click', value: 'Click' }, { label: 'Type', value: 'Type' }]
+        }
+        else {
+            try {
+                var backendApi = await Config.backendAPI;
+                var backendServiceLocation = await Config.backendServiceAt;
+                if (backendServiceLocation === 'remote') {
+                    backendApi = Config.remoteBackendAPI;
+                }
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await RestApi.get(backendApi + 'webaction/project/' + selectedProject, await headers);
+                var allWebActionList = await serverResponse['data'];
+                return await allWebActionList;
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+            }
+        }
+    }
+
+    async getWebActionCategoryNameBasedOnAccordianId(id) {
+        var category = ''
+        switch (Number(await id)) {
+            case 1:
+                category = 'ApplicationAction'
+                break;
+            case 2:
+                category = 'UIAction'
+                break;
+            case 3:
+                category = 'BrowserAction'
+                break;
+            case 4:
+                category = 'WaitAction'
+                break;
+            case 5:
+                category = 'AssertionAction'
+                break;
+            case 6:
+                category = 'SaveAction'
+                break;
+            case 7:
+                category = 'RandomAction'
+                break;
+            default:
+                break;
+
+        }
+        return await category;
     }
 
 }
