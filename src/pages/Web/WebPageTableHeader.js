@@ -676,7 +676,43 @@ export var UIActionTableHeader = [{
 	hidden:true,
 }, {
 	dataField: 'action',
-	text: 'Action'
-}
+	text: 'Action',
+},
+];
+
+export var AssertionActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden:true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({placeholder:'search action'})
+},
+];
+
+export var WebActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden:true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({placeholder:'search action'})
+},
+];
+
+export var BrowserActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden:true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({placeholder:'search action'})
+},
 ];
 

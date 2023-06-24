@@ -44,7 +44,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader, UIActionTableHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader, UIActionTableHeader,AssertionActionTableHeader,WebActionTableHeader,BrowserActionTableHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -2059,13 +2059,14 @@ class TestScriptPage extends React.Component {
                           <BootstrapTable
                             keyField='id'
                             data={this.state.uIActionList['UIAction']}
-                            columns={UIActionTableHeader}
+                            columns={WebActionTableHeader}
                             wrapperClasses="table-responsive"
                             striped
                             hover
                             condensed
                             selectRow={selectRowFromWebActionTable}
                             expandRow={expandRow}
+                            filter={filterFactory()}
                           />
                         </AccordionBody>
                       </AccordionItem>
@@ -2075,13 +2076,14 @@ class TestScriptPage extends React.Component {
                           <BootstrapTable
                             keyField='id'
                             data={this.state.uIActionList['BrowserAction']}
-                            columns={UIActionTableHeader}
+                            columns={BrowserActionTableHeader}
                             wrapperClasses="table-responsive"
                             striped
                             hover
                             condensed
                             selectRow={selectRowFromWebActionTable}
                             expandRow={expandRow}
+                            filter={filterFactory()}
                           />
                         </AccordionBody>
                       </AccordionItem>
@@ -2107,13 +2109,14 @@ class TestScriptPage extends React.Component {
                           <BootstrapTable
                             keyField='id'
                             data={this.state.uIActionList['AssertionAction']}
-                            columns={UIActionTableHeader}
+                            columns={AssertionActionTableHeader}
                             wrapperClasses="table-responsive"
                             striped
                             hover
                             condensed
                             selectRow={selectRowFromWebActionTable}
                             expandRow={expandRow}
+                            filter={filterFactory()}
                           />
                         </AccordionBody>
                       </AccordionItem>
