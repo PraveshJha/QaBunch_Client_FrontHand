@@ -1103,14 +1103,13 @@ class CustomFunctionPage extends React.Component {
           }
           catch (error) { }
         }
-        else if (await selectedCategory === 'SaveAction') {
-          try {
-            CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = 'Session.VARIABLENAME'
-          }
-          catch (error) { }
-        }
         else {
-          CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
+          var value = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
+          if(await value ===undefined)
+          {
+            value =''
+          }
+          CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await value;
         }
         this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
       }

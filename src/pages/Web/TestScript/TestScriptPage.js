@@ -1259,14 +1259,13 @@ class TestScriptPage extends React.Component {
           }
           catch (error) { }
         }
-        else if (await selectedCategory === 'SaveAction') {
-          try {
-            TestScriptData.ListOfTestSteps[rowIndex]['value'] = 'Session.VARIABLENAME'
-          }
-          catch (error) { }
-        }
         else {
-          TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
+          var value = await TestScriptData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
+          if(await value ===undefined)
+          {
+            value =''
+          }
+          TestScriptData.ListOfTestSteps[rowIndex]['value'] = await value;
         }
         this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
       }
