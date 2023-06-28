@@ -41,7 +41,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CustomFunctionDependentHeader,UIActionTableHeader,AssertionActionTableHeader,WebActionTableHeader,BrowserActionTableHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CustomFunctionDependentHeader, UIActionTableHeader, AssertionActionTableHeader, WebActionTableHeader, BrowserActionTableHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -1104,10 +1104,14 @@ class CustomFunctionPage extends React.Component {
           catch (error) { }
         }
         else {
-          var value = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
-          if(await value ===undefined)
-          {
-            value =''
+          try {
+            var value = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
+            if (await value === undefined) {
+              value = ''
+            }
+          }
+          catch (error) {
+            value = ''
           }
           CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await value;
         }

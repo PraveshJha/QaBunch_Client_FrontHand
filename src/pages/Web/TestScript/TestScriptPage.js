@@ -44,7 +44,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader, UIActionTableHeader,AssertionActionTableHeader,WebActionTableHeader,BrowserActionTableHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CommonTestDataHeaderTable, DependentCustomFunctionHeader, UIActionTableHeader, AssertionActionTableHeader, WebActionTableHeader, BrowserActionTableHeader } from '../WebPageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -1260,11 +1260,15 @@ class TestScriptPage extends React.Component {
           catch (error) { }
         }
         else {
-          var value = await TestScriptData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
-          if(await value ===undefined)
-          {
-            value =''
+          try {
+            var value = await TestScriptData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['value'];
+            if (await value === undefined) {
+              value = ''
+            }
           }
+          catch (error) {
+            value = ''
+           }
           TestScriptData.ListOfTestSteps[rowIndex]['value'] = await value;
         }
         this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
