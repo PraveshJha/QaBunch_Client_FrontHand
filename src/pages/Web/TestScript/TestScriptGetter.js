@@ -680,6 +680,7 @@ export class TestScriptGetter {
             var serverResponse = await restAPI.get(backendAPI + 'aistep/step/' + await testStep, await headers);
             var values = await serverResponse['data'];
             var actionName = await values.actionName;
+            var valueneedtobeSend = await values.actionvalue;
             if (actionName !== '') {
               var elementName = await values.orLogicalName.trim().toUpperCase();
               var locator = await values.primaryLocator;
@@ -698,13 +699,14 @@ export class TestScriptGetter {
               }
               steDetails.action = await actionName;
               steDetails.element = await elementName;
+              steDetails.value = await valueneedtobeSend;
             }
-            if (await isBDD) {
-              if (await testStepLowerCase.includes('<') && await testStepLowerCase.includes('>')) {
-                var testDataValue = 't.' + await testStepLowerCase.split('<')[1].split('>')[0].toUpperCase();
-                steDetails.value = await testDataValue;
-              }
-            }
+            // if (await isBDD) {
+            //   if (await testStepLowerCase.includes('<') && await testStepLowerCase.includes('>')) {
+            //     var testDataValue = 't.' + await testStepLowerCase.split('<')[1].split('>')[0].toUpperCase();
+            //     steDetails.value = await testDataValue;
+            //   }
+            // }
             await allTestSteps.push(await steDetails);
             counter = Number(await counter) + 1
           }

@@ -1055,7 +1055,10 @@ class CustomFunctionPage extends React.Component {
         if (await fileUploadDetails['isSuccess']) {
           this.setState({ isFileUploadButtonDisplayed: false });
           CustomFunctionData.IsFileUploadButtonDisplayed = false;
-          CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await fileUploadDetails['fileName'];
+          CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] ='';
+          var updateValue = {"filename":""};
+          updateValue['filename'] = await fileUploadDetails['fileName'];
+          CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await JSON.stringify(await updateValue);
           this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
           await this.getNotification('success', 'File is saved on server , now you can debug and execute your test scripts');
         }
@@ -1447,6 +1450,7 @@ class CustomFunctionPage extends React.Component {
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
                                     row.action = actionName;
+                                    row.value = values.actionvalue;
                                     var isKeyAlreadyPresent = CustomFunctionData.TestScriptORData[elementName];
                                     var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
                                     if (isKeyAlreadyPresent === undefined) {

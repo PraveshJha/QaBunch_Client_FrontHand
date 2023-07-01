@@ -1128,7 +1128,10 @@ class TestScriptPage extends React.Component {
         if (await fileUploadDetails['isSuccess']) {
           this.setState({ isFileUploadButtonDisplayed: false });
           TestScriptData.IsFileUploadButtonDisplayed = false;
-          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await fileUploadDetails['fileName'];
+          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value']='';
+          var updateValue = {"filename":""};
+          updateValue['filename'] = await fileUploadDetails['fileName'];
+          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await JSON.stringify(await updateValue);
           this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
           await this.getNotification('success', 'File is saved on server , now you can debug and execute your test scripts');
         }
@@ -1252,7 +1255,7 @@ class TestScriptPage extends React.Component {
         TestScriptData.ListOfTestSteps[rowIndex]['action'] = await TestScriptData.SelectedWebActionName;
         if (await selectedCategory === 'ApplicationAction') {
           try {
-            var param = await TestScriptData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['parameter'];
+            var param = await TestScriptData.UIActionList['UIActionHelpText'][await selectedCategory][await actionToBeSelect]['parameter'];
             if (await param !== undefined && await param.length !== 0) {
               TestScriptData.ListOfTestSteps[rowIndex]['value'] = await param.toString();
             }
@@ -1694,6 +1697,7 @@ class TestScriptPage extends React.Component {
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
                                     row.action = actionName;
+                                    row.value = values.actionvalue;
                                     var isKeyAlreadyPresent = TestScriptData.TestScriptORData[elementName];
                                     var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
                                     if (isKeyAlreadyPresent === undefined) {
@@ -1714,7 +1718,6 @@ class TestScriptPage extends React.Component {
                               }
                             }
                           }
-                          this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps })
                           // this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
                         },
                         onStartEdit: (row, column, rowIndex, columnIndex) => {
