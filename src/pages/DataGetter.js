@@ -557,101 +557,119 @@ export class DataGetter {
     }
 
     async getArgumentListFromParameter(parameter) {
-        var allOutPut = [];
-        var keywordToFind = ''
-        if (await parameter.includes('+ARGS.')) {
-            keywordToFind = '+ARGS.'
-        }
-        else if (await parameter.includes('ARGS.')) {
-            keywordToFind = 'ARGS.'
-        }
-        else {
-            return await allOutPut;
-        }
-        if (await parameter.includes(await keywordToFind)) {
-            for (let i = 0; i < 10; i++) {
-                try {
-                    var argsName = await parameter.split(await keywordToFind)[1].trim();
-                    if (await argsName.includes('+')) {
-                        argsName = await argsName.split('+')[0].trim();
-                        var replaceKeyWord = await keywordToFind + await argsName + '+';
+
+        var output = [];
+        try {
+            var allData = await JSON.parse(await parameter);
+            var allKeys = await Object.keys(await allData);
+            for (let i = 0; i < await allKeys.length; i++) {
+                var keyname = await allKeys[i];
+                var keyValue = await allData[await keyname];
+                if (await keyValue.toString().toLowerCase().startsWith('args.')) {
+                    if (!await output.includes(await keyValue)) {
+                        output.push(await keyValue);
                     }
-                    else if (await argsName.includes(',')) {
-                        argsName = await argsName.split(',')[0].trim();
-                        var replaceKeyWord = await keywordToFind + await argsName;
-                    }
-                    else {
-                        var replaceKeyWord = await keywordToFind + await argsName;
-                    }
-                    var argsToSave = 'ARGS.' + await argsName;
-                    if (!await allOutPut.includes(await argsToSave)) {
-                        allOutPut.push(await argsToSave);
-                    }
-                    parameter = await parameter.replace(await replaceKeyWord, "");
                 }
-                catch (error) { }
             }
         }
-        return await allOutPut;
-    }
+        catch (error) { }
+        return await output;
+
+            // var allOutPut = [];
+            // var keywordToFind = ''
+            // if (await parameter.includes('+ARGS.')) {
+            //     keywordToFind = '+ARGS.'
+            // }
+            // else if (await parameter.includes('ARGS.')) {
+            //     keywordToFind = 'ARGS.'
+            // }
+            // else {
+            //     return await allOutPut;
+            // }
+            // if (await parameter.includes(await keywordToFind)) {
+            //     for (let i = 0; i < 10; i++) {
+            //         try {
+            //             var argsName = await parameter.split(await keywordToFind)[1].trim();
+            //             if (await argsName.includes('+')) {
+            //                 argsName = await argsName.split('+')[0].trim();
+            //                 var replaceKeyWord = await keywordToFind + await argsName + '+';
+            //             }
+            //             else if (await argsName.includes(',')) {
+            //                 argsName = await argsName.split(',')[0].trim();
+            //                 var replaceKeyWord = await keywordToFind + await argsName;
+            //             }
+            //             else {
+            //                 var replaceKeyWord = await keywordToFind + await argsName;
+            //             }
+            //             var argsToSave = 'ARGS.' + await argsName;
+            //             if (!await allOutPut.includes(await argsToSave)) {
+            //                 allOutPut.push(await argsToSave);
+            //             }
+            //             parameter = await parameter.replace(await replaceKeyWord, "");
+            //         }
+            //         catch (error) { }
+            //     }
+            // }
+            // return await allOutPut;
+        }
 
     async ConvertArgsKeyintoUpperCase(parameter) {
-        return await parameter;
-    }
+            return await parameter;
+        }
 
     async GetAllWebActions() {
-        if (await Config.isDemo) {
-            CustomFunctionData.AllSeleniumMethod = [{ label: 'LaunchApplication', value: 'LaunchApplication' }, { label: 'Click', value: 'Click' }, { label: 'Type', value: 'Type' }]
-        }
-        else {
-            try {
-                var backendApi = await Config.backendAPI;
-                var backendServiceLocation = await Config.backendServiceAt;
-                if (backendServiceLocation === 'remote') {
-                    backendApi = Config.remoteBackendAPI;
+            if (await Config.isDemo) {
+                CustomFunctionData.AllSeleniumMethod = [{ label: 'LaunchApplication', value: 'LaunchApplication' }, { label: 'Click', value: 'Click' }, { label: 'Type', value: 'Type' }]
+            }
+            else {
+                try {
+                    var backendApi = await Config.backendAPI;
+                    var backendServiceLocation = await Config.backendServiceAt;
+                    if (backendServiceLocation === 'remote') {
+                        backendApi = Config.remoteBackendAPI;
+                    }
+                    var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                    var serverResponse = await RestApi.get(backendApi + 'webaction/project/' + selectedProject, await headers);
+                    var allWebActionList = await serverResponse['data'];
+                    return await allWebActionList;
                 }
-                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await RestApi.get(backendApi + 'webaction/project/' + selectedProject, await headers);
-                var allWebActionList = await serverResponse['data'];
-                return await allWebActionList;
-            }
-            catch (error) {
-                Config.ErrorMessage = await error.message;
+                catch (error) {
+                    Config.ErrorMessage = await error.message;
+                }
             }
         }
-    }
 
     async getWebActionCategoryNameBasedOnAccordianId(id) {
-        var category = ''
-        switch (Number(await id)) {
-            case 1:
-                category = 'ApplicationAction'
-                break;
-            case 2:
-                category = 'UIAction'
-                break;
-            case 3:
-                category = 'BrowserAction'
-                break;
-            case 4:
-                category = 'WaitAction'
-                break;
-            case 5:
-                category = 'AssertionAction'
-                break;
-            case 6:
-                category = 'SaveAction'
-                break;
-            case 7:
-                category = 'RandomAction'
-                break;
-            default:
-                break;
+            var category = ''
+            switch (Number(await id)) {
+                case 1:
+                    category = 'ApplicationAction'
+                    break;
+                case 2:
+                    category = 'UIAction'
+                    break;
+                case 3:
+                    category = 'BrowserAction'
+                    break;
+                case 4:
+                    category = 'WaitAction'
+                    break;
+                case 5:
+                    category = 'AssertionAction'
+                    break;
+                case 6:
+                    category = 'SaveAction'
+                    break;
+                case 7:
+                    category = 'RandomAction'
+                    break;
+                default:
+                    break;
 
+            }
+            return await category;
         }
-        return await category;
-    }
 
-}
+    }
 export default new DataGetter();
 

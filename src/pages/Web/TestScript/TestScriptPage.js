@@ -381,14 +381,14 @@ class TestScriptPage extends React.Component {
     if (allTestSteps.length === 0) {
       return await this.getNotification('error', "Please add test steps , No step is found under 'AUTOMATE MANUAL TEST STEPS' table");
     }
-    var isDataFilled = await TestScriptGetter.isDataFilledforTestStepTable(await allTestSteps);
-    if (!isDataFilled) {
-      return await this.getNotification('error', "Please add correct details for unfilled test step under and Parameterize the custom function.");
-    }
-    var isPrePagehasCorrectData = await TestScriptGetter.isDataFilledforDependendentPage();
-    if (!isPrePagehasCorrectData) {
-      return await this.getNotification('error', "Please add correct details in 'Pre Dependent Page', Please check you are passing correct argument, If issue is still exist , Please make sure Custom Page function is present.");
-    }
+    // var isDataFilled = await TestScriptGetter.isDataFilledforTestStepTable(await allTestSteps);
+    // if (!isDataFilled) {
+    //   return await this.getNotification('error', "Please add correct details for unfilled test step under and Parameterize the custom function.");
+    // }
+    // var isPrePagehasCorrectData = await TestScriptGetter.isDataFilledforDependendentPage();
+    // if (!isPrePagehasCorrectData) {
+    //   return await this.getNotification('error', "Please add correct details in 'Pre Dependent Page', Please check you are passing correct argument, If issue is still exist , Please make sure Custom Page function is present.");
+    // }
     this.setState({ isPageLoading: true });
     var isSaved = await TestScriptGetter.saveTestScriptData();
     this.setState({ isPageLoading: false });
@@ -744,7 +744,9 @@ class TestScriptPage extends React.Component {
 
       }
       var rowToUpdate = TestScriptData.SelectedRowFromTestStepsTable;
-      TestScriptData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = keytoSend;
+      var testvalue ={"valuetobesend":"Provide value"};
+      testvalue.valuetobesend = await keytoSend;
+      TestScriptData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = await JSON.stringify(await testvalue);
       this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
       this.setState({ utilityDataModal: false });
     }
@@ -1256,11 +1258,16 @@ class TestScriptPage extends React.Component {
         if (await selectedCategory === 'ApplicationAction') {
           try {
             var param = await TestScriptData.UIActionList['UIActionHelpText'][await selectedCategory][await actionToBeSelect]['parameter'];
-            if (await param !== undefined && await param.length !== 0) {
-              TestScriptData.ListOfTestSteps[rowIndex]['value'] = await param.toString();
+            if (await Object.keys(await param).length !==0) {
+              TestScriptData.ListOfTestSteps[rowIndex]['value'] =  await param;
+            }
+            else{
+              TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
             }
           }
-          catch (error) { }
+          catch (error) {
+            TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
+           }
         }
         else {
           try {
@@ -1297,14 +1304,14 @@ class TestScriptPage extends React.Component {
       var example = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['example'];
       example = wrap(example, { width: 200 });
       var helpText = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['description']
-      var parameter = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['parameter']
+      var parameter = TestScriptData.UIActionList['UIActionHelpText'][category][actionName]['parameter'];
       return <div>
         <Alert>
           {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
           {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
           {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
-          {(parameter !== undefined && parameter.length !== 0) && (<div><b>Parameter</b></div>)}
-          {(parameter !== undefined && parameter.length !== 0) && (<div>{parameter.toString()}</div>)}
+          {(parameter !== undefined  && parameter !== '' ) && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined  && parameter !== '') && (<div>{parameter}</div>)}
         </Alert>
       </div>
     }
@@ -1646,11 +1653,6 @@ class TestScriptPage extends React.Component {
                                           mode: 'click',
                                           blurToSave: true,
                                           afterSaveCell: (oldValue, newValue, row, column) => {
-                                            if (column.dataField === 'parameter') {
-                                              if (newValue.toLowerCase().includes('args.')) {
-                                                row.parameter = newValue.toUpperCase();
-                                              }
-                                            }
                                             this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction })
                                           }
                                         })}

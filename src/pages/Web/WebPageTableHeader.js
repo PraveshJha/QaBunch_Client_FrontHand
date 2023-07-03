@@ -517,8 +517,13 @@ export var DependentCustomFunctionHeader = [
 				}
 				else {
 					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
-					if (await allAgrsList.length > 0) {
-						row.parameter = await allAgrsList.toString();
+					try {
+						if (Object.keys(await allAgrsList).length > 0) {
+							row.parameter = await JSON.stringify(await allAgrsList)
+						}
+					}
+					catch (error) {
+						row.parameter = ''
 					}
 					return done();
 				}
@@ -610,9 +615,14 @@ export var CustomFunctionDependentHeader = [
 				}
 				else {
 					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
-					if (await allAgrsList.length > 0) {
-						row.parameter = await allAgrsList.toString();
+					try {
+						if (await Object.keys(await allAgrsList).length > 0) {
+							row.parameter = await JSON.stringify(await allAgrsList);
+						}
 					}
+					catch (error) {
+						row.parameter =''
+					 }
 					return done();
 				}
 			}
@@ -673,7 +683,7 @@ export var UIActionTableHeader = [{
 	dataField: 'id',
 	text: '#',
 	headerStyle: { width: '100px' },
-	hidden:true,
+	hidden: true,
 }, {
 	dataField: 'action',
 	text: 'Action',
@@ -684,11 +694,11 @@ export var AssertionActionTableHeader = [{
 	dataField: 'id',
 	text: '#',
 	headerStyle: { width: '100px' },
-	hidden:true,
+	hidden: true,
 }, {
 	dataField: 'action',
 	text: 'Action',
-	filter: textFilter({placeholder:'search action'})
+	filter: textFilter({ placeholder: 'search action' })
 },
 ];
 
@@ -696,11 +706,11 @@ export var WebActionTableHeader = [{
 	dataField: 'id',
 	text: '#',
 	headerStyle: { width: '100px' },
-	hidden:true,
+	hidden: true,
 }, {
 	dataField: 'action',
 	text: 'Action',
-	filter: textFilter({placeholder:'search action'})
+	filter: textFilter({ placeholder: 'search action' })
 },
 ];
 
@@ -708,11 +718,11 @@ export var BrowserActionTableHeader = [{
 	dataField: 'id',
 	text: '#',
 	headerStyle: { width: '100px' },
-	hidden:true,
+	hidden: true,
 }, {
 	dataField: 'action',
 	text: 'Action',
-	filter: textFilter({placeholder:'search action'})
+	filter: textFilter({ placeholder: 'search action' })
 },
 ];
 

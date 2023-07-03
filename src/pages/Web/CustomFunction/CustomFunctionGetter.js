@@ -248,6 +248,7 @@ export class CustomFunctionGetter {
       if (stepdef === '' || action === '') {
         return false;
       }
+      return true;
     }
     return true;
   }
@@ -272,7 +273,19 @@ export class CustomFunctionGetter {
         fileData['fileName'] = await CustomFunctionData.SelectedCustomFunction;
         var allData = {};
         var argsWithElement = await this.getListOfArgumentsAndNewElementFromTestSteps(CustomFunctionData.ListOfTestSteps);
-        allData['argumentlist'] = await argsWithElement['argumentList'];
+        var argumentlistToAdd = await argsWithElement['argumentList'];
+        var needtobeSend ={};
+        for(let i=0;i<await argumentlistToAdd.length;i++)
+        {
+          needtobeSend[await argumentlistToAdd[i]] = 'Provide value'
+        }
+        if(Object.keys(await needtobeSend).length ===0)
+        {
+          allData['argumentlist'] =''
+        }
+        else{
+          allData['argumentlist'] = await needtobeSend;
+        }
         newElement = await argsWithElement['newelement'];
         allData['allsteps'] = CustomFunctionData.ListOfTestSteps;
         allData['dependentpage'] = CustomFunctionData.DependentCustomFunction;
@@ -309,22 +322,17 @@ export class CustomFunctionGetter {
     if (resuableType === 'Page') {
       var allDependentData = CustomFunctionData.DependentCustomFunction;
       if (allDependentData.length > 0) {
-
         for (let i = 1; i <= allDependentData.length; i++) {
           var param = await allDependentData[i - 1]['parameter'];
-          var allParams = await param.toString().split(',');
-          if (await allParams.length > 0) {
-            for (let j = 0; j < await allParams.length; j++) {
-              var allParamInAction = await allParams[j].trim();
-              var paramToSave = await DataGetter.getArgumentListFromParameter(await allParamInAction);
-              for(let k=0;j<await paramToSave.length;k++)
-              {
-                var argsParamName = await paramToSave[k];
-                if(!await allArguments.includes(await argsParamName))
-                {
-                  allArguments.push(await argsParamName);
-                }
-              }
+          console.log(await param);
+          var paramToSave = await DataGetter.getArgumentListFromParameter(await param);
+          console.log(await paramToSave);
+          for(let k=0;k<await paramToSave.length;k++)
+          {
+            var argsParamName = await paramToSave[k];
+            if(!await allArguments.includes(await argsParamName))
+            {
+              allArguments.push(await argsParamName);
             }
           }
         }
@@ -452,7 +460,7 @@ export class CustomFunctionGetter {
 
   async getCustomFunctionArguments(customFunctionName) {
     if (Config.isDemo) {
-      return ['args.USERNAME'];
+      return '{"args.USERNAME","username"}';
     }
     else {
       try {

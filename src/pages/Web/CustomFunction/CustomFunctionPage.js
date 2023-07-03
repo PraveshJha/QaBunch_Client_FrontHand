@@ -699,7 +699,9 @@ class CustomFunctionPage extends React.Component {
 
       }
       var rowToUpdate = CustomFunctionData.SelectedRowFromTestStepsTable;
-      CustomFunctionData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = keytoSend;
+      var testvalue ={"valuetobesend":"Provide value"};
+      testvalue.valuetobesend = await keytoSend;
+      CustomFunctionData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = await JSON.stringify(await testvalue);
       this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
       this.setState({ utilityDataModal: false });
     }
@@ -1100,11 +1102,16 @@ class CustomFunctionPage extends React.Component {
         if (await selectedCategory === 'ApplicationAction') {
           try {
             var param = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['parameter'];
-            if (await param !== undefined && await param.length !== 0) {
-              CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await param.toString();
+            if (await Object.keys(await param).length !==0) {
+              CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await param;
+            }
+            else{
+              CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
             }
           }
-          catch (error) { }
+          catch (error) {
+            CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
+           }
         }
         else {
           try {
@@ -1147,8 +1154,8 @@ class CustomFunctionPage extends React.Component {
           {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
           {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
           {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
-          {(parameter !== undefined && parameter.length !== 0) && (<div><b>Parameter</b></div>)}
-          {(parameter !== undefined && parameter.length !== 0) && (<div>{parameter.toString()}</div>)}
+          {(parameter !== undefined && parameter !=='') && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined && parameter !=='') && (<div>{parameter}</div>)}
         </Alert>
       </div>
     }
@@ -1395,11 +1402,11 @@ class CustomFunctionPage extends React.Component {
                                           mode: 'click',
                                           blurToSave: true,
                                           afterSaveCell: (oldValue, newValue, row, column) => {
-                                            if (column.dataField === 'parameter') {
-                                              // if (newValue.toLowerCase().includes('args.')) {
-                                              //   row.parameter = newValue.toUpperCase();
-                                              // }
-                                            }
+                                            // if (column.dataField === 'parameter') {
+                                            //   // if (newValue.toLowerCase().includes('args.')) {
+                                            //   //   row.parameter = newValue.toUpperCase();
+                                            //   // }
+                                            // }
                                             this.setState({ dependentCustomFunction: CustomFunctionData.DependentCustomFunction })
                                           }
                                         })}
