@@ -25,7 +25,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { ORTableHeader } from '../WebPageTableHeader'
+import { ORTableHeader, ORElementTagHeader } from '../WebPageTableHeader'
 
 
 class ObjectRepositoryPage extends React.Component {
@@ -41,6 +41,8 @@ class ObjectRepositoryPage extends React.Component {
       allORTableData: ORData.AllORTableData,
       selectedRowFromORTable: ORData.SelectedRowFromORTable,
       isDataValidInORTable: ORData.IsDataValidInORTable,
+      oRElementTagData: ORData.ORElementTagData,
+      oRTagDataToSave: ORData.ORTagDataToSave,
 
     };
 
@@ -53,6 +55,9 @@ class ObjectRepositoryPage extends React.Component {
     this.setState({ allORTableData: ORData.AllORTableData });
     this.setState({ selectedRowFromORTable: ORData.SelectedRowFromORTable });
     this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
+    this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
+    this.setState({ oRElementTagData: ORData.ORElementTagData });
+    this.setState({ oRTagDataToSave: ORData.ORTagDataToSave });
 
   }
 
@@ -102,11 +107,9 @@ class ObjectRepositoryPage extends React.Component {
       return await this.getNotification('error', "No information is found under 'Object Repository' table section");
     }
     if (Number(this.state.selectedRowFromORTable) > 0 && Number(this.state.selectedRowFromORTable) <= dataDetails.length) {
-      var keyNameToDelete = await this.state.allORTableData[Number(this.state.selectedRowFromORTable)-1]['name'];
-      if(keyNameToDelete.toString().trim() !=='')
-      {
-        if(!await ORData.DeletedKey.includes(await keyNameToDelete))
-        {
+      var keyNameToDelete = await this.state.allORTableData[Number(this.state.selectedRowFromORTable) - 1]['name'];
+      if (keyNameToDelete.toString().trim() !== '') {
+        if (!await ORData.DeletedKey.includes(await keyNameToDelete)) {
           await ORData.DeletedKey.push(await keyNameToDelete);
         }
       }
@@ -132,8 +135,7 @@ class ObjectRepositoryPage extends React.Component {
           return await this.getNotification('error', "Please add correct details in 'Object Repository' table section");
         }
       }
-      if(await Object.keys(await ORData.NewAndUpdatedElement).length ===0 && await ORData.DeletedKey.length===0)
-      {
+      if (await Object.keys(await ORData.NewAndUpdatedElement).length === 0 && await ORData.DeletedKey.length === 0) {
         return await this.getNotification('error', "There is no any locator added or updated.");
       }
       ORData.AllORTableData = dataDetails;
@@ -154,6 +156,30 @@ class ObjectRepositoryPage extends React.Component {
     }
   }
 
+  saveElementTagData = async (event) => {
+    await event.preventDefault();
+    var dataDetails = this.state.oRElementTagData;
+    for (let i = 0; i < await dataDetails.length; i++) {
+      var tagName = dataDetails[i]['tag'];
+      if (await tagName.toString().trim() === '') {
+        return await this.getNotification('error', "Tag name can not blank.Please add correct tag name 'SET UP TAG FOR AUTOMATIC WEB ELEMENT CREATION' in table");
+      }
+    }
+    var allKeys = await Object.keys(await ORData.ORTagDataToSave);
+    if (await allKeys.length === 0) {
+      return await this.getNotification('warning', "No changes to save.");
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ORGetter.saveORTagData();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Tag name is successfully updated.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to save tag name because of ' + Config.ErrorMessage);
+    }
+  }
+
 
   //****************** End */********************************** */
 
@@ -170,68 +196,111 @@ class ObjectRepositoryPage extends React.Component {
         title="Object Repository"
       >
         {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
-        <Fade in={!this.state.isPageLoading}> 
-        <NotificationSystem ref={this.notificationSystem} />
-        <Row>
-          <Col lg={12} md={12} sm={12} xs={12}>
-            <Card>
-              <CardHeader>
-                <div className="d-flex justify-content-between align-items-center">
-                  UI Element Attribute
-                  <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.addNewData.bind(this)}>
-                      <small>Add</small>
-                    </Button>
-                    <Button color='info' onClick={this.saveCommonTestData.bind(this)}>
-                      <small>Save</small>
-                    </Button>
-                    <Button color='dark' onClick={this.deleteTestData.bind(this)}>
-                      <small>Delete</small>
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </CardHeader>
-              <CardBody>
+        <Fade in={!this.state.isPageLoading}>
+          <NotificationSystem ref={this.notificationSystem} />
+          <Row>
+            <Col lg={12} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    UI Element Attribute
+                    <ButtonGroup size="sm">
+                      <Button color='dark' onClick={this.addNewData.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveCommonTestData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='dark' onClick={this.deleteTestData.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
                 <CardBody>
-                  <Col>
-                    <BootstrapTable
-                      keyField='id'
-                      data={this.state.allORTableData}
-                      columns={ORTableHeader}
-                      wrapperClasses="table-responsive"
-                      striped
-                      hover
-                      condensed
-                      selectRow={selectRowFromORTable}
-                      cellEdit={cellEditFactory({
-                        mode: 'click',
-                        blurToSave: true,
-                        afterSaveCell: (oldValue, newValue, row, column) => {
-                          if(column.dataField ==='name')
-                          {
-                            row.name = row.name.toString().trim().toUpperCase();
-                          }
-                          var rowNo = Number(row.id) - 1;
-                          var elementName = this.state.allORTableData[rowNo]['name'];
-                          if (elementName !== undefined) {
-                            var elementProperty = {}
-                            elementProperty['locator'] = this.state.allORTableData[rowNo]['locator'];
-                            elementProperty['locatorproperty'] = this.state.allORTableData[rowNo]['locatorproperty'];
-                            elementProperty['alternatexpath'] = this.state.allORTableData[rowNo]['alternatexpath'];
-                            ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()]=elementProperty;
-                          }
+                  <CardBody>
+                    <Col>
+                      <BootstrapTable
+                        keyField='id'
+                        data={this.state.allORTableData}
+                        columns={ORTableHeader}
+                        wrapperClasses="table-responsive"
+                        striped
+                        hover
+                        condensed
+                        selectRow={selectRowFromORTable}
+                        cellEdit={cellEditFactory({
+                          mode: 'click',
+                          blurToSave: true,
+                          afterSaveCell: (oldValue, newValue, row, column) => {
+                            if (column.dataField === 'name') {
+                              row.name = row.name.toString().trim().toUpperCase();
+                            }
+                            var rowNo = Number(row.id) - 1;
+                            var elementName = this.state.allORTableData[rowNo]['name'];
+                            if (elementName !== undefined) {
+                              var elementProperty = {}
+                              elementProperty['locator'] = this.state.allORTableData[rowNo]['locator'];
+                              elementProperty['locatorproperty'] = this.state.allORTableData[rowNo]['locatorproperty'];
+                              elementProperty['alternatexpath'] = this.state.allORTableData[rowNo]['alternatexpath'];
+                              ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] = elementProperty;
+                            }
 
-                        },
-                      })}
-                      pagination={paginationFactory()}
-                      filter={filterFactory()}
-                    />
-                  </Col>
+                          },
+                        })}
+                        pagination={paginationFactory()}
+                        filter={filterFactory()}
+                      />
+                    </Col>
+                  </CardBody>
                 </CardBody>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Set up tag for automatic web element creation
+                    <ButtonGroup size="sm">
+                      <Button color='info' onClick={this.saveElementTagData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <CardBody>
+                    <Col>
+                      <BootstrapTable
+                        keyField='id'
+                        data={this.state.oRElementTagData}
+                        columns={ORElementTagHeader}
+                        wrapperClasses="table-responsive"
+                        striped
+                        hover
+                        condensed
+                        cellEdit={cellEditFactory({
+                          mode: 'click',
+                          blurToSave: true,
+                          afterSaveCell: (oldValue, newValue, row, column) => {
+                            if (column.dataField === 'tag') {
+                              var type = row.type;
+                              var tag = row.tag;
+                              if (tag !== '') {
+                                ORData.ORTagDataToSave[type] = tag;
+                              }
+                            }
+                          },
+                        })}
+                      />
+                    </Col>
+                  </CardBody>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
         </Fade>
       </Page>
 

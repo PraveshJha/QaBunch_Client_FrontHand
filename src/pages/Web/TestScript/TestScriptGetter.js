@@ -629,8 +629,11 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
+        var testscriptData = {};
+        testscriptData['step'] = await testStep;
+        testscriptData['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA'];
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,account:Users.userSelectedAccount };
-        var serverResponse = await restAPI.get(backendAPI + 'aistep/step/' + await testStep, await headers);
+        var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers,await testscriptData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
       }
@@ -677,7 +680,7 @@ export class TestScriptGetter {
           testStep = await testStep.trim();
           if (await testStep.trim() !== '' && await !testStepLowerCase.startsWith('example') && await !testStepLowerCase.includes('|')) {
             var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
-            var serverResponse = await restAPI.get(backendAPI + 'aistep/step/' + await testStep, await headers);
+            var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers,{"step":await testStep,"elementtag":await TestScriptData.AllORData['ELEMENTTAGDATA']});
             var values = await serverResponse['data'];
             var actionName = await values.actionName;
             var valueneedtobeSend = await values.actionvalue;

@@ -725,4 +725,29 @@ export var BrowserActionTableHeader = [{
 	filter: textFilter({ placeholder: 'search action' })
 },
 ];
+export var ORElementTagHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '60px' }
+}, {
+	dataField: 'type',
+	text: 'Webelement type',
+	editable:false,
+},
+{
+	dataField: 'tag',
+	text: 'Tag',
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Tag can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+	},
+}
+];
 

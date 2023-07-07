@@ -744,7 +744,7 @@ class TestScriptPage extends React.Component {
 
       }
       var rowToUpdate = TestScriptData.SelectedRowFromTestStepsTable;
-      var testvalue ={"valuetobesend":"Provide value"};
+      var testvalue = { "valuetobesend": "Provide value" };
       testvalue.valuetobesend = await keytoSend;
       TestScriptData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = await JSON.stringify(await testvalue);
       this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
@@ -1130,8 +1130,8 @@ class TestScriptPage extends React.Component {
         if (await fileUploadDetails['isSuccess']) {
           this.setState({ isFileUploadButtonDisplayed: false });
           TestScriptData.IsFileUploadButtonDisplayed = false;
-          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value']='';
-          var updateValue = {"filename":""};
+          TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value'] = '';
+          var updateValue = { "filename": "" };
           updateValue['filename'] = await fileUploadDetails['fileName'];
           TestScriptData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await JSON.stringify(await updateValue);
           this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
@@ -1258,16 +1258,16 @@ class TestScriptPage extends React.Component {
         if (await selectedCategory === 'ApplicationAction') {
           try {
             var param = await TestScriptData.UIActionList['UIActionHelpText'][await selectedCategory][await actionToBeSelect]['parameter'];
-            if (await Object.keys(await param).length !==0) {
-              TestScriptData.ListOfTestSteps[rowIndex]['value'] =  await param;
+            if (await Object.keys(await param).length !== 0) {
+              TestScriptData.ListOfTestSteps[rowIndex]['value'] = await param;
             }
-            else{
+            else {
               TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
             }
           }
           catch (error) {
             TestScriptData.ListOfTestSteps[rowIndex]['value'] = ''
-           }
+          }
         }
         else {
           try {
@@ -1278,7 +1278,7 @@ class TestScriptPage extends React.Component {
           }
           catch (error) {
             value = ''
-           }
+          }
           TestScriptData.ListOfTestSteps[rowIndex]['value'] = await value;
         }
         this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps }); });
@@ -1310,8 +1310,8 @@ class TestScriptPage extends React.Component {
           {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
           {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
           {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
-          {(parameter !== undefined  && parameter !== '' ) && (<div><b>Parameter</b></div>)}
-          {(parameter !== undefined  && parameter !== '') && (<div>{parameter}</div>)}
+          {(parameter !== undefined && parameter !== '') && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined && parameter !== '') && (<div>{parameter}</div>)}
         </Alert>
       </div>
     }
@@ -1690,6 +1690,7 @@ class TestScriptPage extends React.Component {
                               if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
                                 this.setState({ isPageLoading: true });
                                 this.setState({ isPageLoading: true })
+                                console.log( testStep);
                                 var myData = TestScriptGetter.getactionandElementFromTestStep(testStep);
                                 Promise.resolve(myData).then((values) => {
                                   this.setState({ isPageLoading: false })

@@ -58,13 +58,64 @@ export class ORGetter {
                 var orData = await Object.keys(await ORDataDetails);
                 for (let i = 0; i < await orData.length; i++) {
                     var eleName = await orData[i];
-                    var allDetails = { id: i + 1, name: eleName, locator: await ORDataDetails[await eleName]['locator'], locatorproperty: await ORDataDetails[await eleName]['locatorproperty'], alternatexpath: await ORDataDetails[await eleName]['alternatexpath'] };
-                    allData.push(await allDetails);
+                    if (await eleName !== 'ELEMENTTAGDATA') {
+                        var allDetails = { id: i + 1, name: eleName, locator: await ORDataDetails[await eleName]['locator'], locatorproperty: await ORDataDetails[await eleName]['locatorproperty'], alternatexpath: await ORDataDetails[await eleName]['alternatexpath'] };
+                        allData.push(await allDetails);
+                    }
                 }
                 ORData.AllORTableData = await allData;
             }
+            //*** Set OR Tag Data */
+            var elementKeyData = await ORDataDetails['ELEMENTTAGDATA'];
+            if(elementKeyData ===undefined)
+            {
+                elementKeyData['LINK'] ="//a";
+                elementKeyData['BUTTON'] ="//button";
+                elementKeyData['TEXTBOX'] ="//input";
+                elementKeyData['IMAGE'] ="//img";
+                elementKeyData['CHECKBOX'] ="//input";
+                elementKeyData['RADIOBUTTON'] ="//input";
+                elementKeyData['LISTBOX'] ="//select";
+                elementKeyData['TEXTAREA'] ="//textarea";
+                elementKeyData['LABEL'] ="//label";
+                elementKeyData['DEFAULT'] ="//*";
+            }
+            var allTagData = [];
+            var tagData = await Object.keys(await elementKeyData);
+            for (let i = 0; i < await tagData.length; i++) {
+                var eleName = await tagData[i];
+                var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName] };
+                allTagData.push(await allDetails);
+            }
+            ORData.ORElementTagData = await allTagData;
         }
 
+    }
+
+    async saveORTagData() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            try {
+                var backendApi = Config.backendAPI;
+                var backendServiceLocation = await Config.backendServiceAt;
+                if (backendServiceLocation === 'remote') {
+                    backendApi = Config.remoteBackendAPI;
+                }
+                var dataforSend = {};
+                dataforSend['elementtag'] = await ORData.ORTagDataToSave;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web/updatetag', await headers, await dataforSend);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+            }
+        }
     }
 }
 export default new ORGetter();
