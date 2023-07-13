@@ -1690,7 +1690,6 @@ class TestScriptPage extends React.Component {
                               if ((row.element === undefined || row.element === '') && (row.action === undefined || row.action === '')) {
                                 this.setState({ isPageLoading: true });
                                 this.setState({ isPageLoading: true })
-                                console.log( testStep);
                                 var myData = TestScriptGetter.getactionandElementFromTestStep(testStep);
                                 Promise.resolve(myData).then((values) => {
                                   this.setState({ isPageLoading: false })
@@ -1699,10 +1698,11 @@ class TestScriptPage extends React.Component {
                                     var elementName = values.orLogicalName.trim().toUpperCase();
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
+                                    var secondaryXpath = values.secondaryXPath;
                                     row.action = actionName;
                                     row.value = values.actionvalue;
                                     var isKeyAlreadyPresent = TestScriptData.TestScriptORData[elementName];
-                                    var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
+                                    var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: secondaryXpath }
                                     if (isKeyAlreadyPresent === undefined) {
                                       TestScriptData.AllORData[elementName] = {};
                                       TestScriptData.AllORData[elementName] = newElementAdd;

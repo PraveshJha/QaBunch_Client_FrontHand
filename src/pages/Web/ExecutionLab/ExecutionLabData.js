@@ -11,7 +11,7 @@ export var ExecutionLabData = {
     "BarChartDataForComponent":[],
     "ScreenShotList":['Each Step','Failure Step'],
     "SelectedScreenShot":'Each Step',
-    "RunAtOptionList":['Server','Selenium grid','BrowserStack','LamdaTest','SauceLabs'],
+    "RunAtOptionList":['Server','BrowserStack','LamdaTest','SauceLabs'],
     "SelectedRunAtOption":'Server',
     "ScreenOptionList":['Desktop','Mobile','Tablet'],
     "SelectedScreenOption":'Desktop',

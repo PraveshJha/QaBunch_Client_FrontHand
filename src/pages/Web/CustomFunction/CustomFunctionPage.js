@@ -1456,10 +1456,11 @@ class CustomFunctionPage extends React.Component {
                                     var elementName = values.orLogicalName;
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
+                                    var secondaryXpath = values.secondaryXPath;
                                     row.action = actionName;
                                     row.value = values.actionvalue;
                                     var isKeyAlreadyPresent = CustomFunctionData.TestScriptORData[elementName];
-                                    var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: '' }
+                                    var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: secondaryXpath }
                                     if (isKeyAlreadyPresent === undefined) {
                                       CustomFunctionData.NewElementToAddinOR[elementName.toUpperCase()] = newElementAdd;
                                       CustomFunctionData.AllORData[elementName] = {};
