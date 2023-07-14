@@ -9,41 +9,48 @@ import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import {
   Button,
 } from 'reactstrap';
-import  Matcher  from '../../../QAautoMATER/funcLib/matcher';
+import Matcher from '../../../QAautoMATER/funcLib/matcher';
 const selectedProject = Config.SelectedProject;
 
 
 export class TestScriptGetter {
 
   async loadTestScriptPage() {
-    await this.initializeTestScriptPage();
-    await this.getallORDATA();
-    await this.getallCommonDATA();
-    await this.renderComponent();
-    //await DataGetter.GetAllActions();
-    var allWebActionList = await DataGetter.GetAllWebActions();
-    TestScriptData.UIActionList= await allWebActionList;
-    await this.getPageFunctionList();
-    if (await localStorage.getItem('testId') !== undefined && await localStorage.getItem('testId') !== null) {
-      var automationSteps = await JSON.parse(await localStorage.getItem(await localStorage.getItem('testId')));
-      TestScriptData.SelectedComponent = await automationSteps['component'];
-      TestScriptData.IsValidComponentName = true;
-      TestScriptData.IsValidTestId = true;
-      TestScriptData.IsValidTestName = true;
-      TestScriptData.TestId = await automationSteps['testId'];
-      TestScriptData.TestName = await automationSteps['testName'];
-      TestScriptData.ListOfTestSteps = await automationSteps['listOfTestSteps'];
-      TestScriptData.DependentCustomFunction = await automationSteps['dependentCustomFunction'];
-      TestScriptData.TestDataTableHeader = await automationSteps['testDataTableHeader'];
-      TestScriptData.ListOfTestScriptData = await automationSteps['listOfTestScriptData'];
-      TestScriptData.ExternalTestSteps = await automationSteps['manualTestSteps'];
-    }
     try {
-      await localStorage.removeItem('testId');
-      await localStorage.removeItem(await localStorage.removeItem('testId'));
+      await this.initializeTestScriptPage();
+      await this.getallORDATA();
+      await this.getallCommonDATA();
+      await this.renderComponent();
+      //await DataGetter.GetAllActions();
+      var allWebActionList = await DataGetter.GetAllWebActions();
+      TestScriptData.UIActionList = await allWebActionList;
+      await this.getPageFunctionList();
+      try {
+        if (await localStorage.getItem('testId') !== undefined && await localStorage.getItem('testId') !== null) {
+          var automationSteps = await JSON.parse(await localStorage.getItem(await localStorage.getItem('testId')));
+          TestScriptData.SelectedComponent = await automationSteps['component'];
+          TestScriptData.IsValidComponentName = true;
+          TestScriptData.IsValidTestId = true;
+          TestScriptData.IsValidTestName = true;
+          TestScriptData.TestId = await automationSteps['testId'];
+          TestScriptData.TestName = await automationSteps['testName'];
+          TestScriptData.ListOfTestSteps = await automationSteps['listOfTestSteps'];
+          TestScriptData.DependentCustomFunction = await automationSteps['dependentCustomFunction'];
+          TestScriptData.TestDataTableHeader = await automationSteps['testDataTableHeader'];
+          TestScriptData.ListOfTestScriptData = await automationSteps['listOfTestScriptData'];
+          TestScriptData.ExternalTestSteps = await automationSteps['manualTestSteps'];
+        }
+      }
+      catch (error) { }
+      try {
+        await localStorage.removeItem('testId');
+        await localStorage.removeItem(await localStorage.removeItem('testId'));
+      }
+      catch (error) { }
+      TestScriptData.ListOfTestTools = await this.GetTestToolFromConfigurationPage();
     }
-    catch (error) { }
-    TestScriptData.ListOfTestTools= await this.GetTestToolFromConfigurationPage();
+    catch (error) {
+     }
   }
 
   async initializeTestScriptPage() {
@@ -58,11 +65,10 @@ export class TestScriptGetter {
           if (await defaultEnv === '' || await defaultEnv === undefined) {
             defaultEnv = await allEnv[0]['name'];
           }
-          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name',await defaultEnv)
-          if(await index > -1)
-          {
-             var appUrl = await allEnv[await index]['url'];
-             TestScriptData.AppUrl = await appUrl;
+          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name', await defaultEnv)
+          if (await index > -1) {
+            var appUrl = await allEnv[await index]['url'];
+            TestScriptData.AppUrl = await appUrl;
           }
         }
       }
@@ -90,7 +96,7 @@ export class TestScriptGetter {
         TestScriptData.AllORKey = [];
         for (let i = 0; i < await allKeys.length; i++) {
           var keyName = await allKeys[i];
-          TestScriptData.TestScriptORData[await keyName]= TestScriptData.AllORData[await keyName];
+          TestScriptData.TestScriptORData[await keyName] = TestScriptData.AllORData[await keyName];
           TestScriptData.AllORKey.push(await keyName);
         }
       }
@@ -116,7 +122,7 @@ export class TestScriptGetter {
         var commonData = await serverResponse['data'];
         var allCommonKeys = await Object.keys(await commonData);
         var allCommonTestDataRow = [];
-        var allCommonKeyPair ={};
+        var allCommonKeyPair = {};
         for (let i = 0; i < await allCommonKeys.length; i++) {
           var keyName = await allCommonKeys[i];
           var rowDetails = { id: i + 1, key: await keyName, value: await commonData[await keyName] };
@@ -191,13 +197,13 @@ export class TestScriptGetter {
     //   '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
     //   '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
     // return !!urlPattern.test(urlString);
-    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString); 
+    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString);
   }
 
   async isDataFilledforDependendentPage() {
     try {
       var allData = await TestScriptData.DependentCustomFunction;
-     // var totalRows = await allData.length;
+      // var totalRows = await allData.length;
       if (allData.length === 0) {
         return true
       }
@@ -335,8 +341,8 @@ export class TestScriptGetter {
   }
 
   async getPageFunctionList() {
-    var headers ={}
-    var serverResponse ={}
+    var headers = {}
+    var serverResponse = {}
     if (Config.isDemo) {
       TestScriptData.ListOfPageFunction = ['Given I am on Home page', 'Given I am on Product List page', 'Given I am on Product Information page']
       TestScriptData.PageFunctionNameListWithLabelandValue = [{ label: 'Custom function 1', value: 'Custom function 1' }];
@@ -348,8 +354,8 @@ export class TestScriptGetter {
         if (backendServiceLocation === 'remote') {
           backendApi = Config.remoteBackendAPI;
         }
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page', await headers);
+        headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page', await headers);
         var customFunctionData = await serverResponse['data'];
         TestScriptData.ListOfPageFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -406,9 +412,9 @@ export class TestScriptGetter {
 
   async saveTestScriptData() {
     var dataforSend = {};
-    var headers={}
-    var serverResponse ={}
-    var saveFile =true;
+    var headers = {}
+    var serverResponse = {}
+    var saveFile = true;
     if (Config.isDemo) {
       await new Promise(wait => setTimeout(wait, 3000));
       return true;
@@ -434,10 +440,10 @@ export class TestScriptGetter {
         testscriptData['testdatacolumn'] = TestScriptData.TestDataTableHeader
         testscriptData['testdataset'] = TestScriptData.ListOfTestScriptData
         if (await Object.keys(newElement).length > 0) {
-           dataforSend = {};
+          dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement;
-           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-           serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+          headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
           if (!saveOrData['isFileSaved']) {
             Config.ErrorMessage = await saveOrData['errorMessage'];
@@ -445,19 +451,19 @@ export class TestScriptGetter {
           }
         }
         if (await Object.keys(TestScriptData.TestDataToAdd).length > 0) {
-           dataforSend = {};
+          dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await TestScriptData.TestDataToAdd
-           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-           serverResponse = await restAPI.post(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
-           saveFile = await serverResponse['data'];
+          headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+          serverResponse = await restAPI.post(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+          saveFile = await serverResponse['data'];
           if (!saveFile['isFileSaved']) {
             Config.ErrorMessage = await saveFile['errorMessage'];
             return;
           }
         }
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
-         saveFile = await serverResponse['data'];
+        headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
+        saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
       }
@@ -632,8 +638,8 @@ export class TestScriptGetter {
         var testscriptData = {};
         testscriptData['step'] = await testStep;
         testscriptData['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA'];
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,account:Users.userSelectedAccount };
-        var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers,await testscriptData);
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Users.userSelectedAccount };
+        var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, await testscriptData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
       }
@@ -656,7 +662,7 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,account:Users.userSelectedAccount };
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Users.userSelectedAccount };
         var allSteps = await TestScriptData.ExternalTestSteps;
         var lines = await allSteps.split('\n');
         var isBDD = false;
@@ -680,7 +686,7 @@ export class TestScriptGetter {
           testStep = await testStep.trim();
           if (await testStep.trim() !== '' && await !testStepLowerCase.startsWith('example') && await !testStepLowerCase.includes('|')) {
             var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
-            var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers,{"step":await testStep,"elementtag":await TestScriptData.AllORData['ELEMENTTAGDATA']});
+            var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllORData['ELEMENTTAGDATA'] });
             var values = await serverResponse['data'];
             var actionName = await values.actionName;
             var valueneedtobeSend = await values.actionvalue;
@@ -841,8 +847,8 @@ export class TestScriptGetter {
         }
         let formData = new FormData();
         formData.append('file', await filePath);
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail,'Content-Type':'multipart/form-data'};
-        var serverResponse = await restAPI.post(backendAPI + 'fileupload/project/' + await selectedProject, await headers,await formData);
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, 'Content-Type': 'multipart/form-data' };
+        var serverResponse = await restAPI.post(backendAPI + 'fileupload/project/' + await selectedProject, await headers, await formData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
       }
@@ -852,22 +858,20 @@ export class TestScriptGetter {
     }
   }
 
-  async GetTestToolFromConfigurationPage()
-  {
-    var allTestTool =['QaBunch'];
+  async GetTestToolFromConfigurationPage() {
+    var allTestTool = ['QaBunch'];
     var allToolOptions = await TestScriptData.AllConfigData['Tools'];
-    for(let i=0;i<await allToolOptions.length;i++)
-    {
+    for (let i = 0; i < await allToolOptions.length; i++) {
       allTestTool.push(await allToolOptions[i]['tool']);
     }
     return await allTestTool;
 
   }
 
-  async getTestInformationFromTestTool(testTool,testId) {
-    var headers={}
-    var serverResponse ={}
-    var testDetailsData ={};
+  async getTestInformationFromTestTool(testTool, testId) {
+    var headers = {}
+    var serverResponse = {}
+    var testDetailsData = {};
     if (Config.isDemo) {
       await new Promise(wait => setTimeout(wait, 3000));
       return true;
@@ -882,10 +886,10 @@ export class TestScriptGetter {
         var testscriptData = {};
         testscriptData['testtool'] = await testTool.trim();
         testscriptData['testid'] = await testId.trim();
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.post(backendApi + 'testtooltestinfo/project/' + selectedProject + '/gettestinfo', await headers,await testscriptData);
-         testDetailsData = await serverResponse['data'];
-         Config.ErrorMessage = await testDetailsData['errorMessage'];
+        headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.post(backendApi + 'testtooltestinfo/project/' + selectedProject + '/gettestinfo', await headers, await testscriptData);
+        testDetailsData = await serverResponse['data'];
+        Config.ErrorMessage = await testDetailsData['errorMessage'];
         return await testDetailsData;
       }
       catch (error) {

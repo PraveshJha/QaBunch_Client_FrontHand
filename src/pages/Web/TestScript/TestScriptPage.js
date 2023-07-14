@@ -226,6 +226,7 @@ class TestScriptPage extends React.Component {
 
     }
     catch (error) {
+      console.log(await error);
     }
   }
 

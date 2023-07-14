@@ -791,7 +791,6 @@ class TestCasePagePage extends React.Component {
   }
 
   importTestCases = async (event) => {
-
     await event.preventDefault();
     if (this.state.bulkUploadFile === null || this.state.bulkUploadFile === '' || this.state.bulkUploadFile === undefined) {
       return await this.getNotification('error', 'Please upload excel file for manual test cases.');
@@ -801,125 +800,135 @@ class TestCasePagePage extends React.Component {
     if (await fileExtension.trim().toLowerCase() !== "xlsx") {
       return await this.getNotification('error', 'Please upload excel file , supported version is xlsx');
     }
-    var excelInfo = await ExcelRenderer(await this.state.bulkUploadFile);
+    try {
+      var excelInfo = null;
+      //var excelInfo = await ExcelRenderer(await this.state.bulkUploadFile);
+      await ExcelRenderer(await this.state.bulkUploadFile, (err, resp) => {
+        if(err){
+         // console.log(err);            
+        }
+        else{
+          excelInfo =  resp;
+        }
+      });
+    }
+    catch (error) { }
     var rowInfo = await excelInfo.rows;
     var columnInfo = await excelInfo.rows[0];
     var colOndexDetails = await TestCaseGetter.getColumnNameIfValid(await columnInfo);
     if (!await colOndexDetails['isvalid']) {
       return await this.getNotification('error', 'Excel file is not in correct format , Please  make sure excel column should have Component ,Test Steps and Test case Name and Expected Result column.');
     }
-    var componentIndex = await Number(await colOndexDetails['component']);
-    var testStepsIndex = await Number(await colOndexDetails['teststeps']);
-    var expectedResultIndex = await colOndexDetails['expectedresult'];
-    var priorityIndex = await colOndexDetails['priority'];
-    var nameindex = await colOndexDetails['name'];
-    var testdataIndex = await colOndexDetails['testdata'];
-    var preconditionIndex = await colOndexDetails['precondition'];
-    var referenceIndex = await colOndexDetails['reference'];
-    var totalTestCaseCreated = 0;
-    this.setState({ isPageLoading: true });
-    var lastExpectedResults =''
-    for (let i = 1; i < await rowInfo.length; i++) {
-      var componentName = await rowInfo[i][componentIndex];
-      var testName = await rowInfo[i][nameindex];
-      var testPriority = await rowInfo[i][priorityIndex];
-      var testPrecondition = await rowInfo[i][preconditionIndex];
-      var testDataValue = await rowInfo[i][testdataIndex];
-      var referenceValue = await rowInfo[i][referenceIndex];
-      var testSteps = await rowInfo[i][testStepsIndex];
-      var expectedResult = await rowInfo[i][expectedResultIndex];
-      lastExpectedResults = await expectedResult;
-      var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await i, await componentIndex,await rowInfo.length, await rowInfo);
-      if( await (Number(await  maxRange)-1) !== Number(await i))
-      {
-        for(let j=i+1;j<await maxRange;j++ )
-        {
-          var onebyoneStep = await rowInfo[j][testStepsIndex];
-          if(await onebyoneStep !== undefined && await onebyoneStep !=='')
-          {
-            testSteps = await  testSteps+ "\n"+ await onebyoneStep;
+    try {
+      var componentIndex = await Number(await colOndexDetails['component']);
+      var testStepsIndex = await Number(await colOndexDetails['teststeps']);
+      var expectedResultIndex = await colOndexDetails['expectedresult'];
+      var priorityIndex = await colOndexDetails['priority'];
+      var nameindex = await colOndexDetails['name'];
+      var testdataIndex = await colOndexDetails['testdata'];
+      var preconditionIndex = await colOndexDetails['precondition'];
+      var referenceIndex = await colOndexDetails['reference'];
+      var totalTestCaseCreated = 0;
+      this.setState({ isPageLoading: true });
+      var lastExpectedResults = ''
+      for (let i = 1; i < await rowInfo.length; i++) {
+        var componentName = await rowInfo[i][componentIndex];
+        var testName = await rowInfo[i][nameindex];
+        var testPriority = await rowInfo[i][priorityIndex];
+        var testPrecondition = await rowInfo[i][preconditionIndex];
+        var testDataValue = await rowInfo[i][testdataIndex];
+        var referenceValue = await rowInfo[i][referenceIndex];
+        var testSteps = await rowInfo[i][testStepsIndex];
+        var expectedResult = await rowInfo[i][expectedResultIndex];
+        lastExpectedResults = await expectedResult;
+        var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await i, await componentIndex, await rowInfo.length, await rowInfo);
+        if (await (Number(await maxRange) - 1) !== Number(await i)) {
+          for (let j = i + 1; j < await maxRange; j++) {
+            var onebyoneStep = await rowInfo[j][testStepsIndex];
+            if (await onebyoneStep !== undefined && await onebyoneStep !== '') {
+              testSteps = await testSteps + "\n" + await onebyoneStep;
+            }
+            var onebyOneExpectedResult = await rowInfo[j][expectedResultIndex];
+            if (await onebyOneExpectedResult !== undefined && await onebyOneExpectedResult !== '') {
+              expectedResult = await expectedResult + "\n" + await onebyOneExpectedResult;
+              lastExpectedResults = await onebyOneExpectedResult
+            }
+
           }
-          var onebyOneExpectedResult = await rowInfo[j][expectedResultIndex];
-          if(await onebyOneExpectedResult !== undefined && await onebyOneExpectedResult !=='')
-          {
-            expectedResult = await expectedResult + "\n"+ await onebyOneExpectedResult;
-            lastExpectedResults = await onebyOneExpectedResult
+
+        }
+        if ((await componentName !== undefined || await componentName !== '') || (await testSteps !== undefined || await testSteps !== '') || (await testName !== undefined || await testName !== '')) {
+          if (await testPrecondition === undefined) {
+            testPrecondition = '';
           }
-          
-        }
-       
-      }
-      if ((await componentName !== undefined || await componentName !== '') || (await testSteps !== undefined || await testSteps !== '') ||  (await testName !== undefined || await testName !== '')) {
-        if (await testPrecondition === undefined) {
-          testPrecondition = '';
-        }
-        if (await testDataValue === undefined) {
-          testDataValue = '';
-        }
-        if (await referenceValue === undefined) {
-          referenceValue = '';
-        }
-        //create Test Info
-        var priority = '';
-        if (await testPriority === undefined) {
-          const testStepNumber = await testSteps.split(/[\r\n]+/).length;
-          if (Number(await testStepNumber) < 5) {
-            priority = 'Low';
+          if (await testDataValue === undefined) {
+            testDataValue = '';
           }
-          else if (Number(await testStepNumber) >= 5 && Number(await testStepNumber) <= 10) {
-            priority = 'Medium';
+          if (await referenceValue === undefined) {
+            referenceValue = '';
           }
-          else if (Number(await testStepNumber) >= 10 && Number(await testStepNumber) <= 15) {
-            priority = 'High';
+          //create Test Info
+          var priority = '';
+          if (await testPriority === undefined) {
+            const testStepNumber = await testSteps.split(/[\r\n]+/).length;
+            if (Number(await testStepNumber) < 5) {
+              priority = 'Low';
+            }
+            else if (Number(await testStepNumber) >= 5 && Number(await testStepNumber) <= 10) {
+              priority = 'Medium';
+            }
+            else if (Number(await testStepNumber) >= 10 && Number(await testStepNumber) <= 15) {
+              priority = 'High';
+            }
+            else {
+              priority = 'Critical';
+            }
           }
           else {
-            priority = 'Critical';
+            priority = await testPriority;
+            switch (await priority.trim().toLocaleLowerCase()) {
+              case "p1":
+                priority = 'High';
+                break;
+              case "p2":
+                priority = 'Medium';
+                break;
+              case "p3":
+                priority = 'Low';
+                break;
+              case "p0":
+                priority = 'Critical';
+                break;
+            }
           }
-        }
-        else {
-          priority = await testPriority;
-          switch (await priority.trim().toLocaleLowerCase()) {
-            case "p1":
-              priority = 'High';
-              break;
-            case "p2":
-              priority = 'Medium';
-              break;
-            case "p3":
-              priority = 'Low';
-              break;
-            case "p0":
-              priority = 'Critical';
-              break;
+          if (await testName === undefined || await await testName === '') {
+            testName = await lastExpectedResults;
           }
-        }
-        if (await testName === undefined || await await testName ==='') {
-          testName = await lastExpectedResults;
-        }
-        var counter = 1;
-        counter = await Number(await counter) + 1;
-        componentName = await TestCaseGetter.createPathForComponent(await componentName);
-        await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
-        var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition);
-        if (await isTestCaseCreated) {
-          totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)
-        }
+          var counter = 1;
+          counter = await Number(await counter) + 1;
+          componentName = await TestCaseGetter.createPathForComponent(await componentName);
+          await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
+          var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition);
+          if (await isTestCaseCreated) {
+            totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)
+          }
 
+
+        }
+        // i = Number(await maxRange);
+        // initialLine = i;
+        i = await (Number(await maxRange) - 1);
+      }
+      this.setState({ isPageLoading: false });
+      if (Number(await totalTestCaseCreated) > 0) {
+        return await this.getNotification('success', await Number(totalTestCaseCreated) + ' Manual test cases imported from the excel file');
 
       }
-      // i = Number(await maxRange);
-      // initialLine = i;
-      i = await (Number(await maxRange)-1);
+      else {
+        return await this.getNotification('error', 'NO test case imported from the excel file, Please make sure you have correct excel template');
+      }
     }
-    this.setState({ isPageLoading: false });
-    if (Number(await totalTestCaseCreated) > 0) {
-      //await window.location.reload();
-      await this.getNotification('success', await Number(totalTestCaseCreated) + ' Manual test cases imported from the excel file');
-
-    }
-    else {
-      return await this.getNotification('error', 'NO test case imported from the excel file, Please make sure you have correct excel template');
-    }
+    catch (error) { }
   }
 
 
