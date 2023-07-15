@@ -166,7 +166,10 @@ export var UITestResultsTableHeader = [{
 	headerStyle: { width: '100px' },
 	formatter: (cell) => {
 		var imageData = 'data:image/png;base64, ' + cell;
-		return <img alt ='screenshot' width="100" height="50" src={imageData}></img>;
+		if(cell !=='')
+		{
+			return <img alt ='screenshot' width="100" height="50" src={imageData}></img>;
+		}
 	},
 	events: {
 		onClick: (e, column, columnIndex, row, rowIndex) => {

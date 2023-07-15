@@ -261,8 +261,8 @@ export var CommonTestDataHeaderTable = [{
 				message: 'Data key only accept alphabets.'
 			});
 		}
-		var allColumnValue = await GetData.jsonArrayGetallKeyValue(TestData.AllCommonTestData, 'key')
-		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+		var allColumnValue = await GetData.jsonArrayGetallKeyValue(await TestData.AllCommonTestData, 'key')
+		var isPresent = await Matcher.isValuePresentInArray(await allColumnValue, await newValue);
 		if (isPresent) {
 			return done({
 				valid: false,
@@ -421,25 +421,6 @@ export var TestScriptTableHeader = [{
 	dataField: 'action',
 	text: 'Action*',
 	headerStyle: { width: '200px' },
-	// validator: async (newValue, row, column, done) => {
-	// 	if (await newValue.trim() === '') {
-	// 		return done({
-	// 			valid: false,
-	// 			message: 'Action can not be blank'
-	// 		});
-	// 	}
-	// 	else {
-	// 		return done();
-	// 	}
-	// },
-	// editor: {
-	// 	type: Type.SELECT,
-	// 	getOptions: (setOptions) => {
-	// 		setTimeout(() => {
-	// 			setOptions(CustomFunctionData.AllSeleniumMethod);
-	// 		}, 0);
-	// 	}
-	// },
 },
 {
 	dataField: 'element',

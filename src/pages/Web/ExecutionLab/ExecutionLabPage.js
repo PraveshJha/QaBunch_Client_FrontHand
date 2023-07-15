@@ -83,7 +83,7 @@ class ExecutionLabPage extends React.Component {
     isScreenshotModalOpen: ExecutionLabData.IsScreenshotModalOpen,
     imageData: ExecutionLabData.ImageData,
     stepsDetailsForScreenshot: ExecutionLabData.StepsDetailsForScreenshot,
-    
+
 
   };
   async componentDidMount() {
@@ -301,11 +301,10 @@ class ExecutionLabPage extends React.Component {
       return await this.getNotification('error', 'Please select atleast one test script for execution');
     }
     else {
-      try{
+      try {
         await localStorage.setItem('defectEnvironment', await environment);
       }
-      catch(error)
-      {}
+      catch (error) { }
       ExecutionLabData.SelectedTestScripts = selectedScripts;
       this.setState({ executionProgressBar: true });
       await ExecutionLabDataGetter.executeUITestScripts(environment, runAt, threadCount, reportInDashBoard, screenName, deviceName, screenShotChoice, selectedScripts);
@@ -329,7 +328,7 @@ class ExecutionLabPage extends React.Component {
   showTestResults(row) {
     var boarderColor = 'default';
     var assertionData = [];
-   // var executionTime = '';
+    // var executionTime = '';
     if (ExecutionLabData.AssertionResultsForAllResults[row.id] !== undefined) {
       assertionData = ExecutionLabData.AssertionResultsForAllResults[row.id];
     }
@@ -339,7 +338,7 @@ class ExecutionLabPage extends React.Component {
           <CardHeader>
             <div className="d-flex justify-content-between align-items-center">
               Test Step Results ({ExecutionLabData.ExecutionTimeForTestScripts[row.id]} seconds)
-              {row.status ==='Fail' && (<ButtonGroup size="sm">
+              {row.status === 'Fail' && (<ButtonGroup size="sm">
                 <Button color='dark' name="createnewDefect" onClick={(e) => this.createNewDefect(assertionData, e)} >
                   <small>Create new defect</small>
                 </Button>
@@ -362,10 +361,18 @@ class ExecutionLabPage extends React.Component {
                   blurToSave: true,
                   onStartEdit: (row, column, rowIndex, columnIndex) => {
                     if (columnIndex === 5) {
-                      this.setState({ isScreenshotModalOpen: true });
-                      this.setState({ stepsDetailsForScreenshot: ExecutionLabData.StepsDetailsForScreenshot })
-                      this.setState({ imageData: ExecutionLabData.ImageData })
+                      if (ExecutionLabData.ImageData !== '') {
+                        if(row.screenshot !=='')
+                        {
+                          this.setState({ isScreenshotModalOpen: true });
+                          this.setState({ stepsDetailsForScreenshot: ExecutionLabData.StepsDetailsForScreenshot })
+                          this.setState({ imageData: ExecutionLabData.ImageData })
+                        }
+                      }
                     }
+                  },
+                  afterSaveCell: (oldValue, newValue, row, column) => {
+                    row.screenshot = oldValue;
                   }
                 })}
               />
@@ -388,22 +395,21 @@ class ExecutionLabPage extends React.Component {
     ExecutionLabData.IsScreenshotModalOpen = false;
   }
 
-    //****** Create New Defect***********************************************
+  //****** Create New Defect***********************************************
 
-    createNewDefect = async (assertionData) => {
-      try {
-        await localStorage.removeItem('defectDetails');
+  createNewDefect = async (assertionData) => {
+    try {
+      await localStorage.removeItem('defectDetails');
     }
     catch (error) { }
-      try{
-        var defectDetails = await assertionData;
-        await localStorage.setItem('defectDetails', await JSON.stringify(await defectDetails));
-        await window.open("/mn/defects", "_blank");
-      }
-      catch(error)
-      {}
-  
-    };
+    try {
+      var defectDetails = await assertionData;
+      await localStorage.setItem('defectDetails', await JSON.stringify(await defectDetails));
+      await window.open("/mn/defects", "_blank");
+    }
+    catch (error) { }
+
+  };
 
   render() {
 
@@ -613,7 +619,7 @@ class ExecutionLabPage extends React.Component {
               <Col lg={12} md={12} sm={12} xs={12}>
                 <Form>
                   <FormGroup row>
-                    <img alt ='screenshot' src={this.state.imageData}></img>;
+                    <img alt='screenshot' src={this.state.imageData}></img>;
                   </FormGroup>
                 </Form>
               </Col>

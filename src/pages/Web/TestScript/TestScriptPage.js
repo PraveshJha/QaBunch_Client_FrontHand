@@ -153,8 +153,8 @@ class TestScriptPage extends React.Component {
   componentWillMount = async () => {
     this.setState({ isPageLoading: true })
     window.scrollTo(0, 0);
-    await TestScriptGetter.loadTestScriptPage();
     try {
+      await TestScriptGetter.loadTestScriptPage();
       //**** Basic Details ********************************************************
       this.setState({ allComponentList: TestScriptData.AllComponentList });
       this.setState({ selectedComponent: TestScriptData.SelectedComponent });
@@ -223,10 +223,9 @@ class TestScriptPage extends React.Component {
       this.setState({ selectedWebActionRowId: TestScriptData.SelectedWebActionRowId })
       this.setState({ isPageLoading: false })
 
-
     }
     catch (error) {
-      console.log(await error);
+      //console.log(await error);
     }
   }
 

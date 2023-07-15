@@ -68,6 +68,13 @@ export class ConfigGetter {
             else {
                 ConfigData.DefaultSaveDaysToDevelopment = Number(await dataChoice);
             }
+            dataChoice = await allconfigData['DefaultScreenshotOption'];
+            if (dataChoice === undefined) {
+                ConfigData.SelectedScreenshot = 'For failure & success';
+            }
+            else {
+                ConfigData.SelectedScreenshot = await dataChoice
+            }
 
         }
     }

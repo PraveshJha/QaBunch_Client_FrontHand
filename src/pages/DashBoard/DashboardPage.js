@@ -535,10 +535,18 @@ class DashboardPage extends React.Component {
                   blurToSave: true,
                   onStartEdit: (row, column, rowIndex, columnIndex) => {
                     if (columnIndex === 5) {
-                      this.setState({ isScreenshotModalOpen: true });
-                      this.setState({ stepsDetailsForScreenshot: DashBoardData.StepsDetailsForScreenshot })
-                      this.setState({ imageData: DashBoardData.ImageData })
+                      if (DashBoardData.ImageData !== '') {
+                        if(row.screenshot !=='')
+                        {
+                          this.setState({ isScreenshotModalOpen: true });
+                          this.setState({ stepsDetailsForScreenshot: DashBoardData.StepsDetailsForScreenshot })
+                          this.setState({ imageData: DashBoardData.ImageData })
+                        }
+                      }
                     }
+                  },
+                  afterSaveCell: (oldValue, newValue, row, column) => {
+                    row.screenshot = oldValue;
                   }
                 })}
               />
@@ -885,7 +893,7 @@ class DashboardPage extends React.Component {
                 <Col lg={12} md={12} sm={12} xs={12}>
                   <Form>
                     <FormGroup row>
-                      <img alt ='imagedata' src={this.state.imageData}></img>;
+                      <img alt='imagedata' src={this.state.imageData}></img>;
                     </FormGroup>
                   </Form>
                 </Col>

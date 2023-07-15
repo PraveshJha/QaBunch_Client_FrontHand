@@ -19,6 +19,7 @@ export class ConfigSetter {
             defaultConfigData["DefaultReportTrailCount"] = ConfigData.DefaultReportTrailCount;
             defaultConfigData["DefaultSaveDaysToReport"] = ConfigData.DefaultSaveDaysToReport;
             defaultConfigData["DefaultSaveDaysToDevelopment"] = ConfigData.DefaultSaveDaysToDevelopment;
+            defaultConfigData["DefaultScreenshotOption"] = ConfigData.SelectedScreenshot;
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

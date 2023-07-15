@@ -47,6 +47,8 @@ class ConfigurationPage extends React.Component {
     defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment,
     validatedeSaveDaysToDevelopment: ConfigData.ValidatedeSaveDaysToDevelopment,
     errorMessageDefaultConfiguration: ConfigData.ErrorMessageDefaultConfiguration,
+    screenshotOptionList:ConfigData.ScreenshotOptionList,
+    selectedScreenshot:ConfigData.SelectedScreenshot,
 
     //****** Environment URL LIst  ***********************************************************
     validateEnvNameFromURL: ConfigData.ValidateEnvNameFromURL,
@@ -105,7 +107,8 @@ class ConfigurationPage extends React.Component {
     this.setState({ validatedefaultReportTrailCount: ConfigData.ValidatedefaultReportTrailCount })
     this.setState({ defaultSaveDaysToReport: ConfigData.DefaultSaveDaysToReport })
     this.setState({ validatedeDefaultSaveDaysToReport: ConfigData.ValidatedeDefaultSaveDaysToReport })
-    this.setState({ defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment })
+    this.setState({ screenshotOptionList: ConfigData.ScreenshotOptionList })
+    this.setState({ selectedScreenshot: ConfigData.SelectedScreenshot })
 
 
     //****** Env and URL   *********************************************************************************
@@ -275,6 +278,16 @@ class ConfigurationPage extends React.Component {
       }
     }
   }
+
+  selectScreenshotOption= async (event) => {
+    this.setState({ validateDefaultSelectedEnvironment: false })
+    var envChoice = await event.target.value;
+    if (this.state.selectedScreenshot !== await envChoice) {
+
+      this.setState({ selectedScreenshot: await envChoice });
+      ConfigData.SelectedScreenshot = await envChoice;
+    }
+  };
 
   //********************* URL section ********************************//
 
@@ -784,6 +797,14 @@ class ConfigurationPage extends React.Component {
                       </Label>
                       <Col>
                         <Input type="number" name="defaultDevexeDays" invalid={this.state.validatedeSaveDaysToDevelopment} value={this.state.defaultSaveDaysToDevelopment} onChange={this.selectSaveDaysForDevandExecution.bind(this)}>
+                        </Input>
+                      </Col>
+                      <Label sm={5}>
+                        Screenshot
+                      </Label>
+                      <Col>
+                        <Input type="select" onChange={this.selectScreenshotOption.bind(this)} name="screenshotOption" value={this.state.selectedScreenshot}>
+                          <DropDownOptions options={this.state.screenshotOptionList} />
                         </Input>
                       </Col>
                     </FormGroup>

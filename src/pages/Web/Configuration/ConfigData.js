@@ -45,4 +45,6 @@ export var ConfigData = {
     SelectedDaysForDelete:'7 Days',
     IsErrorOnCleanUpEnvironment:false,
     IsErrorOnDayToDelete:false,
+    ScreenshotOptionList:['For failure & success','For each step'],
+    SelectedScreenshot:'For failure & success'
 };

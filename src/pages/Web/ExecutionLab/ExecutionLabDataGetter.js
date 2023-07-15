@@ -50,7 +50,8 @@ export class ExecutionLabDataGetter {
         var allComponent = await serverResponse['data'];
         if (allComponent.length > 0) {
           ExecutionLabData.ComponentList = ["All"].concat(allComponent);
-          ExecutionLabData.SelectedComponent = "All";
+          // console.log(ExecutionLabData.SelectedComponent)
+          // ExecutionLabData.SelectedComponent = "All";
         }
       }
       catch (error) {

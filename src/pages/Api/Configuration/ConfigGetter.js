@@ -1,8 +1,8 @@
 import { ConfigData } from './ConfigData';
-import { Config,Users } from '../../../QAautoMATER/Config';
+import { Config, Users } from '../../../QAautoMATER/Config';
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
-import  FileLib  from '../../../QAautoMATER/funcLib/fileLib';
+import FileLib from '../../../QAautoMATER/funcLib/fileLib';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 
 const selectedProject = Config.SelectedProject;
@@ -66,22 +66,28 @@ export class ConfigGetter {
             ConfigData.EnvNameForUrl = "Dev";
         }
         else {
-            ConfigData.EnvNameList = await allconfigData['Environment'];
-            if (await allconfigData['DefaultSelectedEnvironment'] === undefined || await allconfigData['DefaultSelectedEnvironment'] === '') {
+            try {
+                ConfigData.EnvNameList = await allconfigData['Environment'];
+                if (await allconfigData['DefaultSelectedEnvironment'] === undefined || await allconfigData['DefaultSelectedEnvironment'] === '') {
+                    try {
+                        if (ConfigData.EnvNameList.length > 0) {
+                            ConfigData.DefaultSelectedEnvironment = ConfigData.EnvironmentList[0];
+                            ConfigData.EnvNameForUrl = ConfigData.EnvironmentList[0];
+                            ConfigData.CleanUpEnvironment = ConfigData.EnvironmentList[0];
+                        }
+                    }
+                    catch (error) { }
+                }
+                else {
+                    ConfigData.DefaultSelectedEnvironment = await allconfigData['DefaultSelectedEnvironment'];
+                    ConfigData.EnvNameForUrl = await allconfigData['DefaultSelectedEnvironment'];
+                    ConfigData.CleanUpEnvironment = await allconfigData['DefaultSelectedEnvironment'];
+                }
                 if (ConfigData.EnvNameList.length > 0) {
-                    ConfigData.DefaultSelectedEnvironment = ConfigData.EnvironmentList[0];
-                    ConfigData.EnvNameForUrl = ConfigData.EnvironmentList[0];
-                    ConfigData.CleanUpEnvironment = ConfigData.EnvironmentList[0];
+                    ConfigData.EnvironmentList = await GetData.jsonArrayGetallKeyValue(ConfigData.EnvNameList, 'name');
                 }
             }
-            else {
-                ConfigData.DefaultSelectedEnvironment = await allconfigData['DefaultSelectedEnvironment'];
-                ConfigData.EnvNameForUrl = await allconfigData['DefaultSelectedEnvironment'];
-                ConfigData.CleanUpEnvironment = await allconfigData['DefaultSelectedEnvironment'];
-            }
-            if (ConfigData.EnvNameList.length > 0) {
-                ConfigData.EnvironmentList = await GetData.jsonArrayGetallKeyValue(ConfigData.EnvNameList, 'name');
-            }
+            catch (error) { }
         }
     }
 
@@ -100,12 +106,12 @@ export class ConfigGetter {
                     if (urlList !== undefined) {
                         ConfigData.EnvUrlList = await urlList;
                     }
-                    else{
+                    else {
                         ConfigData.EnvUrlList = [];
                     }
                 }
             }
-            else{
+            else {
                 ConfigData.EnvUrlList = [];
             }
         }
@@ -156,25 +162,23 @@ export class ConfigGetter {
         return await tableData;
     }
 
-    async readConfigurationFile(testingType='Api') {
+    async readConfigurationFile(testingType = 'Api') {
         if (Config.fileSystemtechniques === 'local') {
-            return await FileLib.readFile(selectedProject + '/'+testingType+'/Configuration.json');
+            return await FileLib.readFile(selectedProject + '/' + testingType + '/Configuration.json');
         }
         else if (Config.fileSystemtechniques === 'api') {
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
             }
-            if(await Users.userToken ===null)
-            {
+            if (await Users.userToken === null) {
                 Users.userToken = await localStorage.getItem('Token');
             }
-            if(await Users.userEmail ===null)
-            {
+            if (await Users.userEmail === null) {
                 Users.userEmail = await localStorage.getItem('UserEmail');
             }
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            var serverResponse = await restAPI.get(await backendAPI + 'configuration/project/' + await selectedProject + '/testingtype/'+await testingType, await headers);
+            var serverResponse = await restAPI.get(await backendAPI + 'configuration/project/' + await selectedProject + '/testingtype/' + await testingType, await headers);
             return await serverResponse['data'];
         }
     }
