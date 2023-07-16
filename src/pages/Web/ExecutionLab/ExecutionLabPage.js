@@ -30,6 +30,7 @@ import { DoughnutChart, BarChart, LineChart } from '../../../uiLayout/components
 import NotificationSystem from 'react-notification-system';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
+import { TextWidget } from '../../../uiLayout/components/widget';
 
 class ExecutionLabPage extends React.Component {
   notificationSystem = React.createRef();
@@ -362,8 +363,7 @@ class ExecutionLabPage extends React.Component {
                   onStartEdit: (row, column, rowIndex, columnIndex) => {
                     if (columnIndex === 5) {
                       if (ExecutionLabData.ImageData !== '') {
-                        if(row.screenshot !=='')
-                        {
+                        if (row.screenshot !== '') {
                           this.setState({ isScreenshotModalOpen: true });
                           this.setState({ stepsDetailsForScreenshot: ExecutionLabData.StepsDetailsForScreenshot })
                           this.setState({ imageData: ExecutionLabData.ImageData })
@@ -572,7 +572,13 @@ class ExecutionLabPage extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col lg={3} md={6} sm={6} xs={12}>
+        {/* <Col lg={3} md={6} sm={6} xs={12}>
+            <TextWidget
+              title="Total auto-healed elements"
+              number={10}
+            />
+        </Col> */}
+          <Col lg={2} md={6} sm={6} xs={12}>
             <Card>
               <CardHeader>Pass fail count
               </CardHeader>
@@ -594,7 +600,7 @@ class ExecutionLabPage extends React.Component {
               </CardBody>
             </Card>
           </Col>
-          <Col lg={4} md={6} sm={6} xs={12}>
+          <Col lg={5} md={6} sm={6} xs={12}>
             <Card>
               <CardHeader>Execution time for Each Module
               </CardHeader>

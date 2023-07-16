@@ -56,11 +56,13 @@ export class ORGetter {
             else {
                 var allData = [];
                 var orData = await Object.keys(await ORDataDetails);
+                var counter=1;
                 for (let i = 0; i < await orData.length; i++) {
                     var eleName = await orData[i];
                     if (await eleName !== 'ELEMENTTAGDATA') {
-                        var allDetails = { id: i + 1, name: eleName, locator: await ORDataDetails[await eleName]['locator'], locatorproperty: await ORDataDetails[await eleName]['locatorproperty'], alternatexpath: await ORDataDetails[await eleName]['alternatexpath'] };
+                        var allDetails = { id: await counter, name: eleName, locator: await ORDataDetails[await eleName]['locator'], locatorproperty: await ORDataDetails[await eleName]['locatorproperty'], alternatexpath: await ORDataDetails[await eleName]['alternatexpath'] };
                         allData.push(await allDetails);
+                        counter = Number(counter)+1;
                     }
                 }
                 ORData.AllORTableData = await allData;
@@ -69,6 +71,7 @@ export class ORGetter {
             var elementKeyData = await ORDataDetails['ELEMENTTAGDATA'];
             if(elementKeyData ===undefined)
             {
+                elementKeyData ={};
                 elementKeyData['LINK'] ="//a";
                 elementKeyData['BUTTON'] ="//button";
                 elementKeyData['TEXTBOX'] ="//input";
