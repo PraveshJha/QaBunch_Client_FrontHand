@@ -16,6 +16,7 @@ export class CustomFunctionGetter {
       allconfigData = await ConfigGetter.readConfigurationFile('Web');
       CustomFunctionData.AllConfigData = await allconfigData;
     }
+    await this.closeDebuggerWindow();
     await this.initializeCustomPage();
     await this.getCustomFunctionList();
     await this.getallORDATA();

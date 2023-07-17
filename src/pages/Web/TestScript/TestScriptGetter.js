@@ -17,6 +17,7 @@ export class TestScriptGetter {
 
   async loadTestScriptPage() {
     try {
+      await this.closeDebuggerWindow();
       await this.initializeTestScriptPage();
       await this.getallORDATA();
       await this.getallCommonDATA();
