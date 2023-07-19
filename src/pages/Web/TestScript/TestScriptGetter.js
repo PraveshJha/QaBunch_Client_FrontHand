@@ -556,6 +556,7 @@ export class TestScriptGetter {
         }
         var dataforSend = {};
         dataforSend['userEmail'] = await Users.userEmail;
+        dataforSend['projectName'] = await selectedProject;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
         var serverResponse = await restAPI.post(backendApi + 'uidebug/debuggerwindow/quit', await headers, await dataforSend);
         var saveFile = await serverResponse['data'];

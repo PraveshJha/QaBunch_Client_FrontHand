@@ -19,15 +19,14 @@ export class ExecutionLabDataGetter {
     await this.renderAllComponent();
     try {
       await localStorage.removeItem('defectDetails');
+    }
+    catch (error) { }
+    try {
+      await localStorage.removeItem('defectEnvironment');
+    }
+    catch (error) { }
   }
-  catch (error) { }
-  try{
-    await localStorage.removeItem('defectEnvironment');
-  }
-  catch(error)
-  {}
-  }
-  
+
 
   async renderEnvironment(allconfigData) {
     await ConfigGetter.updateEnvironmentTableData(await allconfigData);
@@ -97,13 +96,13 @@ export class ExecutionLabDataGetter {
     var barChartDataForFail = {};
     var componentPassFailData = [];
     var executionTimeData = [];
-    var randomNumber =10;
+    var randomNumber = 10;
     var status = "Pass"
     var selectedRowId;
     if (Config.isDemo) {
       for (let i = 0; i < await selectedScripts.length; i++) {
-         selectedRowId = await selectedScripts[i];
-         randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
+        selectedRowId = await selectedScripts[i];
+        randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
         status = "Pass"
         if (randomNumber === 1) {
           status = "Fail";
@@ -113,14 +112,14 @@ export class ExecutionLabDataGetter {
       var RandonExecutionTime = await DataGeneratorUtility.getNumberArray(5);
       executionTimeData.push(RandonExecutionTime);
       for (let i = 0; i < await selectedScripts.length; i++) {
-       // var executionStartDate = new Date();
-         selectedRowId = await selectedScripts[i];
-         randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
-         status = "Pass";
-        var AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Pass', 'screenshot': <img alt ='screeshot' width="100" height="50" src={demoImage}></img> }]
+        // var executionStartDate = new Date();
+        selectedRowId = await selectedScripts[i];
+        randomNumber = await DataGeneratorUtility.getNumberFromRange(0, 1);
+        status = "Pass";
+        var AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Pass', 'screenshot': <img alt='screeshot' width="100" height="50" src={demoImage}></img> }]
         if (randomNumber === 1) {
           status = "Fail";
-          AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Fail', 'screenshot': <img alt= 'screenshot' width="100" height="50" src={demoImage}></img> }]
+          AssertionData = [{ "id": 1, "stepdefinition": "Given I am on Google Landing Page", "action": "LaunchApplication", "testdata": 'NA', "status": 'Fail', 'screenshot': <img alt='screenshot' width="100" height="50" src={demoImage}></img> }]
         }
         allTestScripts[selectedRowId - 1]['status'] = status;
         ExecutionLabData.AssertionResultsForAllResults[selectedRowId] = await AssertionData;
@@ -130,6 +129,7 @@ export class ExecutionLabDataGetter {
       }
     }
     else {
+
       var executionParams = {};
       executionParams['runAt'] = await runAt;
       executionParams['threadCount'] = await threadCount;
@@ -158,55 +158,63 @@ export class ExecutionLabDataGetter {
         ExecutionLabData.IsGlobalError = true;
         ExecutionLabData.GlobalErrorMessage = await allExecutionDetails['globalError'];
       }
-      var testExecutionDetails = await allExecutionDetails['listOfTestScipts'];
-      var allAssertionData = await allExecutionDetails['testscriptAssertionData'];
-      var allExecutionTime = await allExecutionDetails['executionTimeForTestScripts'];
-      var componentExecutionData = await allExecutionDetails['executionTimeForComponent'];
-      for (let i = 0; i < await selectedScripts.length; i++) {
-        allTestScripts[Number(await selectedScripts[await i]) - 1]['status'] = await testExecutionDetails[i]['status'];
-        ExecutionLabData.AssertionResultsForAllResults[await selectedScripts[i]] = await allAssertionData[i+1];
-        ExecutionLabData.ExecutionTimeForTestScripts[await selectedScripts[i]] = await allExecutionTime[i+1];
+      try {
+        var testExecutionDetails = await allExecutionDetails['listOfTestScipts'];
+        var allAssertionData = await allExecutionDetails['testscriptAssertionData'];
+        var allExecutionTime = await allExecutionDetails['executionTimeForTestScripts'];
+        var componentExecutionData = await allExecutionDetails['executionTimeForComponent'];
+        for (let i = 0; i < await selectedScripts.length; i++) {
+          allTestScripts[Number(await selectedScripts[await i]) - 1]['status'] = await testExecutionDetails[i]['status'];
+          ExecutionLabData.AssertionResultsForAllResults[await selectedScripts[i]] = await allAssertionData[i + 1];
+          ExecutionLabData.ExecutionTimeForTestScripts[await selectedScripts[i]] = await allExecutionTime[i + 1];
+        }
       }
+      catch (error) { }
 
+      //************ Reset Grapg for Older and Newer Run********************************************/
+      try {
+        ExecutionLabData.ListOfTestScripts = allTestScripts;
+        for (let i = 0; i < allTestScripts.length; i++) {
+          var componentName = await allTestScripts[i]['component'];
+          status = await allTestScripts[i]['status'];
+          if (status === "Pass") {
+            totalPass = totalPass + 1;
+            if (barChartDataForPass[componentName] === undefined)
+              barChartDataForPass[componentName] = 1;
+            else
+              barChartDataForPass[componentName] = await barChartDataForPass[componentName] + 1;
+
+          }
+          else if (status === "Fail") {
+            totalFail = totalFail + 1;
+            if (barChartDataForFail[componentName] === undefined)
+              barChartDataForFail[componentName] = 1;
+            else
+              barChartDataForFail[componentName] = await barChartDataForFail[componentName] + 1;
+          }
+        }
+      }
+      catch (error) { }
+
+      //*** Total Pass and Bar Chart Data*************************************************
+      try {
+        await new Promise(wait => setTimeout(wait, 2000));
+        doughnutData.push(totalPass);
+        doughnutData.push(totalFail);
+        ExecutionLabData.TotalPassFailInLastXResults = doughnutData;
+        componentPassFailData.push(barChartDataForPass);
+        componentPassFailData.push(barChartDataForFail);
+        ExecutionLabData.BarChartDataForComponent = componentPassFailData;
+
+        //*** ExecutionTimeData****************************************************************
+        var componentPassDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await componentExecutionData);
+        ExecutionLabData.ExecutionTimeGraphXaxis = await await componentPassDataxandyAxis['key'];
+        var executiontimeYaxisData = [];
+        executiontimeYaxisData.push(await componentPassDataxandyAxis['value']);
+        ExecutionLabData.ExecutionTimeGraphYaxis = await executiontimeYaxisData;
+      }
+      catch (error) { }
     }
-    //************ Reset Grapg for Older and Newer Run********************************************/
-    ExecutionLabData.ListOfTestScripts = allTestScripts;
-    for (let i = 0; i < allTestScripts.length; i++) {
-      var componentName = await allTestScripts[i]['component'];
-      status = await allTestScripts[i]['status'];
-      if (status === "Pass") {
-        totalPass = totalPass + 1;
-        if (barChartDataForPass[componentName] === undefined)
-          barChartDataForPass[componentName] = 1;
-        else
-          barChartDataForPass[componentName] = await barChartDataForPass[componentName] + 1;
-
-      }
-      else if (status === "Fail") {
-        totalFail = totalFail + 1;
-        if (barChartDataForFail[componentName] === undefined)
-          barChartDataForFail[componentName] = 1;
-        else
-          barChartDataForFail[componentName] = await barChartDataForFail[componentName] + 1;
-      }
-    }
-
-    //*** Total Pass and Bar Chart Data*************************************************
-
-    await new Promise(wait => setTimeout(wait, 2000));
-    doughnutData.push(totalPass);
-    doughnutData.push(totalFail);
-    ExecutionLabData.TotalPassFailInLastXResults = doughnutData;
-    componentPassFailData.push(barChartDataForPass);
-    componentPassFailData.push(barChartDataForFail);
-    ExecutionLabData.BarChartDataForComponent = componentPassFailData;
-
-    //*** ExecutionTimeData****************************************************************
-    var componentPassDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await componentExecutionData);
-    ExecutionLabData.ExecutionTimeGraphXaxis = await await componentPassDataxandyAxis['key'];
-    var executiontimeYaxisData = [];
-    executiontimeYaxisData.push(await componentPassDataxandyAxis['value']);
-    ExecutionLabData.ExecutionTimeGraphYaxis = await executiontimeYaxisData;
   }
 
   async GetAllDeviceAndBrowser(screenName) {
@@ -290,11 +298,11 @@ export class ExecutionLabDataGetter {
   }
   async createTestSuiteForSpecificComponent(componentName, rowId = 1) {
     var allTestScripts = [];
-    var rowData ={}
+    var rowData = {}
     if (Config.isDemo) {
       var randomRowCount = await DataGeneratorUtility.getNumberFromRange(10, 20);
       for (let i = 0; i < randomRowCount; i++) {
-         rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
+        rowData = { id: 0, component: await componentName, testid: 0, testname: '', status: '' }
         rowData.id = rowId;
         rowData.testid = "QA-" + await DataGeneratorUtility.getNumberFromRange(100, 500);
         rowData.testname = " This is test case No " + (i + 1);
@@ -306,7 +314,7 @@ export class ExecutionLabDataGetter {
     else {
       var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, 'Web', componentName);
       for (let i = 0; i < allComponentTestDetails.length; i++) {
-         rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
+        rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
         allTestScripts.push(rowData);
         rowId = rowId + 1;
       }

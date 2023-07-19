@@ -83,6 +83,20 @@ class Header extends React.Component {
     await localStorage.removeItem('Token');
     Users.isUserAuthenticated = false;
     await window.location.reload();
+    try {
+      var backendApi = Config.backendAPI;
+      var backendServiceLocation = await Config.backendServiceAt;
+      if (backendServiceLocation === 'remote') {
+        backendApi = Config.remoteBackendAPI;
+      }
+      var dataforSend = {};
+      dataforSend['userEmail'] = await Users.userEmail;
+      dataforSend['projectName'] = await Users.userSelectedAccount;
+      var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+      await restAPI.post(backendApi + 'uidebug/debuggerwindow/quit', await headers, await dataforSend);
+    }
+    catch (error) {
+    }
 
   };
 
