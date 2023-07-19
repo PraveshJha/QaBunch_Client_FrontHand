@@ -383,9 +383,9 @@ export class TestScriptGetter {
       if (stepdef === '' || action === '') {
         return false;
       }
-      if (value.toString().toLowerCase().includes('args.')) {
-        return false;
-      }
+      // if (value.toString().toLowerCase().includes('args.')) {
+      //   return false;
+      // }
     }
     return true;
   }
