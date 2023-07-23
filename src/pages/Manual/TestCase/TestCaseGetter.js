@@ -239,7 +239,8 @@ export class TestCaseGetter {
             testBody['testPrecondition'] = await TestCaseData.UpdatedTestPrecondition;
             testBody['testExpectedResult'] = await TestCaseData.UpdatedExpectedResults;
             testBody['testId'] = await TestCaseData.TestId;
-            testBody['placeHolder'] = await testCasePath
+            testBody['placeHolder'] = await testCasePath;
+            testBody['testdata'] = await TestCaseData.UpdatedTestData;
             //Remove Key
             try {
                 await localStorage.removeItem('testId');

@@ -51,7 +51,7 @@ export class TestScriptGetter {
       TestScriptData.ListOfTestTools = await this.GetTestToolFromConfigurationPage();
     }
     catch (error) {
-     }
+    }
   }
 
   async initializeTestScriptPage() {
@@ -678,48 +678,51 @@ export class TestScriptGetter {
           lineNumber = Number(await lineNumber) + 1;
         }
         for (let i = await lineNumber; i < await lines.length; i++) {
-          TestScriptData.ListOfTestScriptData = [];
-          TestScriptData.TestDataTableHeader = [{ dataField: 'id', text: '#', headerStyle: { width: '20px' } }];
+          // TestScriptData.ListOfTestScriptData = [];
+          // TestScriptData.TestDataTableHeader = [{ dataField: 'id', text: '#', headerStyle: { width: '20px' } }];
           var testStepLowerCase = await lines[i].toLowerCase().trim();
-          var testStep = await lines[i].replace(/[^0-9A-Z ]+/gi, "");
+          var testStep = await lines[i].replace(/[^0-9A-Z ,./]+/gi, "");
           while (await testStep.match(/^\d/)) {
             testStep = await testStep.substring(1);
           }
           testStep = await testStep.trim();
+          if(await testStep.toString().startsWith('.'))
+          {
+            testStep = await testStep.substring(1);
+          }
           if (await testStep.trim() !== '' && await !testStepLowerCase.startsWith('example') && await !testStepLowerCase.includes('|')) {
-            var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
-            var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllORData['ELEMENTTAGDATA'] });
-            var values = await serverResponse['data'];
-            var actionName = await values.actionName;
-            var valueneedtobeSend = await values.actionvalue;
-            if (actionName !== '') {
-              var elementName = await values.orLogicalName.trim().toUpperCase();
-              var locator = await values.primaryLocator;
-              var locatorProperty = await values.primaryLocatorProperty;
-              var isKeyAlreadyPresent = TestScriptData.TestScriptORData[await elementName];
-              var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: '' }
-              if (await isKeyAlreadyPresent === undefined) {
-                TestScriptData.AllORData[await elementName] = {};
-                TestScriptData.AllORData[await elementName] = await newElementAdd;
-                TestScriptData.TestScriptORData[await elementName] = {};
-                TestScriptData.TestScriptORData[await elementName] = await newElementAdd;
-                if (!TestScriptData.AllORKey.includes(await elementName)) {
-                  TestScriptData.AllORKey.push(await elementName)
-                }
+            var allStepsWithinSteps = await restAPI.post(backendAPI + 'aistep/breakSteps', await headers, { "step": await testStep });
+            var allStepsTobeCalculated = await allStepsWithinSteps['data'];
+            for (let j = 0; j < await allStepsTobeCalculated.length; j++) {
+              testStep = await allStepsTobeCalculated[j];
+              var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
+              var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllORData['ELEMENTTAGDATA'] });
+              var values = await serverResponse['data'];
+              var actionName = await values.actionName;
+              var valueneedtobeSend = await values.actionvalue;
+              if (actionName !== '') {
+                var elementName = await values.orLogicalName.trim().toUpperCase();
+                var locator = await values.primaryLocator;
+                var locatorProperty = await values.primaryLocatorProperty;
+                var isKeyAlreadyPresent = TestScriptData.TestScriptORData[await elementName];
+                var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: '' }
+                if (await isKeyAlreadyPresent === undefined) {
+                  TestScriptData.AllORData[await elementName] = {};
+                  TestScriptData.AllORData[await elementName] = await newElementAdd;
+                  TestScriptData.TestScriptORData[await elementName] = {};
+                  TestScriptData.TestScriptORData[await elementName] = await newElementAdd;
+                  if (!TestScriptData.AllORKey.includes(await elementName)) {
+                    TestScriptData.AllORKey.push(await elementName)
+                  }
 
+                }
+                steDetails.action = await actionName;
+                steDetails.element = await elementName;
+                steDetails.value = await valueneedtobeSend;
               }
-              steDetails.action = await actionName;
-              steDetails.element = await elementName;
-              steDetails.value = await valueneedtobeSend;
+              await allTestSteps.push(await steDetails);
+              counter = Number(await counter) + 1
             }
-            // if (await isBDD) {
-            //   if (await testStepLowerCase.includes('<') && await testStepLowerCase.includes('>')) {
-            //     var testDataValue = 't.' + await testStepLowerCase.split('<')[1].split('>')[0].toUpperCase();
-            //     steDetails.value = await testDataValue;
-            //   }
-            // }
-            await allTestSteps.push(await steDetails);
-            counter = Number(await counter) + 1
           }
         }
         if (await isBDD) {

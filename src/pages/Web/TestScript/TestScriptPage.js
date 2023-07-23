@@ -1104,9 +1104,6 @@ class TestScriptPage extends React.Component {
     if (await isSaved) {
       this.setState({ testName: TestScriptData.TestName });
       this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps });
-      this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction });
-      this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader })
-      this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData })
       await this.getNotification('success', 'Automated step generated , Please dubug your test steps before saving the test scripts');
     }
     else {
