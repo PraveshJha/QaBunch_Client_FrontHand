@@ -538,7 +538,7 @@ class CICDPage extends React.Component {
                       </Label>
                       <Col >
                         <Combobox
-                          value={this.state.selectedTestSuite}
+                          defaultValue={this.state.selectedTestSuite}
                           data={this.state.allTestSuite}
                           onSelect={this.selectTestSuite.bind(this)}
                           onChange={this.addNewTestSuite.bind(this)}

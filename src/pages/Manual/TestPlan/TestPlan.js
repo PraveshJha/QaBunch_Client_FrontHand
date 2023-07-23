@@ -533,7 +533,7 @@ class TestPlanPage extends React.Component {
                       </Label>
                       )}
                       {this.state.isUserSelectedNewTestPlan && (<Col>
-                        <Input type="input" invalid={this.state.isErrorOnNewTestPlan} name="newtestPlan" value={this.state.newTestPlan} onChange={this.addNewTestPlan.bind(this)} maxLength={100}>
+                        <Input type="input" invalid={this.state.isErrorOnNewTestPlan} name="newtestPlan" defaultValue={this.state.newTestPlan} onChange={this.addNewTestPlan.bind(this)} maxLength={100}>
                         </Input>
                       </Col>
                       )}
@@ -571,7 +571,7 @@ class TestPlanPage extends React.Component {
                         Browser/Device*
                       </Label>
                       <Col>
-                        <Input type="input" invalid={this.state.isErrorOnBrowser} name="deviceorBrowser" value={this.state.browser} onChange={this.selectBrowser.bind(this)} maxLength={50}>
+                        <Input type="input" invalid={this.state.isErrorOnBrowser} name="deviceorBrowser" defaultValue={this.state.browser} onChange={this.selectBrowser.bind(this)} maxLength={50}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -580,14 +580,14 @@ class TestPlanPage extends React.Component {
                         OS
                       </Label>
                       <Col>
-                        <Input type="input" name="os" value={this.state.oS} onChange={this.selectOS.bind(this)} maxLength={50}>
+                        <Input type="input" name="os" defaultValue={this.state.oS} onChange={this.selectOS.bind(this)} maxLength={50}>
                         </Input>
                       </Col>
                       <Label sm={2}>
                         Release version
                       </Label>
                       <Col>
-                        <Input type="input" name="releaseversion" value={this.state.releaseVersion} onChange={this.selectReleaseVersion.bind(this)} maxLength={100}>
+                        <Input type="input" name="releaseversion" defaultValue={this.state.releaseVersion} onChange={this.selectReleaseVersion.bind(this)} maxLength={100}>
                         </Input>
                       </Col>
                     </FormGroup>

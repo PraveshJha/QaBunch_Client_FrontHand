@@ -1256,7 +1256,7 @@ class CustomFunctionPage extends React.Component {
                       </Label>
                       <Col>
                         <Combobox
-                          value={this.state.selectedCustomFunction}
+                          defaultValue={this.state.selectedCustomFunction}
                           data={this.state.listOfCustomFunction}
                           onSelect={this.selectCustomFunction.bind(this)}
                           onChange={this.addNewCustomFunction.bind(this)}
@@ -1268,7 +1268,7 @@ class CustomFunctionPage extends React.Component {
                         New Name
                       </Label>
                       <Col>
-                        <Input type="input" name="newName" invalid={this.state.isErrorOnNewName} value={this.state.newName} onChange={this.addNewNameForCustomFunction.bind(this)}>
+                        <Input type="input" name="newName" invalid={this.state.isErrorOnNewName} defaultValue={this.state.newName} onChange={this.addNewNameForCustomFunction.bind(this)}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -1302,7 +1302,7 @@ class CustomFunctionPage extends React.Component {
                         Application Url*
                       </Label>
                       <Col>
-                        <Input type="input" name="testUrl" invalid={this.state.isErrorOnAppUrl} value={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
+                        <Input type="url" name="testUrl" invalid={this.state.isErrorOnAppUrl} defaultValue={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -1595,7 +1595,7 @@ class CustomFunctionPage extends React.Component {
                   </Label>
                   <Col>
                     <Combobox
-                      value={this.state.orElementName}
+                      defaultValue={this.state.orElementName}
                       data={this.state.allORKey}
                       onSelect={this.selectExistingOR.bind(this)}
                       onChange={this.addNewOr.bind(this)}
@@ -1618,7 +1618,7 @@ class CustomFunctionPage extends React.Component {
                     Locator Property*
                   </Label>
                   <Col>
-                    <Input type="input" name="locatorproperty" invalid={this.state.isErrorOnLocatorProperty} value={this.state.locatorProperty} onChange={this.selectLocatorProperty.bind(this)}>
+                    <Input type="input" name="locatorproperty" invalid={this.state.isErrorOnLocatorProperty} defaultValue={this.state.locatorProperty} onChange={this.selectLocatorProperty.bind(this)}>
                     </Input>
                   </Col>
                 </FormGroup>

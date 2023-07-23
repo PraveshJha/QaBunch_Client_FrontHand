@@ -1014,7 +1014,7 @@ class ConfigurationPage extends React.Component {
                         Hub Url*
                       </Label>
                       <Col>
-                        <Input type="input" invalid={this.state.isErrorOnServerUrl} onChange={this.addServerUrl.bind(this)} name="serverUrl" value={this.state.serverUrl}>
+                        <Input type="input" invalid={this.state.isErrorOnServerUrl} onChange={this.addServerUrl.bind(this)} name="serverUrl" defaultValue={this.state.serverUrl}>
                         </Input>
                       </Col>
                     </FormGroup>

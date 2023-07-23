@@ -1420,7 +1420,7 @@ class TestScriptPage extends React.Component {
                                   Test Id*
                                 </Label>
                                 <Col>
-                                  <Input type="input" invalid={this.state.isErroronTestToolId} name="thirdPartyTestId" value={this.state.testIdFromTestTool} onChange={this.addTestToolId.bind(this)}>
+                                  <Input type="input" invalid={this.state.isErroronTestToolId} name="thirdPartyTestId" defaultValue={this.state.testIdFromTestTool} onChange={this.addTestToolId.bind(this)}>
                                   </Input>
                                 </Col>
                               </FormGroup>
@@ -1444,7 +1444,7 @@ class TestScriptPage extends React.Component {
                             <Form>
                               <FormGroup row>
                                 <Col>
-                                  <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} value={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
+                                  <Input type="textarea" name="manualtestStep" invalid={this.state.isErrorOnExternalTestSteps} defaultValue={this.state.externalTestSteps} onChange={this.pasteExternalTestSteps.bind(this)}>
                                   </Input>
                                 </Col>
                               </FormGroup>
@@ -1485,7 +1485,7 @@ class TestScriptPage extends React.Component {
                       </Label>
                       <Col >
                         <Combobox
-                          value={this.state.selectedComponent}
+                          defaultValue={this.state.selectedComponent}
                           data={this.state.allComponentList}
                           onSelect={this.selectComponent.bind(this)}
                           onChange={this.addNewComponent.bind(this)}
@@ -1510,7 +1510,7 @@ class TestScriptPage extends React.Component {
                         Test Name
                       </Label>
                       <Col>
-                        <Input type="input" name="testName" invalid={this.state.isErrorOnTestName} value={this.state.testName} onChange={this.addTestName.bind(this)}>
+                        <Input type="input" name="testName" invalid={this.state.isErrorOnTestName} defaultValue={this.state.testName} onChange={this.addTestName.bind(this)}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -1519,7 +1519,7 @@ class TestScriptPage extends React.Component {
                         New Name
                       </Label>
                       <Col>
-                        <Input type="input" name="newName" invalid={this.state.isErrorOnNewName} value={this.state.newName} onChange={this.addNewNameForTestScript.bind(this)}>
+                        <Input type="input" name="newName" invalid={this.state.isErrorOnNewName} defaultValue={this.state.newName} onChange={this.addNewNameForTestScript.bind(this)}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -1553,7 +1553,7 @@ class TestScriptPage extends React.Component {
                         Application Url*
                       </Label>
                       <Col>
-                        <Input type="input" name="testUrl" invalid={this.state.isErrorOnAppUrl} value={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
+                        <Input type="url" name="testUrl" invalid={this.state.isErrorOnAppUrl} defaultValue={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
                         </Input>
                       </Col>
                     </FormGroup>
@@ -1860,7 +1860,7 @@ class TestScriptPage extends React.Component {
                                   <div className="d-flex justify-content-between align-items-center">
                                     <FormGroup row>
                                       <Col>
-                                        <Input sm={3} placeholder="Add column" type="input" name="columnName" invalid={this.state.isErrorOnColumnName} value={this.state.columnName} onChange={this.addColumnName.bind(this)}></Input>
+                                        <Input sm={3} placeholder="Add column" type="input" name="columnName" invalid={this.state.isErrorOnColumnName} defaultValue={this.state.columnName} onChange={this.addColumnName.bind(this)}></Input>
                                       </Col>
                                       <Col>
                                         <ButtonGroup size="sm">
@@ -1949,7 +1949,7 @@ class TestScriptPage extends React.Component {
                   </Label>
                   <Col>
                     <Combobox
-                      value={this.state.orElementName}
+                      defaultValue={this.state.orElementName}
                       data={this.state.allORKey}
                       onSelect={this.selectExistingOR.bind(this)}
                       onChange={this.addNewOr.bind(this)}
@@ -1972,7 +1972,7 @@ class TestScriptPage extends React.Component {
                     Locator Property*
                   </Label>
                   <Col>
-                    <Input type="input" name="locatorproperty" invalid={this.state.isErrorOnLocatorProperty} value={this.state.locatorProperty} onChange={this.selectLocatorProperty.bind(this)}>
+                    <Input type="input" name="locatorproperty" invalid={this.state.isErrorOnLocatorProperty} defaultValue={this.state.locatorProperty} onChange={this.selectLocatorProperty.bind(this)}>
                     </Input>
                   </Col>
                 </FormGroup>

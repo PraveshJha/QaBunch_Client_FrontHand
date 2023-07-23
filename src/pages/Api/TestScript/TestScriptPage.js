@@ -1232,7 +1232,7 @@ class TestScriptPage extends React.Component {
                     </Label>
                     <Col >
                       <Combobox
-                        value={this.state.componentName}
+                        defaultValue={this.state.componentName}
                         data={this.state.allComponentList}
                         onSelect={this.selectComponent.bind(this)}
                         onChange={this.addNewComponent.bind(this)}
@@ -1257,7 +1257,7 @@ class TestScriptPage extends React.Component {
                       Test Name
                     </Label>
                     <Col>
-                      <Input type="input" name="testName" invalid={this.state.isErrorOnTestName} value={this.state.testName} onChange={this.addTestName.bind(this)}>
+                      <Input type="input" name="testName" invalid={this.state.isErrorOnTestName} defaultValue={this.state.testName} onChange={this.addTestName.bind(this)}>
                       </Input>
                     </Col>
                   </FormGroup>
@@ -1276,7 +1276,7 @@ class TestScriptPage extends React.Component {
                       New TestId
                     </Label>
                     <Col>
-                      <Input type="input" name="newTestId" invalid={this.state.isErrorOnNewTestId} value={this.state.newTestId} onChange={this.renameExistingTestId.bind(this)}>
+                      <Input type="input" name="newTestId" invalid={this.state.isErrorOnNewTestId} defaultValue={this.state.newTestId} onChange={this.renameExistingTestId.bind(this)}>
                       </Input>
                     </Col>
                     <Col>
@@ -1325,7 +1325,7 @@ class TestScriptPage extends React.Component {
                       Relative Url
                     </Label>
                     <Col>
-                      <Input type="input" name="testName" value={this.state.relativeUrl} onChange={this.addRelativeUrl.bind(this)}>
+                      <Input type="input" name="testName" defaultValue={this.state.relativeUrl} onChange={this.addRelativeUrl.bind(this)}>
                       </Input>
                     </Col>
                   </FormGroup>
@@ -1345,7 +1345,7 @@ class TestScriptPage extends React.Component {
                       Api Url
                     </Label>
                     <Col>
-                      <Input type="input" name="testUrl" invalid={this.state.validateApiUrl} value={this.state.apiUrl} onChange={this.addApiUrl.bind(this)}>
+                      <Input type="input" name="testUrl" invalid={this.state.validateApiUrl} defaultValue={this.state.apiUrl} onChange={this.addApiUrl.bind(this)}>
                       </Input>
                     </Col>
                   </FormGroup>

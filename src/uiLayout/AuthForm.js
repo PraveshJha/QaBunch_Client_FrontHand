@@ -224,13 +224,13 @@ class AuthForm extends React.Component {
                 </div>
                 {!this.state.isUserExistOnServer && (<FormGroup>
                   <Label for="exampleEmail">Email</Label>
-                  <Input name="email" type="input"  placeholder='your@email.com' invalid={this.state.highlightedUserEmail} value={this.state.userEmail} onChange={this.addUserEmail.bind(this)}>
+                  <Input name="email" type="input"  placeholder='your@email.com' invalid={this.state.highlightedUserEmail} defaultValue={this.state.userEmail} onChange={this.addUserEmail.bind(this)}>
                   </Input>
                 </FormGroup>
                 )}
                 {this.state.isUserExistOnServer && (<FormGroup>
                   <Label>Password</Label>
-                  <Input placeholder='your password' type='password' invalid={this.state.highlightedUserPassword} value={this.state.userPassword} onChange={this.addUserPassword.bind(this)}>
+                  <Input placeholder='your password' type='password' invalid={this.state.highlightedUserPassword} defaultValue={this.state.userPassword} onChange={this.addUserPassword.bind(this)}>
                   </Input>
                 </FormGroup>
                 )}

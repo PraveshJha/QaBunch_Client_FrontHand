@@ -273,7 +273,7 @@ render() {
                         Add New Test Cycle
                       </Label>
                       <Col sm={6}>
-                        <Input type="input" invalid={this.state.isErrorOnNewTestCycle} onChange={this.addNewTestCycle.bind(this)} name="newCycle" value={this.state.newTestCycle}>
+                        <Input type="input" invalid={this.state.isErrorOnNewTestCycle} onChange={this.addNewTestCycle.bind(this)} name="newCycle" defaultValue={this.state.newTestCycle}>
                         </Input>
                       </Col>
                       <Col>

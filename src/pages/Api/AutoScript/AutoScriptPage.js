@@ -288,7 +288,7 @@ class AutoScriptPage extends React.Component {
                       Url
                     </Label>
                     <Col>
-                      <Input placeholder='https://example/swagger/v1/swagger.json' type="input" invalid={this.state.isErrorOnUrl} name="url" value={this.state.url} onChange={this.addUrl.bind(this)}>
+                      <Input placeholder='https://example/swagger/v1/swagger.json' type="url" invalid={this.state.isErrorOnUrl} name="url" defaultValue={this.state.url} onChange={this.addUrl.bind(this)}>
                       </Input>
                     </Col>
                   </FormGroup>

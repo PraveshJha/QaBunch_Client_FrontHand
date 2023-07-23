@@ -214,11 +214,12 @@ class TestCasePagePage extends React.Component {
       this.setState({ testcaseName: await dataChoice });
       var format = /[^A-Za-z ]/ig;
       if (await format.test(await dataChoice)) {
-        TestCaseData.isErrorOnTestCase = true;
+        TestCaseData.IsErrorOnTestCase = true;
         this.setState({ isErrorOnTestCase: true });
       }
     }
   };
+
 
   selectPlaceHolder = async (event) => {
     this.setState({ isErrorOnPlaceHolder: false })
@@ -804,11 +805,11 @@ class TestCasePagePage extends React.Component {
       var excelInfo = null;
       //var excelInfo = await ExcelRenderer(await this.state.bulkUploadFile);
       await ExcelRenderer(await this.state.bulkUploadFile, (err, resp) => {
-        if(err){
-         // console.log(err);            
+        if (err) {
+          // console.log(err);            
         }
-        else{
-          excelInfo =  resp;
+        else {
+          excelInfo = resp;
         }
       });
     }
@@ -1036,7 +1037,7 @@ class TestCasePagePage extends React.Component {
                         Title*
                       </Label>
                       <Col>
-                        <Input type="input" invalid={this.state.isErrorOnTestCase} onChange={this.addNewTestCaseName.bind(this)} name="testcaseName" value={this.state.testcaseName}>
+                        <Input type="text" invalid={this.state.isErrorOnTestCase}  onChange={this.addNewTestCaseName.bind(this)} name="testcaseName" >
                         </Input>
                       </Col>
                       <FormGroup row>
@@ -1088,7 +1089,7 @@ class TestCasePagePage extends React.Component {
                           References
                         </Label>
                         <Col>
-                          <Input type="input" onChange={this.addTestReference.bind(this)} name="testcaseReference" value={this.state.testCaseReference}>
+                          <Input type="text" onChange={this.addTestReference.bind(this)} name="testcaseReference">
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1097,14 +1098,14 @@ class TestCasePagePage extends React.Component {
                           Preconditions
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestPrecondition.bind(this)} name="testcasePrecondition" value={this.state.testCasePreCondition}>
+                          <Input type="textarea" onChange={this.addTestPrecondition.bind(this)} name="testcasePrecondition">
                           </Input>
                         </Col>
                         <Label sm={3}>
                           Test data
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestData.bind(this)} name="testcaseName" value={this.state.testCaseTestData}>
+                          <Input type="textarea" onChange={this.addTestData.bind(this)} name="testcaseName">
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1113,7 +1114,7 @@ class TestCasePagePage extends React.Component {
                           Steps*
                         </Label>
                         <Col>
-                          <Input type="textarea" invalid={this.state.isErrorOnTestSteps} onChange={this.addTestSteps.bind(this)} name="testcaseTestSteps" value={this.state.testCaseTestSteps}>
+                          <Input type="textarea" invalid={this.state.isErrorOnTestSteps} onChange={this.addTestSteps.bind(this)} name="testcaseTestSteps">
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1122,7 +1123,7 @@ class TestCasePagePage extends React.Component {
                           Expected Result
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestExpectedResults.bind(this)} name="testExpected" value={this.state.testCaseExpectedResults}>
+                          <Input type="textarea" onChange={this.addTestExpectedResults.bind(this)} name="testExpected" >
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1198,7 +1199,7 @@ class TestCasePagePage extends React.Component {
                     New PlaceHolder*
                   </Label>
                   <Col>
-                    <Input type="input" name="newPlaceHolder" invalid={this.state.isErrorOnNewPlaceHOlder} value={this.state.newPlaceHolderName} onChange={this.addNewPlaceHolderName.bind(this)}>
+                    <Input type="input" name="newPlaceHolder" invalid={this.state.isErrorOnNewPlaceHOlder}  onChange={this.addNewPlaceHolderName.bind(this)}>
                     </Input>
                   </Col>
                 </FormGroup>
@@ -1238,7 +1239,7 @@ class TestCasePagePage extends React.Component {
                             Title*
                           </Label>
                           <Col>
-                            <Input invalid={this.state.isErrorOnUPdatedTestCaseName} type="input" name="updatedtestcaseName" value={this.state.updatedTestName} onChange={this.updateTestCaseName.bind(this)}>
+                            <Input invalid={this.state.isErrorOnUPdatedTestCaseName} type="text" name="updatedtestcaseName" defaultValue={this.state.updatedTestName} onChange={this.updateTestCaseName.bind(this)}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -1289,7 +1290,7 @@ class TestCasePagePage extends React.Component {
                             References
                           </Label>
                           <Col>
-                            <Input type="input" onChange={this.updateTestReference.bind(this)} name="updatedtestcaseReference" value={this.state.updatedTestRefence}>
+                            <Input type="text" onChange={this.updateTestReference.bind(this)} name="updatedtestcaseReference" defaultValue={this.state.updatedTestRefence}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -1298,7 +1299,7 @@ class TestCasePagePage extends React.Component {
                             Preconditions
                           </Label>
                           <Col>
-                            <Input type="textarea" onChange={this.updateTestPrecondition.bind(this)} name="updatedtestcasePrecondition" value={this.state.updatedTestPrecondition}>
+                            <Input type="textarea" onChange={this.updateTestPrecondition.bind(this)} name="updatedtestcasePrecondition" defaultValue={this.state.updatedTestPrecondition}>
                             </Input>
                           </Col>
                           <Label sm={3}>
@@ -1314,7 +1315,7 @@ class TestCasePagePage extends React.Component {
                             Steps*
                           </Label>
                           <Col>
-                            <Input type="textarea" invalid={this.state.isErrorOnUpdatedTestSteps} onChange={this.updateTestSteps.bind(this)} name="updatedtestcaseTestSteps" value={this.state.updatedTestSteps}>
+                            <Input type="textarea" invalid={this.state.isErrorOnUpdatedTestSteps} onChange={this.updateTestSteps.bind(this)} name="updatedtestcaseTestSteps" defaultValue={this.state.updatedTestSteps}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -1323,7 +1324,7 @@ class TestCasePagePage extends React.Component {
                             Expected Result
                           </Label>
                           <Col>
-                            <Input type="textarea" name="updatedExpectedResults" value={this.state.updatedExpectedResults} onChange={this.updateTestExpectedResults.bind(this)}>
+                            <Input type="textarea" name="updatedExpectedResults" defaultValue={this.state.updatedExpectedResults} onChange={this.updateTestExpectedResults.bind(this)}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -1375,7 +1376,7 @@ class TestCasePagePage extends React.Component {
                                 Comment
                               </Label>
                               <Col>
-                                <Input type="textarea" invalid={this.state.isErrorOnTestComment} name="testCaseComment" value={this.state.newTestCaseComment} onChange={this.addTestComment.bind(this)}>
+                                <Input type="textarea" invalid={this.state.isErrorOnTestComment} name="testCaseComment" defaultValue={this.state.newTestCaseComment} onChange={this.addTestComment.bind(this)}>
                                 </Input>
                               </Col>
                               <Col>

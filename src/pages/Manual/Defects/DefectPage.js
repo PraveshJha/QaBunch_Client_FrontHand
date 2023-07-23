@@ -767,7 +767,7 @@ class DefectPage extends React.Component {
                         Title*
                       </Label>
                       <Col>
-                        <Input type="input" invalid={this.state.isErrorOnDefectTitle} onChange={this.addNewDefectTitle.bind(this)} name="defectTitle" value={this.state.defectTitle}>
+                        <Input type="input" invalid={this.state.isErrorOnDefectTitle} onChange={this.addNewDefectTitle.bind(this)} name="defectTitle" defaultValue={this.state.defectTitle}>
                         </Input>
                       </Col>
                       <FormGroup row>
@@ -959,7 +959,7 @@ class DefectPage extends React.Component {
                             Title*
                           </Label>
                           <Col>
-                            <Input invalid={this.state.isErrorOnUpdatedDefectTitle} type="input" name="updatedDefectTitle" value={this.state.updatedDefectTitle} onChange={this.updateDefectTitle.bind(this)}>
+                            <Input invalid={this.state.isErrorOnUpdatedDefectTitle} type="input" name="updatedDefectTitle" defaultValue={this.state.updatedDefectTitle} onChange={this.updateDefectTitle.bind(this)}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -968,7 +968,7 @@ class DefectPage extends React.Component {
                             Placeholder*
                           </Label>
                           <Col>
-                            <Input type="input" name="updatedplaceholder" value={this.state.updatedTestPlaceHolder} disabled={true}>
+                            <Input type="input" name="updatedplaceholder" defaultValue={this.state.updatedTestPlaceHolder} disabled={true}>
                             </Input>
                           </Col>
                           <Label sm={2}>
@@ -1016,7 +1016,7 @@ class DefectPage extends React.Component {
                             Cycle*
                           </Label>
                           <Col>
-                            <Input type="input" name="testCycle" value={this.state.updatedTestCycle} disabled={true}>
+                            <Input type="input" name="testCycle" defaultValue={this.state.updatedTestCycle} disabled={true}>
                             </Input>
                           </Col>
                         </FormGroup>
@@ -1094,7 +1094,7 @@ class DefectPage extends React.Component {
                                 Comment
                               </Label>
                               <Col>
-                                <Input type="textarea" invalid={this.state.isErrorOnTestComment} name="testCaseComment" value={this.state.newTestCaseComment} onChange={this.addTestComment.bind(this)}>
+                                <Input type="textarea" invalid={this.state.isErrorOnTestComment} name="testCaseComment" defaultValue={this.state.newTestCaseComment} onChange={this.addTestComment.bind(this)}>
                                 </Input>
                               </Col>
                               <Col>
