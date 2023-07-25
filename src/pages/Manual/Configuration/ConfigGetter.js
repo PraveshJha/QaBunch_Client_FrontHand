@@ -1,6 +1,7 @@
 import { ConfigData } from './ConfigData';
 import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
+
 const selectedProject = Config.SelectedProject;
 
 export class ConfigGetter {
@@ -13,6 +14,8 @@ export class ConfigGetter {
         }
         await this.setTestCycleDropDown();
         await this.setEnvironment(await configData);
+        var placeHolderTreeData = await this.getPlaceHolderTreeData();
+        ConfigData.FolderTreeData = await placeHolderTreeData;
         
 
     }
@@ -170,6 +173,35 @@ export class ConfigGetter {
             try {
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
                 var serverResponse = await restAPI.post(backendApi + 'manualconfiguration/project/' + await selectedProject + '/saveenvironment', await headers, await ConfigData.EnvUrlList);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
+        }
+
+    }
+
+    async deleteManualComponent() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['component']= ConfigData.SelectedPlaceHolderPath;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'manualconfiguration/project/' + await selectedProject + '/deletecomponent', await headers, await testBody);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];

@@ -8,4 +8,7 @@ export var ConfigData = {
     EnvUrlList:[],
     SelectedRowFromUrlTable:-1,
     IsNameValidforUrlTable:true,
+    FolderTreeData:[],
+    SelectedPlaceHolderPath:'',
+    SelectedPlaceHolderLabel:'',
 };

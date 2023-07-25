@@ -46,5 +46,7 @@ export var ConfigData = {
     IsErrorOnCleanUpEnvironment:false,
     IsErrorOnDayToDelete:false,
     ScreenshotOptionList:['For failure & success','For each step'],
-    SelectedScreenshot:'For failure & success'
+    SelectedScreenshot:'For failure & success',
+    SelectedComponent:'',
+    ComponentList:[],
 };

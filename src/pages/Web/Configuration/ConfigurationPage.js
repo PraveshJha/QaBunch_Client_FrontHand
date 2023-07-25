@@ -13,6 +13,10 @@ import {
   Button,
   ButtonGroup,
   Fade,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter
 } from 'reactstrap';
 import { ConfigData } from './ConfigData'
 import ConfigGetter from './ConfigGetter'
@@ -26,7 +30,7 @@ import NotificationSystem from 'react-notification-system';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
 import ConfigSetter from './ConfigSetter';
-import { Config } from '../../../QAautoMATER/Config';
+import { Config,Users } from '../../../QAautoMATER/Config';
 import ReactJson from 'react-json-view'
 
 class ConfigurationPage extends React.Component {
@@ -94,6 +98,11 @@ class ConfigurationPage extends React.Component {
     isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment,
     isErrorOnDayToDelete: ConfigData.IsErrorOnDayToDelete,
 
+    //*** Rename delete Component******************************************************** */
+    selectedComponent:ConfigData.SelectedComponent,
+    modalForDelete: false,
+    componentList:ConfigData.ComponentList,
+
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
@@ -150,6 +159,10 @@ class ConfigurationPage extends React.Component {
     this.setState({ cleanUpEnvironment: ConfigData.CleanUpEnvironment });
     this.setState({ selectedDaysForDelete: ConfigData.SelectedDaysForDelete });
     this.setState({ isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment });
+
+     //*** Rename delete Component**********************************************************/
+     this.setState({ selectedComponent: ConfigData.SelectedComponent });
+     this.setState({ componentList: ConfigData.ComponentList });
 
   }
 
@@ -729,6 +742,49 @@ class ConfigurationPage extends React.Component {
 
   }
 
+  // Delete Component 
+  confirmdelete = async (event) => {
+    await event.preventDefault();
+    var folderToDelete = await ConfigData.SelectedComponent;
+    if(await folderToDelete ==='')
+    {
+      return await this.getNotification('error', 'Please select component which needs to be deleted.');
+    }
+    this.setState({ modalForDelete: true });
+  }
+
+  toggleDeleteModal = async () => {
+    this.setState({ modalForDelete: false });
+  }
+
+  deleteComponent = async (event) => {
+    await event.preventDefault();
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.deleteAutomationComponent();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      this.setState({ modalForDelete: false });
+      ConfigData.SelectedComponent =''
+      this.setState({selectedComponent:''})
+      await this.getNotification('success', 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.');
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      this.setState({ modalForDelete: false });
+      return await this.getNotification('error', 'Unable to delete component because of ' + Config.ErrorMessage);
+    }
+  }
+
+  selectComponent = async (event) => {
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedComponent !== await selectedComponent) {
+      this.setState({ selectedComponent: await selectedComponent })
+      ConfigData.SelectedComponent = await selectedComponent;
+    }
+
+  };
+
   //****************** End */********************************** */
 
   render() {
@@ -1076,7 +1132,59 @@ class ConfigurationPage extends React.Component {
               </Card>
             </Col>
           </Row>
+          {Users.isSuperAdmin && (<Row>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Rename/Delete test component
+                    <ButtonGroup size="sm">
+                      {/* <Button color='dark'>
+                        <small>Rename</small>
+                      </Button> */}
+                      <Button color='info' onClick={this.confirmdelete.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup col>
+                    <Label sm={6}>
+                      Component*
+                    </Label>
+                    <Col>
+                      <Input type="select"  onChange={this.selectComponent.bind(this)} name="componentList" value={this.state.selectedComponent}>
+                        <DropDownOptions options={this.state.componentList} />
+                      </Input>
+                    </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          )}
         </Fade>
+        <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
+            <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
+            <ModalBody>
+              Are you sure,you want to delete the component?
+              After deleting the component, all test cases will be deleted, and you cannot roll back.
+              The application can behave abnormally if test cases are updated or executed by an existing user.
+            </ModalBody>
+            <ModalFooter>
+              <ButtonGroup size="sm">
+                <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+                  <small>Cancel</small>
+                </Button>
+                <Button color='info' onClick={this.deleteComponent.bind(this)}>
+                  <small>Yes</small>
+                </Button>
+              </ButtonGroup>
+            </ModalFooter>
+          </Modal>
       </Page>
     );
   }
