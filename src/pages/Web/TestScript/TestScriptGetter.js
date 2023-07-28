@@ -462,6 +462,18 @@ export class TestScriptGetter {
             return;
           }
         }
+        if(await testscriptData['dependentpage'].length >0)
+        {
+          if(await testscriptData['dependentpage'][0]['parameter'] ==='')
+          {
+            //save new function
+            dataforSend = {};
+            dataforSend['pagename'] = await testscriptData['dependentpage']
+            dataforSend['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA']
+            headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/createpagefunctionfromtestscript', await headers, await dataforSend);
+          }
+        }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
         serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
         saveFile = await serverResponse['data'];

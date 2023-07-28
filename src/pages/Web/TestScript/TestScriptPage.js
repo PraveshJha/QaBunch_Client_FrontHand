@@ -1485,7 +1485,7 @@ class TestScriptPage extends React.Component {
                       </Label>
                       <Col >
                         <Combobox
-                          defaultValue={this.state.selectedComponent}
+                          value={this.state.selectedComponent}
                           data={this.state.allComponentList}
                           onSelect={this.selectComponent.bind(this)}
                           onChange={this.addNewComponent.bind(this)}

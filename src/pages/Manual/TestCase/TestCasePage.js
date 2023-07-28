@@ -1306,7 +1306,7 @@ class TestCasePagePage extends React.Component {
                             Test data
                           </Label>
                           <Col>
-                            <Input type="textarea" onChange={this.updateTestData.bind(this)} name="updatedTestData" value={this.state.updatedTestData}>
+                            <Input type="textarea" onChange={this.updateTestData.bind(this)} name="updatedTestData" defaultValue={this.state.updatedTestData}>
                             </Input>
                           </Col>
                         </FormGroup>
