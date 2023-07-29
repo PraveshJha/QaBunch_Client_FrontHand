@@ -27,4 +27,5 @@ export var ConfigData = {
     SelectedDaysForDelete:'7 Days',
     IsErrorOnCleanUpEnvironment:false,
     IsErrorOnDayToDelete:false,
+    MaxReportCounter:0,
 };

@@ -21,6 +21,7 @@ export class ConfigGetter {
         await this.updateUrlTableData(await allconfigData, ConfigData.DefaultSelectedEnvironment);
         await this.updateHttpHeaderTableData(await allconfigData);
         await this.updateAutherizationTableData(await allconfigData);
+        await this.getAccountDetails();
     }
     /////****** Default Configuration Getter *******************************************************
 
@@ -180,6 +181,26 @@ export class ConfigGetter {
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
             var serverResponse = await restAPI.get(await backendAPI + 'configuration/project/' + await selectedProject + '/testingtype/' + await testingType, await headers);
             return await serverResponse['data'];
+        }
+    }
+
+    async getAccountDetails() {
+        if (Config.isDemo) {
+            ConfigData.MaxReportCounter=30;
+        }
+        else {
+          try {
+            var backendAPI = await Config.backendAPI;
+            if (Config.backendServiceAt === 'remote') {
+              backendAPI = await Config.remoteBackendAPI;
+            }
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + await selectedProject + '/accountdetails', await headers);
+            var accountData = await serverResponse['data'];
+            ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
+          }
+          catch (error) {
+          }
         }
     }
 

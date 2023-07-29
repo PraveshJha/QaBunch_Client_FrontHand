@@ -22,6 +22,7 @@ export class ConfigGetter {
         await this.updateToolsTableData(await allconfigData);
         await this.setAllCapability(ConfigData.ExecutionServer);
         await this.renderAllComponent();
+        await this.getAccountDetails();
 
     }
     /////****** Default Configuration Getter *******************************************************
@@ -318,6 +319,26 @@ export class ConfigGetter {
 
         }
 
+    }
+
+    async getAccountDetails() {
+        if (Config.isDemo) {
+            ConfigData.MaxReportCounter=30;
+        }
+        else {
+          try {
+            var backendAPI = await Config.backendAPI;
+            if (Config.backendServiceAt === 'remote') {
+              backendAPI = await Config.remoteBackendAPI;
+            }
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + await selectedProject + '/accountdetails', await headers);
+            var accountData = await serverResponse['data'];
+            ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
+          }
+          catch (error) {
+          }
+        }
     }
 
 }

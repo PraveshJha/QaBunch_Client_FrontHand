@@ -46,6 +46,7 @@ class ConfigurationPage extends React.Component {
     defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment,
     validatedeSaveDaysToDevelopment: ConfigData.ValidatedeSaveDaysToDevelopment,
     errorMessageDefaultConfiguration: ConfigData.ErrorMessageDefaultConfiguration,
+    maxReportCounter:ConfigData.MaxReportCounter,
 
 
     //****** Environment Name  ***********************************************************
@@ -80,6 +81,7 @@ class ConfigurationPage extends React.Component {
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
+    this.setState({isPageLoading:true})
     await ConfigGetter.apiConfigPageLoadData();
 
     //****** default Configuration section  ***********************************************************
@@ -91,6 +93,7 @@ class ConfigurationPage extends React.Component {
     this.setState({ defaultSaveDaysToReport: ConfigData.DefaultSaveDaysToReport })
     this.setState({ validatedeDefaultSaveDaysToReport: ConfigData.ValidatedeDefaultSaveDaysToReport })
     this.setState({ defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment })
+    this.setState({ maxReportCounter: ConfigData.MaxReportCounter })
 
     //****** Env Name  *********************************************************************************
     this.setState({ envNameList: ConfigData.EnvNameList })
@@ -114,6 +117,8 @@ class ConfigurationPage extends React.Component {
     this.setState({ cleanUpEnvironment: ConfigData.CleanUpEnvironment });
     this.setState({ selectedDaysForDelete: ConfigData.SelectedDaysForDelete });
     this.setState({ isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment });
+
+    this.setState({isPageLoading:false})
 
   }
 
@@ -714,21 +719,21 @@ class ConfigurationPage extends React.Component {
                         Report trail count to show
                       </Label>
                       <Col>
-                        <Input type="number" invalid={this.state.validatedefaultReportTrailCount} onChange={this.selectReportTRailCount.bind(this)} name="defaultreporttrail" value={this.state.defaultReportTrailCount}>
+                        <Input type="number" invalid={this.state.validatedefaultReportTrailCount} onChange={this.selectReportTRailCount.bind(this)} name="defaultreporttrail" value={this.state.defaultReportTrailCount} max={this.state.maxReportCounter} min ={0}>
                         </Input>
                       </Col>
                       <Label sm={10}>
                         Days save to report
                       </Label>
                       <Col>
-                        <Input type="number" name="defaultDaysToSave" invalid={this.state.validatedeDefaultSaveDaysToReport} value={this.state.defaultSaveDaysToReport} onChange={this.selectSaveDaysToReport.bind(this)}>
+                        <Input type="number" name="defaultDaysToSave" invalid={this.state.validatedeDefaultSaveDaysToReport} value={this.state.defaultSaveDaysToReport} onChange={this.selectSaveDaysToReport.bind(this)} max={this.state.maxReportCounter} min ={0}>
                         </Input>
                       </Col>
                       <Label sm={10}>
                         Days to see development/execution count
                       </Label>
                       <Col>
-                        <Input type="number" name="defaultDevexeDays" invalid={this.state.validatedeSaveDaysToDevelopment} value={this.state.defaultSaveDaysToDevelopment} onChange={this.selectSaveDaysForDevandExecution.bind(this)}>
+                        <Input type="number" name="defaultDevexeDays" invalid={this.state.validatedeSaveDaysToDevelopment} value={this.state.defaultSaveDaysToDevelopment} onChange={this.selectSaveDaysForDevandExecution.bind(this)} max={this.state.maxReportCounter} min ={0}>
                         </Input>
                       </Col>
                     </FormGroup>

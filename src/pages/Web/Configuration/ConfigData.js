@@ -49,4 +49,5 @@ export var ConfigData = {
     SelectedScreenshot:'For failure & success',
     SelectedComponent:'',
     ComponentList:[],
+    MaxReportCounter:0,
 };
