@@ -14,7 +14,7 @@ export var TestScriptData = {
     IsErrorOnLocatorProperty:false,
     LocatorProperty:'',
     Locator:'',
-    AllLocatorList:['Id','Name','Xpath','LinkText','PartialLinkText','Class','CssSelector'],
+    AllLocatorList:[],
     AllCommonTestData:[],
     CommonTestDataNonEditableRows:[],
     AllORData:{},

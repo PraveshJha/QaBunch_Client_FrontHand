@@ -50,4 +50,7 @@ export var ConfigData = {
     SelectedComponent:'',
     ComponentList:[],
     MaxReportCounter:0,
+    AllElementLocator:[],
+    IsDataValidInLocatorTable:true,
+    SelectedRowFromLocatorTable:-2
 };

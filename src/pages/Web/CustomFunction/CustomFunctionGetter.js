@@ -20,15 +20,16 @@ export class CustomFunctionGetter {
     await this.initializeCustomPage();
     await this.getCustomFunctionList();
     await this.getallORDATA();
+    await this.setLocator();
     //await DataGetter.GetAllActions();
     var allWebActionList = await DataGetter.GetAllWebActions();
-    CustomFunctionData.UIActionList= await allWebActionList;
+    CustomFunctionData.UIActionList = await allWebActionList;
     await this.getallCommonDATA();
   }
 
   async getCustomFunctionList() {
-    var headers ={}
-    var serverResponse ={}
+    var headers = {}
+    var serverResponse = {}
     if (Config.isDemo) {
       CustomFunctionData.ListOfCustomFunction = ['Given I am on Home page', 'Given I am on Product List page', 'Given I am on Product Information page']
       CustomFunctionData.CustomFunctionListWithLabelandValue = [{ label: 'Custom function 1', value: 'Custom function 1' }];
@@ -40,7 +41,7 @@ export class CustomFunctionGetter {
         backendApi = await Config.remoteBackendAPI;
       }
       try {
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
         serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfCustomFunction = await customFunctionData;
@@ -136,7 +137,7 @@ export class CustomFunctionGetter {
         CustomFunctionData.AllORKey = [];
         for (let i = 0; i < await allKeys.length; i++) {
           var keyName = await allKeys[i];
-          CustomFunctionData.TestScriptORData[await keyName]= CustomFunctionData.AllORData[await keyName];
+          CustomFunctionData.TestScriptORData[await keyName] = CustomFunctionData.AllORData[await keyName];
           await CustomFunctionData.AllORKey.push(await keyName);
         }
       }
@@ -168,7 +169,7 @@ export class CustomFunctionGetter {
   }
 
   async isValidUrl(urlString) {
-    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString); 
+    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString);
   }
 
   async isDataFilledforDependendentAPITable() {
@@ -256,8 +257,8 @@ export class CustomFunctionGetter {
   }
 
   async saveCustomPageMethod() {
-    var headers ={}
-    var serverResponse ={}
+    var headers = {}
+    var serverResponse = {}
     if (Config.isDemo) {
       await new Promise(wait => setTimeout(wait, 3000));
       return true;
@@ -276,16 +277,14 @@ export class CustomFunctionGetter {
         var allData = {};
         var argsWithElement = await this.getListOfArgumentsAndNewElementFromTestSteps(CustomFunctionData.ListOfTestSteps);
         var argumentlistToAdd = await argsWithElement['argumentList'];
-        var needtobeSend ={};
-        for(let i=0;i<await argumentlistToAdd.length;i++)
-        {
+        var needtobeSend = {};
+        for (let i = 0; i < await argumentlistToAdd.length; i++) {
           needtobeSend[await argumentlistToAdd[i]] = 'Provide value'
         }
-        if(Object.keys(await needtobeSend).length ===0)
-        {
-          allData['argumentlist'] =''
+        if (Object.keys(await needtobeSend).length === 0) {
+          allData['argumentlist'] = ''
         }
-        else{
+        else {
           allData['argumentlist'] = await needtobeSend;
         }
         newElement = await argsWithElement['newelement'];
@@ -295,7 +294,7 @@ export class CustomFunctionGetter {
         if (await Object.keys(newElement).length > 0) {
           var dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+          headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
           serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
           if (!await saveOrData['isFileSaved']) {
@@ -303,8 +302,8 @@ export class CustomFunctionGetter {
             return;
           }
         }
-         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-         serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
+        headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+        serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -329,11 +328,9 @@ export class CustomFunctionGetter {
           console.log(await param);
           var paramToSave = await DataGetter.getArgumentListFromParameter(await param);
           console.log(await paramToSave);
-          for(let k=0;k<await paramToSave.length;k++)
-          {
+          for (let k = 0; k < await paramToSave.length; k++) {
             var argsParamName = await paramToSave[k];
-            if(!await allArguments.includes(await argsParamName))
-            {
+            if (!await allArguments.includes(await argsParamName)) {
               allArguments.push(await argsParamName);
             }
           }
@@ -346,16 +343,14 @@ export class CustomFunctionGetter {
     for (let i = 0; i < await allData.length; i++) {
       var value = await allData[i]['value'].toString().trim();
       var paramToSave = await DataGetter.getArgumentListFromParameter(await value);
-      for(let j=0;j<await paramToSave.length;j++)
-      {
+      for (let j = 0; j < await paramToSave.length; j++) {
         var argsParamName = await paramToSave[j];
-        if(!await allArguments.includes(await argsParamName))
-        {
+        if (!await allArguments.includes(await argsParamName)) {
           allArguments.push(await argsParamName);
         }
       }
-     }
-     newElement = await newElement['newelement']
+    }
+    newElement = await newElement['newelement']
     output['argumentList'] = await allArguments;
     output['newelement'] = await newElement;
     return output;
@@ -570,7 +565,7 @@ export class CustomFunctionGetter {
       dataforSend['commonTestData'] = await CustomFunctionData.CommonTestDataWithKeyValue;
       dataforSend['testSpecificData'] = await testSpecificData;
       var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-      var serverResponse = await restAPI.post(backendApi + 'uidebug/debugstep', await headers,await dataforSend);
+      var serverResponse = await restAPI.post(backendApi + 'uidebug/debugstep', await headers, await dataforSend);
       var driverDetails = await serverResponse['data'];
       var degugDetails = { Step: '', Status: '', Message: '' };
       if (await isPageFunction) {
@@ -614,11 +609,10 @@ export class CustomFunctionGetter {
           if (await defaultEnv === '' || await defaultEnv === undefined) {
             defaultEnv = await allEnv[0]['name'];
           }
-          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name',await defaultEnv)
-          if(await index > -1)
-          {
-             var appUrl = await allEnv[await index]['url'];
-             CustomFunctionData.AppUrl = await appUrl;
+          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name', await defaultEnv)
+          if (await index > -1) {
+            var appUrl = await allEnv[await index]['url'];
+            CustomFunctionData.AppUrl = await appUrl;
           }
         }
       }
@@ -626,7 +620,23 @@ export class CustomFunctionGetter {
     }
 
   }
+  async setLocator() {
+    if (Config.isDemo) {
+      CustomFunctionData.AllLocatorList = ['Id', 'Name', 'Xpath', 'LinkText', 'PartialLinkText', 'Class', 'CssSelector'];
+    }
+    else {
+      var allLOc = await CustomFunctionData.AllConfigData['Locator'];
+      if (await allLOc === undefined) {
+        CustomFunctionData.AllLocatorList = ['Id', 'Name', 'Xpath', 'LinkText', 'PartialLinkText', 'Class', 'CssSelector'];
+      }
+      else {
+        CustomFunctionData.AllLocatorList = await allLOc;
+      }
+    }
+  }
 }
+
+
 
 export default new CustomFunctionGetter();
 

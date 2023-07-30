@@ -20,7 +20,7 @@ import {
 } from 'reactstrap';
 import { ConfigData } from './ConfigData'
 import ConfigGetter from './ConfigGetter'
-import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader } from '../WebPageTableHeader'
+import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader,CustomLocator } from '../WebPageTableHeader'
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -99,10 +99,15 @@ class ConfigurationPage extends React.Component {
     isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment,
     isErrorOnDayToDelete: ConfigData.IsErrorOnDayToDelete,
 
-    //*** Rename delete Component******************************************************** */
+    //*** Rename delete Component**********************************************************/
     selectedComponent:ConfigData.SelectedComponent,
     modalForDelete: false,
     componentList:ConfigData.ComponentList,
+
+    //*** Add Custom Locator**************************************************************/
+    allElementLocator:ConfigData.AllElementLocator,
+    isDataValidInLocatorTable:ConfigData.IsDataValidInLocatorTable,
+    selectedRowFromLocatorTable:ConfigData.SelectedRowFromLocatorTable,
 
   };
   async componentDidMount() {
@@ -167,6 +172,11 @@ class ConfigurationPage extends React.Component {
      //*** Rename delete Component**********************************************************/
      this.setState({ selectedComponent: ConfigData.SelectedComponent });
      this.setState({ componentList: ConfigData.ComponentList });
+
+    //*** Add Custom Locator**************************************************************/
+    this.setState({ allElementLocator: ConfigData.AllElementLocator });
+    this.setState({ isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable });
+    this.setState({ selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable });
      this.setState({isPageLoading:false});
 
   }
@@ -790,6 +800,92 @@ class ConfigurationPage extends React.Component {
 
   };
 
+  //********************* Locator section ********************************//
+  
+  addNewLocatorInfo = async (event) => {
+    await event.preventDefault();
+    var allLocator = await this.state.allElementLocator;
+    if (await allLocator.length > 0) {
+      var locatorName = allLocator[allLocator.length - 1]['locator'];
+      if (locatorName.toString().trim() === "") {
+        this.setState({ isDataValidInLocatorTable: false });
+        return await this.getNotification('error', "Please add correct detsils in 'ADD YOUR LOCATOR' section");
+      }
+    }
+    this.setState({ isDataValidInLocatorTable: true });
+    var lastId = allLocator.length + 1;
+    var newRow = { id: lastId, locator: '' };
+    this.setState({ allElementLocator: [...this.state.allElementLocator, newRow] });
+    ConfigData.AllElementLocator.push(newRow);
+
+  }
+
+  deleteLocatorInfo = async (event) => {
+    await event.preventDefault();
+    var locatorInfo = this.state.allElementLocator;
+    if (locatorInfo.length === 0) {
+      return await this.getNotification('error', "No Locator information is found under 'ADD YOUR LOCATOR' section");
+    }
+    if (Number(this.state.selectedRowFromLocatorTable) > 0 && Number(this.state.selectedRowFromLocatorTable) <= locatorInfo.length) {
+      var dataAfterDelete = await ConfigGetter.updateRowIdAfterDelete(locatorInfo, this.state.selectedRowFromLocatorTable)
+      this.setState({ allElementLocator: [] }, () => { this.setState({ allElementLocator: dataAfterDelete }); });
+      ConfigData.AllElementLocator = dataAfterDelete;
+      this.setState({selectedRowFromLocatorTable:-2})
+      ConfigData.SelectedRowFromLocatorTable=-2
+    }
+    else {
+      this.setState({ isDataValidInLocatorTable: false });
+      return await this.getNotification('error', 'Please select any locator information for delete');
+    }
+  }
+
+  selectRadioButtonFromLocatorTable = (row, isSelect) => {
+    if (isSelect) {
+      ConfigData.SelectedRowFromLocatorTable = row.id;
+      this.setState({ selectedRowFromLocatorTable: row.id });
+    }
+  }
+
+  saveLocatorData = async (event) => {
+    await event.preventDefault();
+    var locatorToBeSaved =[];
+    var allLocatorInfo = this.state.allElementLocator;
+    if (this.state.isDataValidInLocatorTable) {
+      if (allLocatorInfo.length > 0) {
+
+        for(let i=0;i<await allLocatorInfo.length;i++)
+        {
+          var locName = await allLocatorInfo[i]['locator'];
+          locName = await locName.toString().toLowerCase().trim();
+          if(await locatorToBeSaved.includes(await locName) || locName ==='')
+          {
+            return await this.getNotification('error', "Please remove the duplicate/Blank locator from 'ADD YOUR LOCATOR FOR WEB ELEMENT IDENTIFICATION' table.");
+          }
+          else{
+            locatorToBeSaved.push(await locName);
+          }
+        }
+        
+      }
+      else{
+        return await this.getNotification('error', "Please add the locator name");
+      }
+      this.setState({ isPageLoading: true });
+      var isSaved = await ConfigSetter.saveLocatorData(await locatorToBeSaved);
+      this.setState({ isPageLoading: false });
+      if (isSaved) {
+        return await this.getNotification('success', 'Locator information is successfully saved.');
+      }
+      else {
+        return await this.getNotification('error', 'Unable to save Locator information because of ' + Config.ErrorMessage);
+      }
+
+    }
+    else {
+      return await this.getNotification('error', "Please add the correct locator name , it should not have number and Special characters.");
+    }
+  }
+
   //****************** End */********************************** */
 
   render() {
@@ -807,6 +903,11 @@ class ConfigurationPage extends React.Component {
       mode: 'radio',
       onSelect: this.selectRadioButtonFromToolTable,
       selected: [this.state.selectedRowFromToolTable]
+    };
+    const selectRowFromLocatorTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromLocatorTable,
+      selected: [this.state.selectedRowFromLocatorTable]
     };
     return (
       <Page
@@ -1166,6 +1267,44 @@ class ConfigurationPage extends React.Component {
                     </Col>
                     </FormGroup>
                   </Form>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                  Add your locator for web element identification
+                    <ButtonGroup size="sm">
+                      <Button color='dark' onClick={this.addNewLocatorInfo.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveLocatorData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='dark' onClick={this.deleteLocatorInfo.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BootstrapTable
+                      keyField='id'
+                      data={this.state.allElementLocator}
+                      columns={CustomLocator}
+                      wrapperClasses="table-responsive"
+                      striped
+                      hover
+                      condensed
+                      selectRow={selectRowFromLocatorTable}
+                      cellEdit={cellEditFactory({
+                        mode: 'click',
+                        blurToSave: true,
+                      })}
+                    />
+                  </Col>
                 </CardBody>
               </Card>
             </Col>

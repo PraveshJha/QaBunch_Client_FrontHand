@@ -732,3 +732,33 @@ export var ORElementTagHeader = [{
 }
 ];
 
+export var CustomLocator = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '60px' }
+},
+{
+	dataField: 'locator',
+	text: 'Locator',
+	validator: async (newValue, row, column, done) => {
+		var format = /[^A-Za-z-]/ig;
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Locator can not be blank'
+			});
+		}
+		if (format.test(await newValue)) {
+			return done({
+				valid: false,
+				message: 'Locator should not have special character and number.'
+			});
+		}
+		else {
+			return done();
+		}
+		
+	}
+}
+];
+

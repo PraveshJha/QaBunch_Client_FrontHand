@@ -22,6 +22,7 @@ export class TestScriptGetter {
       await this.getallORDATA();
       await this.getallCommonDATA();
       await this.renderComponent();
+      await this.setLocator();
       //await DataGetter.GetAllActions();
       var allWebActionList = await DataGetter.GetAllWebActions();
       TestScriptData.UIActionList = await allWebActionList;
@@ -911,6 +912,24 @@ export class TestScriptGetter {
       }
       catch (error) {
         Config.ErrorMessage = await error.message;
+      }
+    }
+  }
+
+  async  setLocator()
+  {
+    if(Config.isDemo)
+    {
+      TestScriptData.AllLocatorList = ['Id','Name','Xpath','LinkText','PartialLinkText','Class','CssSelector'];
+    }
+    else{
+      var allLOc = await TestScriptData.AllConfigData['Locator'];
+      if(await allLOc === undefined)
+      {
+        TestScriptData.AllLocatorList = ['Id','Name','Xpath','LinkText','PartialLinkText','Class','CssSelector'];
+      }
+      else{
+        TestScriptData.AllLocatorList = await allLOc;
       }
     }
   }

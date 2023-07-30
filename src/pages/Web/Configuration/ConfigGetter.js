@@ -23,6 +23,7 @@ export class ConfigGetter {
         await this.setAllCapability(ConfigData.ExecutionServer);
         await this.renderAllComponent();
         await this.getAccountDetails();
+        await this.getLocatorData(await allconfigData)
 
     }
     /////****** Default Configuration Getter *******************************************************
@@ -335,6 +336,37 @@ export class ConfigGetter {
             var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + await selectedProject + '/accountdetails', await headers);
             var accountData = await serverResponse['data'];
             ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
+          }
+          catch (error) {
+          }
+        }
+    }
+
+    async getLocatorData(allConfigData)
+    {
+        if (Config.isDemo) {
+            ConfigData.AllElementLocator=[{"id":1,"locator":"id"},{"id":2,"locator":"name"},{"id":3,"locator":"xpath"},{"id":4,"locator":"linktext"},{"id":5,"locator":"partiallinktext"},{"id":6,"locator":"class"},{"id":7,"locator":"cssselector"}]
+        }
+        else {
+          try {
+            var allLocator = await allConfigData['Locator'];
+            if(await allLocator ===undefined)
+            {
+                ConfigData.AllElementLocator=[{"id":1,"locator":"id"},{"id":2,"locator":"name"},{"id":3,"locator":"xpath"},{"id":4,"locator":"linktext"},{"id":5,"locator":"partiallinktext"},{"id":6,"locator":"class"},{"id":7,"locator":"cssselector"}]
+            }
+            else{
+                var locatorData =[];
+                for(let i=0;i<await allLocator.length;i++)
+                {
+                    var onebyoneData ={};
+                    var id = Number(i+1);
+                    var name = await allLocator[i].toString().trim();
+                    onebyoneData['id'] = await id;
+                    onebyoneData['locator'] = await name;
+                    locatorData.push(await onebyoneData);
+                }
+                ConfigData.AllElementLocator = await locatorData;
+            }
           }
           catch (error) {
           }
