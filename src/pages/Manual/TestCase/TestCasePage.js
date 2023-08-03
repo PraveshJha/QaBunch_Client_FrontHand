@@ -212,7 +212,7 @@ class TestCasePagePage extends React.Component {
     if (await this.state.testcaseName !== await dataChoice) {
       TestCaseData.TestcaseName = await dataChoice;
       this.setState({ testcaseName: await dataChoice });
-      var format = /[^A-Za-z ]/ig;
+      var format = /[^A-Za-z ,]/ig;
       if (await format.test(await dataChoice)) {
         TestCaseData.IsErrorOnTestCase = true;
         this.setState({ isErrorOnTestCase: true });
@@ -829,6 +829,8 @@ class TestCasePagePage extends React.Component {
       var testdataIndex = await colOndexDetails['testdata'];
       var preconditionIndex = await colOndexDetails['precondition'];
       var referenceIndex = await colOndexDetails['reference'];
+      var automationTypeIndex = await colOndexDetails['automationtype'];
+      var createdByIndex = await colOndexDetails['createdby']; 
       var totalTestCaseCreated = 0;
       this.setState({ isPageLoading: true });
       var lastExpectedResults = ''
@@ -841,6 +843,8 @@ class TestCasePagePage extends React.Component {
         var referenceValue = await rowInfo[i][referenceIndex];
         var testSteps = await rowInfo[i][testStepsIndex];
         var expectedResult = await rowInfo[i][expectedResultIndex];
+        var automationType = await rowInfo[i][automationTypeIndex];
+        var createBy = await rowInfo[i][createdByIndex];
         lastExpectedResults = await expectedResult;
         var maxRange = await TestCaseGetter.getMaxRangeForTestCase(await i, await componentIndex, await rowInfo.length, await rowInfo);
         if (await (Number(await maxRange) - 1) !== Number(await i)) {
@@ -867,6 +871,21 @@ class TestCasePagePage extends React.Component {
           }
           if (await referenceValue === undefined) {
             referenceValue = '';
+          }
+          if(await automationType ===undefined)
+          {
+            automationType = 'Not Automated'
+          }
+          else{
+            var optionsToCheck = ['Automated','Not Automated','Not a right candidate'];
+            if(!await optionsToCheck.includes(await automationType))
+            {
+              automationType = 'Not Automated'
+            }
+          }
+          if(await createBy ===undefined)
+          {
+            createBy = await Users.userEmail;
           }
           //create Test Info
           var priority = '';
@@ -900,6 +919,8 @@ class TestCasePagePage extends React.Component {
               case "p0":
                 priority = 'Critical';
                 break;
+                default:
+                  priority = 'Medium';
             }
           }
           if (await testName === undefined || await await testName === '') {
@@ -909,7 +930,7 @@ class TestCasePagePage extends React.Component {
           counter = await Number(await counter) + 1;
           componentName = await TestCaseGetter.createPathForComponent(await componentName);
           await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
-          var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition);
+          var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition,await automationType,await createBy);
           if (await isTestCaseCreated) {
             totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)
           }
@@ -926,7 +947,7 @@ class TestCasePagePage extends React.Component {
 
       }
       else {
-        return await this.getNotification('error', 'NO test case imported from the excel file, Please make sure you have correct excel template');
+        return await this.getNotification('error', 'No test case imported from the excel file, Please make sure you have correct excel template');
       }
     }
     catch (error) { }
@@ -1037,7 +1058,7 @@ class TestCasePagePage extends React.Component {
                         Title*
                       </Label>
                       <Col>
-                        <Input type="text" invalid={this.state.isErrorOnTestCase}  onChange={this.addNewTestCaseName.bind(this)} name="testcaseName" >
+                        <Input type="text" invalid={this.state.isErrorOnTestCase} onChange={this.addNewTestCaseName.bind(this)} name="testcaseName" >
                         </Input>
                       </Col>
                       <FormGroup row>
@@ -1199,7 +1220,7 @@ class TestCasePagePage extends React.Component {
                     New PlaceHolder*
                   </Label>
                   <Col>
-                    <Input type="input" name="newPlaceHolder" invalid={this.state.isErrorOnNewPlaceHOlder}  onChange={this.addNewPlaceHolderName.bind(this)}>
+                    <Input type="input" name="newPlaceHolder" invalid={this.state.isErrorOnNewPlaceHOlder} onChange={this.addNewPlaceHolderName.bind(this)}>
                     </Input>
                   </Col>
                 </FormGroup>

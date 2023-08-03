@@ -214,6 +214,68 @@ export class ConfigGetter {
         }
 
     }
+
+    async isPlaceHolderAlreadyExist(oldNamePath,newName) {
+        var folderTreeData = await ConfigData.FolderTreeData;
+        var actualTReeData = await folderTreeData;
+        var relativePath = await oldNamePath;
+        var folderNameToAdd = await newName;
+        console.log(await relativePath);
+        if(!await relativePath.includes('/'))
+        {
+            var allChildNodes = await relativePath;
+        }
+        else{
+            var allChildNodes = await relativePath.split('/');
+        }
+        for (let i = 0; i < await allChildNodes.length; i++) {
+            var keyNameToFind = await allChildNodes[i];
+            for (let j = 0; j < await actualTReeData.length; j++) {
+                var keyNameData = await actualTReeData[j]['key'];
+                if (await keyNameData.toLowerCase().trim() === keyNameToFind.toLocaleLowerCase().trim()) {
+                    actualTReeData = await actualTReeData[j]['nodes'];
+                    break;
+                }
+            }
+        }
+        for (let i = 0; i < await actualTReeData.length; i++) {
+            if (await folderNameToAdd.toLowerCase().trim() === await actualTReeData[i]['key'].toLowerCase().trim()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    async renameManualComponent() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['oldcomponent']= ConfigData.SelectedPlaceHolderPath;
+                testBody['newcomponent']= ConfigData.NewComponentName;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'manualconfiguration/project/' + await selectedProject + '/renamecomponent', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
+        }
+
+    }
+
 }
 export default new ConfigGetter();
 

@@ -272,6 +272,8 @@ export class TestCaseGetter {
         output['testdata'] = -1;
         output['precondition'] = -1;
         output['reference'] = -1;
+        output['automationtype'] = -1;
+        output['createdby'] = -1;
         const allColumnInfo = await columnInfo.map(columnInfo => columnInfo.toLowerCase());
         for (let i = 0; i < await allColumnInfo.length; i++) {
             if (await allColumnInfo[i].includes('screen') || await allColumnInfo[i].includes('component') || await allColumnInfo[i].includes('module') || await allColumnInfo[i].includes('page')) {
@@ -297,6 +299,12 @@ export class TestCaseGetter {
             }
             if (await allColumnInfo[i].includes('reference')) {
                 output['reference'] = await i;
+            }
+            if (await allColumnInfo[i].includes('automation')) {
+                output['automationtype'] = await i;
+            }
+            if (await allColumnInfo[i].includes('created')) {
+                output['createdby'] = await i;
             }
         }
         if (await Number(output['component']) > -1 && await Number(output['teststeps'] > -1) && await Number(output['name'] > -1) && await Number(output['expectedresult'] > -1)) {
@@ -325,7 +333,7 @@ export class TestCaseGetter {
         }
     }
 
-    async saveTestCaseWithTestAttribute(testcaseName, component, priority, testSteps, expectedResults,testData,reference,testPrecondition) {
+    async saveTestCaseWithTestAttribute(testcaseName, component, priority, testSteps, expectedResults,testData,reference,testPrecondition,automationType,createdBy) {
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 2000));
             return true;
@@ -340,14 +348,14 @@ export class TestCaseGetter {
             testBody['placeHolder'] = await component;
             testBody['priority'] = await priority;
             testBody['testingType'] = 'Functional';
-            testBody['automationType'] = 'Not Automated';
+            testBody['automationType'] = await automationType;
             testBody['testCycle'] = await TestCaseData.TestCaseTestCycle;
             testBody['references'] = await reference;
             testBody['testPrecondition'] = await testPrecondition;
             testBody['testcaseData'] = await testData;
             testBody['testSteps'] = await testSteps;
             testBody['testExpectedResult'] = await expectedResults;
-            testBody['createdBy'] = await Users.userEmail;
+            testBody['createdBy'] = await createdBy;
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

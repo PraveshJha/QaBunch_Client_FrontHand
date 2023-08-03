@@ -58,6 +58,10 @@ class ConfigurationPage extends React.Component {
     selectedPlaceHolderPath :ConfigData.SelectedPlaceHolderPath,
     selectedPlaceHolderLabel :ConfigData.SelectedPlaceHolderLabel,
     modalForDelete: false,
+    newComponentName: ConfigData.NewComponentName,
+    isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName,
+    confirmationModalMessage: '',
+    modalActionName: '',
 
 
   };
@@ -81,6 +85,8 @@ class ConfigurationPage extends React.Component {
     this.setState({ folderTreeData: {} }, () => { this.setState({ folderTreeData: ConfigData.FolderTreeData }); });
     this.setState({ selectedPlaceHolderPath: ConfigData.SelectedPlaceHolderPath });
     this.setState({ selectedPlaceHolderLabel: ConfigData.SelectedPlaceHolderLabel });
+    this.setState({ newComponentName: ConfigData.NewComponentName });
+    this.setState({ isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName });
 
   }
 
@@ -260,11 +266,49 @@ class ConfigurationPage extends React.Component {
     {
       return await this.getNotification('error', 'Please select component under account which needs to be deleted.');
     }
+    this.setState({ modalActionName: 'Delete' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentDeleteMessage });
     this.setState({ modalForDelete: true });
   }
 
   toggleDeleteModal = async () => {
     this.setState({ modalForDelete: false });
+  }
+
+  performModalConfirmationAction = async (event) => {
+    await event.preventDefault();
+    var actionName = this.state.modalActionName;
+    var Message ='';
+    switch (await actionName) {
+      case "Delete":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.deleteManualComponent();
+        this.setState({ isPageLoading: false });
+        Message ='Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
+        break;
+      case "Rename":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.renameManualComponent();
+        this.setState({ isPageLoading: false });
+        Message ='Test case component are successfully updated.'
+        break;
+      default:
+        return;
+    }
+    if (await isSaved) {
+      this.setState({ modalForDelete: false });
+      ConfigData.SelectedPlaceHolderPath =''
+      ConfigData.SelectedPlaceHolderLabel =''
+      this.setState({selectedPlaceHolderPath:''})
+      this.setState({selectedPlaceHolderLabel:''})
+      await this.getNotification('success', await Message);
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      this.setState({ modalForDelete: false });
+      return await this.getNotification('error', 'Unable to ' + await actionName + ' component because of ' + Config.ErrorMessage);
+    }
   }
 
   deleteComponent = async (event) => {
@@ -286,6 +330,59 @@ class ConfigurationPage extends React.Component {
       this.setState({ modalForDelete: false });
       return await this.getNotification('error', 'Unable to delete component because of ' + Config.ErrorMessage);
     }
+  }
+
+  addNewComponent = async (event) => {
+    this.setState({ isErrorOnNewComponentName: false })
+    var dataChoice = await event.target.value;
+    if (this.state.newComponentName !== await dataChoice) {
+      this.setState({ newComponentName: await dataChoice });
+      ConfigData.NewComponentName = await dataChoice;
+      if (await dataChoice.trim() === '') {
+        this.setState({ isErrorOnNewComponentName: true });
+        return;
+      }
+      var format = /[^A-Za-z -]/ig;
+      if (await format.test(await dataChoice)) {
+        ConfigData.IsErrorOnNewComponentName = true;
+        this.setState({ isErrorOnNewComponentName: true });
+      }
+    }
+
+  };
+
+  confirmRename = async (event) => {
+    await event.preventDefault();
+    var folderToRename = await ConfigData.SelectedPlaceHolderPath;
+    if(await folderToRename ==='')
+    {
+      return await this.getNotification('error', 'Please select component which needs to be deleted.');
+    }
+    if(!await folderToRename.includes('/'))
+    {
+      return await this.getNotification('error', 'Please select component under account which needs to be deleted.');
+    }
+    //Verify Name
+    var newName = await this.state.newComponentName;
+    if (newName.trim() === '') {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'New component name can not be blank.');
+    }
+    if (this.state.isErrorOnNewComponentName) {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'Please provide correct Component name , component name can only accept aphabets.');
+    }
+    folderToRename = folderToRename.split('/')
+    const lastIndex = await folderToRename.lastIndexOf('/');
+    const parentPath = await folderToRename.slice(0, lastIndex);
+    var isPlaceHolderExist = await ConfigGetter.isPlaceHolderAlreadyExist(await parentPath,await newName.trim());
+    if (await isPlaceHolderExist) {
+      this.setState({ isErrorOnNewComponentName: true });
+      return await this.getNotification('error', 'Placeholder ' + ConfigData.SelectedPlaceHolderLabel + ' is already exist.');
+    }
+    this.setState({ modalActionName: 'Rename' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentRenameMessage });
+    this.setState({ modalForDelete: true });
   }
 
   
@@ -400,9 +497,9 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Rename/Delete test component
                     <ButtonGroup size="sm">
-                      {/* <Button color='dark'>
+                      <Button color='dark' onClick={this.confirmRename.bind(this)}>
                         <small>Rename</small>
-                      </Button> */}
+                      </Button>
                       <Button color='info' onClick={this.confirmdelete.bind(this)}>
                         <small>Delete</small>
                       </Button>
@@ -412,6 +509,13 @@ class ConfigurationPage extends React.Component {
                 <CardBody>
                   <Form>
                     <FormGroup col>
+                    <Label sm={5}>
+                        New Name*
+                      </Label>
+                      <Col>
+                        <Input type="input" invalid={this.state.isErrorOnNewComponentName} onChange={this.addNewComponent.bind(this)} name="newComponnetName" defaultValue={this.state.newComponentName}>
+                        </Input>
+                      </Col>
                       <Col>
                         <TreeMenu
                           cacheSearch
@@ -431,16 +535,14 @@ class ConfigurationPage extends React.Component {
         <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
             <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
             <ModalBody>
-              Are you sure,you want to delete the component?
-              After deleting the component, all test cases will be deleted, and you cannot roll back.
-              The application can behave abnormally if test cases are updated or executed by an existing user.
+            {this.state.confirmationModalMessage}
             </ModalBody>
             <ModalFooter>
               <ButtonGroup size="sm">
                 <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
                   <small>Cancel</small>
                 </Button>
-                <Button color='info' onClick={this.deleteComponent.bind(this)}>
+                <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>
                   <small>Yes</small>
                 </Button>
               </ButtonGroup>

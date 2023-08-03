@@ -22,6 +22,7 @@ export class ConfigGetter {
         await this.updateHttpHeaderTableData(await allconfigData);
         await this.updateAutherizationTableData(await allconfigData);
         await this.getAccountDetails();
+        await this.renderAllComponent();
     }
     /////****** Default Configuration Getter *******************************************************
 
@@ -202,6 +203,89 @@ export class ConfigGetter {
           catch (error) {
           }
         }
+    }
+
+    async renderAllComponent() {
+        if (Config.isDemo) {
+            ConfigData.ComponentList = ["All", "LandingPage", "SignIn", "ProductList", "ShoppingCart", "BookingSummary"];
+            ConfigData.SelectedComponent = "All";
+        }
+        else {
+          try {
+            var backendAPI = await Config.backendAPI;
+            if (Config.backendServiceAt === 'remote') {
+              backendAPI = await Config.remoteBackendAPI;
+            }
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.get(backendAPI + 'components/project/' + selectedProject + '/testingtype/Api', await headers);
+            var allComponent = await serverResponse['data'];
+            if (allComponent.length > 0) {
+              ConfigData.SelectedComponent = await allComponent[0];
+              ConfigData.ComponentList = await allComponent;
+            }
+          }
+          catch (error) {
+          }
+        }
+    }
+
+    async deleteAPIComponent() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['component']= ConfigData.SelectedComponent;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Api/deletecomponent', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
+        }
+
+    }
+
+    async renameAPIAutomationComponent() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['oldcomponent']= ConfigData.SelectedComponent;
+                testBody['newcomponent']= ConfigData.NewComponentName;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Api/renamecomponent', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
+        }
+
     }
 
 }

@@ -308,7 +308,7 @@ export class ConfigGetter {
                 var testBody ={};
                 testBody['component']= ConfigData.SelectedComponent;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/deletecomponent', await headers, await testBody);
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Web/deletecomponent', await headers, await testBody);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];
@@ -371,6 +371,36 @@ export class ConfigGetter {
           catch (error) {
           }
         }
+    }
+
+    async renameAutomationComponent() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['oldcomponent']= ConfigData.SelectedComponent;
+                testBody['newcomponent']= ConfigData.NewComponentName;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Web/renamecomponent', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+
+        }
+
     }
 
 }

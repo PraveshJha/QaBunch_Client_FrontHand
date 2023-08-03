@@ -207,7 +207,7 @@ class DefectPage extends React.Component {
     if (await this.state.defectTitle !== await dataChoice) {
       DefectData.DefectTitle = await dataChoice;
       this.setState({ defectTitle: await dataChoice });
-      var format = /[^A-Za-z ]/ig;
+      var format = /[^A-Za-z ,0-9.-]/ig;
       if (await format.test(await dataChoice)) {
         DefectData.IsErrorOnDefectTitle = true;
         this.setState({ isErrorOnDefectTitle: true });

@@ -20,7 +20,7 @@ import {
 } from 'reactstrap';
 import { ConfigData } from './ConfigData'
 import ConfigGetter from './ConfigGetter'
-import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader,CustomLocator } from '../WebPageTableHeader'
+import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader, CustomLocator } from '../WebPageTableHeader'
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -30,8 +30,9 @@ import NotificationSystem from 'react-notification-system';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
 import ConfigSetter from './ConfigSetter';
-import { Config,Users } from '../../../QAautoMATER/Config';
+import { Config, Users } from '../../../QAautoMATER/Config';
 import ReactJson from 'react-json-view'
+import Matcher from '../../../QAautoMATER/funcLib/matcher';
 
 class ConfigurationPage extends React.Component {
   notificationSystem = React.createRef();
@@ -51,9 +52,9 @@ class ConfigurationPage extends React.Component {
     defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment,
     validatedeSaveDaysToDevelopment: ConfigData.ValidatedeSaveDaysToDevelopment,
     errorMessageDefaultConfiguration: ConfigData.ErrorMessageDefaultConfiguration,
-    screenshotOptionList:ConfigData.ScreenshotOptionList,
-    selectedScreenshot:ConfigData.SelectedScreenshot,
-    maxReportCounter :ConfigData.MaxReportCounter,
+    screenshotOptionList: ConfigData.ScreenshotOptionList,
+    selectedScreenshot: ConfigData.SelectedScreenshot,
+    maxReportCounter: ConfigData.MaxReportCounter,
 
     //****** Environment URL LIst  ***********************************************************
     validateEnvNameFromURL: ConfigData.ValidateEnvNameFromURL,
@@ -100,19 +101,23 @@ class ConfigurationPage extends React.Component {
     isErrorOnDayToDelete: ConfigData.IsErrorOnDayToDelete,
 
     //*** Rename delete Component**********************************************************/
-    selectedComponent:ConfigData.SelectedComponent,
+    selectedComponent: ConfigData.SelectedComponent,
     modalForDelete: false,
-    componentList:ConfigData.ComponentList,
+    componentList: ConfigData.ComponentList,
+    newComponentName: ConfigData.NewComponentName,
+    isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName,
+    confirmationModalMessage: '',
+    modalActionName: '',
 
     //*** Add Custom Locator**************************************************************/
-    allElementLocator:ConfigData.AllElementLocator,
-    isDataValidInLocatorTable:ConfigData.IsDataValidInLocatorTable,
-    selectedRowFromLocatorTable:ConfigData.SelectedRowFromLocatorTable,
+    allElementLocator: ConfigData.AllElementLocator,
+    isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable,
+    selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable,
 
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
-    this.setState({isPageLoading:true});
+    this.setState({ isPageLoading: true });
     await ConfigGetter.uiConfigPageLoadData();
 
     //****** default Configuration section  ***********************************************************
@@ -169,15 +174,17 @@ class ConfigurationPage extends React.Component {
     this.setState({ selectedDaysForDelete: ConfigData.SelectedDaysForDelete });
     this.setState({ isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment });
 
-     //*** Rename delete Component**********************************************************/
-     this.setState({ selectedComponent: ConfigData.SelectedComponent });
-     this.setState({ componentList: ConfigData.ComponentList });
+    //*** Rename delete Component**********************************************************/
+    this.setState({ selectedComponent: ConfigData.SelectedComponent });
+    this.setState({ componentList: ConfigData.ComponentList });
+    this.setState({ newComponentName: ConfigData.NewComponentName });
+    this.setState({ isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName });
 
     //*** Add Custom Locator**************************************************************/
     this.setState({ allElementLocator: ConfigData.AllElementLocator });
     this.setState({ isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable });
     this.setState({ selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable });
-     this.setState({isPageLoading:false});
+    this.setState({ isPageLoading: false });
 
   }
 
@@ -307,7 +314,7 @@ class ConfigurationPage extends React.Component {
     }
   }
 
-  selectScreenshotOption= async (event) => {
+  selectScreenshotOption = async (event) => {
     this.setState({ validateDefaultSelectedEnvironment: false })
     var envChoice = await event.target.value;
     if (this.state.selectedScreenshot !== await envChoice) {
@@ -479,7 +486,7 @@ class ConfigurationPage extends React.Component {
       var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['device'];
       var deviceName = allDeviceDetails[allDeviceDetails.length - 1]['name'];
       //var deviceWidth = allDeviceDetails[allDeviceDetails.length - 1]['width'];
-     // var deviceHieght = allDeviceDetails[allDeviceDetails.length - 1]['height'];
+      // var deviceHieght = allDeviceDetails[allDeviceDetails.length - 1]['height'];
       if (deviceType.toString().trim() === "" || deviceName.toString().trim() === '') {
         this.setState({ isDataValidInEmulatorTable: false });
         return await this.getNotification('error', "Please add correct detsils in 'EMULATOR SCREEN' section");
@@ -761,15 +768,52 @@ class ConfigurationPage extends React.Component {
   confirmdelete = async (event) => {
     await event.preventDefault();
     var folderToDelete = await ConfigData.SelectedComponent;
-    if(await folderToDelete ==='')
-    {
+    if (await folderToDelete === '') {
       return await this.getNotification('error', 'Please select component which needs to be deleted.');
     }
+    this.setState({ modalActionName: 'Delete' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentDeleteMessage });
     this.setState({ modalForDelete: true });
   }
 
   toggleDeleteModal = async () => {
     this.setState({ modalForDelete: false });
+  }
+
+  performModalConfirmationAction = async (event) => {
+    await event.preventDefault();
+    var actionName = this.state.modalActionName;
+    var Message ='';
+    switch (await actionName) {
+      case "Delete":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.deleteAutomationComponent();
+        this.setState({ isPageLoading: false });
+        Message ='Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
+        break;
+      case "Rename":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.renameAutomationComponent();
+        this.setState({ isPageLoading: false });
+        Message ='Test case component are successfully updated.'
+        break;
+      default:
+        return;
+    }
+
+    if (await isSaved) {
+      this.setState({ modalForDelete: false });
+      this.setState({ modalActionName: '' })
+      ConfigData.SelectedComponent = ''
+      this.setState({ selectedComponent: '' })
+      await this.getNotification('success', await Message);
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      this.setState({ modalForDelete: false });
+      return await this.getNotification('error', 'Unable to ' + await actionName + ' component because of ' + Config.ErrorMessage);
+    }
   }
 
   deleteComponent = async (event) => {
@@ -779,8 +823,8 @@ class ConfigurationPage extends React.Component {
     this.setState({ isPageLoading: false });
     if (isSaved) {
       this.setState({ modalForDelete: false });
-      ConfigData.SelectedComponent =''
-      this.setState({selectedComponent:''})
+      ConfigData.SelectedComponent = ''
+      this.setState({ selectedComponent: '' })
       await this.getNotification('success', 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.');
       await new Promise(wait => setTimeout(wait, 2000));
       await window.location.reload();
@@ -800,8 +844,53 @@ class ConfigurationPage extends React.Component {
 
   };
 
+  addNewComponent = async (event) => {
+    this.setState({ isErrorOnNewComponentName: false })
+    var dataChoice = await event.target.value;
+    if (this.state.newComponentName !== await dataChoice) {
+      this.setState({ newComponentName: await dataChoice });
+      ConfigData.NewComponentName = await dataChoice;
+      if (await dataChoice.trim() === '') {
+        this.setState({ isErrorOnNewComponentName: true });
+        return;
+      }
+      var format = /[^A-Za-z -]/ig;
+      if (await format.test(await dataChoice)) {
+        ConfigData.IsErrorOnNewComponentName = true;
+        this.setState({ isErrorOnNewComponentName: true });
+      }
+    }
+
+  };
+
+  confirmRename = async (event) => {
+    await event.preventDefault();
+    var folderToRename = await ConfigData.SelectedComponent;
+    if (await folderToRename === '') {
+      return await this.getNotification('error', 'Please select component which needs to be renamed.');
+    }
+    //Verify Name
+    var newName = await this.state.newComponentName;
+    if (newName.trim() === '') {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'New component name can not be blank.');
+    }
+    if (this.state.isErrorOnNewComponentName) {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'Please provide correct Component name , component name can only accept aphabets.');
+    }
+    var isAleadyExist = await Matcher.isValuePresentInArray(ConfigData.ComponentList, await newName.trim());
+    if (await isAleadyExist) {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'New Component Name is already exist on the server.Please choose different name.');
+    }
+    this.setState({ modalActionName: 'Rename' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentRenameMessage });
+    this.setState({ modalForDelete: true });
+  }
+
   //********************* Locator section ********************************//
-  
+
   addNewLocatorInfo = async (event) => {
     await event.preventDefault();
     var allLocator = await this.state.allElementLocator;
@@ -830,8 +919,8 @@ class ConfigurationPage extends React.Component {
       var dataAfterDelete = await ConfigGetter.updateRowIdAfterDelete(locatorInfo, this.state.selectedRowFromLocatorTable)
       this.setState({ allElementLocator: [] }, () => { this.setState({ allElementLocator: dataAfterDelete }); });
       ConfigData.AllElementLocator = dataAfterDelete;
-      this.setState({selectedRowFromLocatorTable:-2})
-      ConfigData.SelectedRowFromLocatorTable=-2
+      this.setState({ selectedRowFromLocatorTable: -2 })
+      ConfigData.SelectedRowFromLocatorTable = -2
     }
     else {
       this.setState({ isDataValidInLocatorTable: false });
@@ -848,26 +937,24 @@ class ConfigurationPage extends React.Component {
 
   saveLocatorData = async (event) => {
     await event.preventDefault();
-    var locatorToBeSaved =[];
+    var locatorToBeSaved = [];
     var allLocatorInfo = this.state.allElementLocator;
     if (this.state.isDataValidInLocatorTable) {
       if (allLocatorInfo.length > 0) {
 
-        for(let i=0;i<await allLocatorInfo.length;i++)
-        {
+        for (let i = 0; i < await allLocatorInfo.length; i++) {
           var locName = await allLocatorInfo[i]['locator'];
           locName = await locName.toString().toLowerCase().trim();
-          if(await locatorToBeSaved.includes(await locName) || locName ==='')
-          {
+          if (await locatorToBeSaved.includes(await locName) || locName === '') {
             return await this.getNotification('error', "Please remove the duplicate/Blank locator from 'ADD YOUR LOCATOR FOR WEB ELEMENT IDENTIFICATION' table.");
           }
-          else{
+          else {
             locatorToBeSaved.push(await locName);
           }
         }
-        
+
       }
-      else{
+      else {
         return await this.getNotification('error', "Please add the locator name");
       }
       this.setState({ isPageLoading: true });
@@ -944,21 +1031,21 @@ class ConfigurationPage extends React.Component {
                         Report trail count to show
                       </Label>
                       <Col>
-                        <Input type="number" invalid={this.state.validatedefaultReportTrailCount} onChange={this.selectReportTRailCount.bind(this)} name="defaultreporttrail" value={this.state.defaultReportTrailCount} max={this.state.maxReportCounter} min ={0}>
+                        <Input type="number" invalid={this.state.validatedefaultReportTrailCount} onChange={this.selectReportTRailCount.bind(this)} name="defaultreporttrail" value={this.state.defaultReportTrailCount} max={this.state.maxReportCounter} min={0}>
                         </Input>
                       </Col>
                       <Label sm={10}>
                         Days save to report
                       </Label>
                       <Col>
-                        <Input type="number" name="defaultDaysToSave" invalid={this.state.validatedeDefaultSaveDaysToReport} value={this.state.defaultSaveDaysToReport} onChange={this.selectSaveDaysToReport.bind(this)} max={this.state.maxReportCounter} min ={0}>
+                        <Input type="number" name="defaultDaysToSave" invalid={this.state.validatedeDefaultSaveDaysToReport} value={this.state.defaultSaveDaysToReport} onChange={this.selectSaveDaysToReport.bind(this)} max={this.state.maxReportCounter} min={0}>
                         </Input>
                       </Col>
                       <Label sm={10}>
                         Days to see development/execution count
                       </Label>
                       <Col>
-                        <Input type="number" name="defaultDevexeDays" invalid={this.state.validatedeSaveDaysToDevelopment} value={this.state.defaultSaveDaysToDevelopment} onChange={this.selectSaveDaysForDevandExecution.bind(this)} max={this.state.maxReportCounter} min ={0}>
+                        <Input type="number" name="defaultDevexeDays" invalid={this.state.validatedeSaveDaysToDevelopment} value={this.state.defaultSaveDaysToDevelopment} onChange={this.selectSaveDaysForDevandExecution.bind(this)} max={this.state.maxReportCounter} min={0}>
                         </Input>
                       </Col>
                       <Label sm={5}>
@@ -1245,9 +1332,9 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Rename/Delete test component
                     <ButtonGroup size="sm">
-                      {/* <Button color='dark'>
+                      <Button color='dark' onClick={this.confirmRename.bind(this)}>
                         <small>Rename</small>
-                      </Button> */}
+                      </Button>
                       <Button color='info' onClick={this.confirmdelete.bind(this)}>
                         <small>Delete</small>
                       </Button>
@@ -1257,14 +1344,21 @@ class ConfigurationPage extends React.Component {
                 <CardBody>
                   <Form>
                     <FormGroup col>
-                    <Label sm={6}>
-                      Component*
-                    </Label>
-                    <Col>
-                      <Input type="select"  onChange={this.selectComponent.bind(this)} name="componentList" value={this.state.selectedComponent}>
-                        <DropDownOptions options={this.state.componentList} />
-                      </Input>
-                    </Col>
+                      <Label sm={6}>
+                        Component*
+                      </Label>
+                      <Col>
+                        <Input type="select" onChange={this.selectComponent.bind(this)} name="componentList" value={this.state.selectedComponent}>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                      <Label sm={5}>
+                        New Name*
+                      </Label>
+                      <Col>
+                        <Input type="input" invalid={this.state.isErrorOnNewComponentName} onChange={this.addNewComponent.bind(this)} name="newComponnetName" defaultValue={this.state.newComponentName}>
+                        </Input>
+                      </Col>
                     </FormGroup>
                   </Form>
                 </CardBody>
@@ -1274,7 +1368,7 @@ class ConfigurationPage extends React.Component {
               <Card>
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
-                  Add your locator for web element identification
+                    Add your locator for web element identification
                     <ButtonGroup size="sm">
                       <Button color='dark' onClick={this.addNewLocatorInfo.bind(this)}>
                         <small>Add</small>
@@ -1312,23 +1406,21 @@ class ConfigurationPage extends React.Component {
           )}
         </Fade>
         <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
-            <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
-            <ModalBody>
-              Are you sure,you want to delete the component?
-              After deleting the component, all test cases will be deleted, and you cannot roll back.
-              The application can behave abnormally if test cases are updated or executed by an existing user.
-            </ModalBody>
-            <ModalFooter>
-              <ButtonGroup size="sm">
-                <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
-                  <small>Cancel</small>
-                </Button>
-                <Button color='info' onClick={this.deleteComponent.bind(this)}>
-                  <small>Yes</small>
-                </Button>
-              </ButtonGroup>
-            </ModalFooter>
-          </Modal>
+          <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
+          <ModalBody>
+            {this.state.confirmationModalMessage}
+          </ModalBody>
+          <ModalFooter>
+            <ButtonGroup size="sm">
+              <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+                <small>Cancel</small>
+              </Button>
+              <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>
+                <small>Yes</small>
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </Modal>
       </Page>
     );
   }
