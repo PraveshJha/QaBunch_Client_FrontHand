@@ -1029,7 +1029,7 @@ class TestScriptPage extends React.Component {
   addORinTestStep = async (event) => {
     await event.preventDefault();
     var elementName = this.state.orElementName.toString().trim().replace(/ /g, "");
-    var locator = this.state.locator.toString().trim();;
+    var locator = this.state.locator.toString().trim();
     var locatorProperty = this.state.locatorProperty.toString().trim();;
     if (locator === '') {
       this.setState({ isErrorOnLocator: true });

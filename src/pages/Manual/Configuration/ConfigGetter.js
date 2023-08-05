@@ -220,7 +220,6 @@ export class ConfigGetter {
         var actualTReeData = await folderTreeData;
         var relativePath = await oldNamePath;
         var folderNameToAdd = await newName;
-        console.log(await relativePath);
         if(!await relativePath.includes('/'))
         {
             var allChildNodes = await relativePath;

@@ -610,12 +610,34 @@ export class TestScriptGetter {
         }
         else {
           degugDetails.Step = await testStepDetails['stepdefinition'];
+          var elementName = await await testStepDetails['element'];
+          if(await elementName !=='' && await elementName !==undefined)
+          {
+            try{
+            var primayProp = await  driverDetails['primaryLocatorProperty']
+            var locName = await  driverDetails['primaryLocator'];
+            if((await locName !=='' && await locName !==undefined) && (await primayProp !=='' && await primayProp !==undefined))
+            {
+              TestScriptData.AllORData[await elementName]['locator'] = await locName;
+              TestScriptData.AllORData[await elementName]['locatorproperty'] = await primayProp;
+            }
+            
+            var secondaryProperty = await  driverDetails['secondaryXPath'];
+            if(await secondaryProperty !=='' && await secondaryProperty !==undefined)
+            {
+              TestScriptData.AllORData[await elementName]['alternatexpath'] = await secondaryProperty;
+            }
+            }
+            catch(error)
+            {}
+          }
         }
         degugDetails.Status = await driverDetails['status'];
         degugDetails.Message = await driverDetails['message'];
         TestScriptData.DebugDetails = await degugDetails;
         var imageData = 'data:image/png;base64, ' + await driverDetails['screenshot'];
         TestScriptData.StepScreenshot = await imageData;
+        
       }
       catch (error) {
         Config.ErrorMessage = await error.message;

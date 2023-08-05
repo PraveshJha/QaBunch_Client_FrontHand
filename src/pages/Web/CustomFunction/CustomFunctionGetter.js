@@ -325,9 +325,7 @@ export class CustomFunctionGetter {
       if (allDependentData.length > 0) {
         for (let i = 1; i <= allDependentData.length; i++) {
           var param = await allDependentData[i - 1]['parameter'];
-          console.log(await param);
           var paramToSave = await DataGetter.getArgumentListFromParameter(await param);
-          console.log(await paramToSave);
           for (let k = 0; k < await paramToSave.length; k++) {
             var argsParamName = await paramToSave[k];
             if (!await allArguments.includes(await argsParamName)) {
