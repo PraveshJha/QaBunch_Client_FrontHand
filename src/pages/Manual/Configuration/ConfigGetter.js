@@ -275,6 +275,73 @@ export class ConfigGetter {
 
     }
 
+    async getListOfTestCaseFromComponent(componentName) {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return [{ value: 'QB-1', label: 'QB-1' }, { value: 'QB-2', label: 'QB-2' }];
+        }
+        else {
+            var output = [];
+            var listOfTestDetails =[];
+            try {
+                var backendAPI = await Config.backendAPI;
+                if (await Config.backendServiceAt === 'remote') {
+                    backendAPI = await Config.remoteBackendAPI;
+                }
+                var testbody ={}
+                testbody['component'] = await componentName;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(await backendAPI + 'manualconfiguration/project/' + await selectedProject + '/gettestidforcomponent', await headers,await testbody);
+                output = await serverResponse['data'];
+                for(let i=0;i<await output.length;i++)
+                {
+                   var onebyoneValue ={ value: '', label: '' };
+                   onebyoneValue.value = await output[i];
+                   onebyoneValue.label = await output[i];
+                   listOfTestDetails.push(await onebyoneValue);
+
+                }
+
+    
+            } catch (error) {
+            }
+            return await listOfTestDetails;
+
+        }
+
+    }
+
+    async moveYourTestCases() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['sourceComponent'] = ConfigData.SelectedSourceComponentToMove;
+                testBody['destinationComponent'] = ConfigData.SelectedDestinationComponentToMove;
+                testBody['listOfTestId'] = ConfigData.ListOfTestIdToMove;
+                testBody['testcycle'] = ConfigData.AllConfigData['CurrentTestCycle'];
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'manualconfiguration/project/' + selectedProject + '/movetestcases', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+        }
+
+    }
+
 }
 export default new ConfigGetter();
 

@@ -33,6 +33,7 @@ import ConfigSetter from './ConfigSetter';
 import { Config, Users } from '../../../QAautoMATER/Config';
 import ReactJson from 'react-json-view'
 import Matcher from '../../../QAautoMATER/funcLib/matcher';
+import Select from 'react-select';
 
 class ConfigurationPage extends React.Component {
   notificationSystem = React.createRef();
@@ -109,6 +110,14 @@ class ConfigurationPage extends React.Component {
     confirmationModalMessage: '',
     modalActionName: '',
 
+    //*******Move your Test scripts *******************************************************/
+    selectedSourceComponentToMove :ConfigData.SelectedSourceComponentToMove,
+    selectedDestinationComponentToMove :ConfigData.SelectedDestinationComponentToMove,
+    listOfAllTestID :ConfigData.ListOfAllTestID,
+    listOfTestIdToMove :ConfigData.ListOfTestIdToMove,
+    isErrorOnDestinationComponent:false,
+    isErrorOnDestinationComponent:false,
+
     //*** Add Custom Locator**************************************************************/
     allElementLocator: ConfigData.AllElementLocator,
     isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable,
@@ -179,6 +188,12 @@ class ConfigurationPage extends React.Component {
     this.setState({ componentList: ConfigData.ComponentList });
     this.setState({ newComponentName: ConfigData.NewComponentName });
     this.setState({ isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName });
+
+     //*** Move your Test Scripts**********************************************************/
+     this.setState({ selectedSourceComponentToMove: ConfigData.SelectedSourceComponentToMove });
+     this.setState({ selectedDestinationComponentToMove: ConfigData.SelectedDestinationComponentToMove });
+     this.setState({ listOfAllTestID: ConfigData.ListOfAllTestID });
+     this.setState({ listOfTestIdToMove: ConfigData.ListOfTestIdToMove });
 
     //*** Add Custom Locator**************************************************************/
     this.setState({ allElementLocator: ConfigData.AllElementLocator });
@@ -783,19 +798,19 @@ class ConfigurationPage extends React.Component {
   performModalConfirmationAction = async (event) => {
     await event.preventDefault();
     var actionName = this.state.modalActionName;
-    var Message ='';
+    var Message = '';
     switch (await actionName) {
       case "Delete":
         this.setState({ isPageLoading: true });
         var isSaved = await ConfigGetter.deleteAutomationComponent();
         this.setState({ isPageLoading: false });
-        Message ='Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
+        Message = 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
         break;
       case "Rename":
         this.setState({ isPageLoading: true });
         var isSaved = await ConfigGetter.renameAutomationComponent();
         this.setState({ isPageLoading: false });
-        Message ='Test case component are successfully updated.'
+        Message = 'Test case component are successfully updated.'
         break;
       default:
         return;
@@ -970,6 +985,77 @@ class ConfigurationPage extends React.Component {
     }
     else {
       return await this.getNotification('error', "Please add the correct locator name , it should not have number and Special characters.");
+    }
+  }
+
+  //************* Move your test scripts Features *****************************************/
+
+  selectSourceComponent = async (event) => {
+    this.setState({isErrorOnSourceComponent:false})
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedSourceComponentToMove !== await selectedComponent) {
+      this.setState({ selectedSourceComponentToMove: await selectedComponent })
+      ConfigData.SelectedSourceComponentToMove = await selectedComponent;
+      if(await selectedComponent !=='')
+      {
+        //** get lis of Test ID */
+        var output = ConfigGetter.getListOfTestCaseFromComponent(await selectedComponent);
+        ConfigData.ListOfAllTestID = await output;
+        this.setState({listOfAllTestID:await output})
+      }
+    }
+
+  };
+
+  selectDestinationComponent = async (event) => {
+    this.setState({isErrorOnDestinationComponent:false})
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedDestinationComponentToMove !== await selectedComponent) {
+      this.setState({ selectedDestinationComponentToMove: await selectedComponent })
+      ConfigData.SelectedDestinationComponentToMove = await selectedComponent;
+    }
+
+  };
+
+  selectTestScriptsToMove = async (event) => {
+    this.setState({listOfTestIdToMove:[]})
+     ConfigData.ListOfTestIdToMove = await event;
+     this.setState({listOfTestIdToMove:await event});
+  };
+
+  moveTestScripts = async (event) => {
+    await event.preventDefault();
+    var sourceComponent = await this.state.selectedSourceComponentToMove;
+    if (await sourceComponent === '') {
+      this.setState({ isErrorOnSourceComponent: true })
+      return await this.getNotification('error', 'Source Component can not be blank.');
+    }
+    //Verify Name
+    var destinationComponent = await this.state.selectedDestinationComponentToMove;
+    if (destinationComponent.trim() === '') {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Destination Component can not be blank.');
+    }
+    var allTestID = await this.state.listOfTestIdToMove;
+    if(await allTestID.length ===0)
+    {
+      return await this.getNotification('error', 'Please Select Test to move');
+    }
+    if(await sourceComponent === await destinationComponent)
+    {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Source and Destination Component can not be same.');
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigSetter.moveYourTestScripts();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      await this.getNotification('success', 'Test scripts are successfully moved.');
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      return await this.getNotification('error', 'Unable to move test scripts because of ' + Config.ErrorMessage);
     }
   }
 
@@ -1325,8 +1411,8 @@ class ConfigurationPage extends React.Component {
               </Card>
             </Col>
           </Row>
-          {Users.isSuperAdmin && (<Row>
-            <Col lg={6} md={12} sm={12} xs={12}>
+          <Row>
+            {Users.isSuperAdmin && (<Col lg={6} md={12} sm={12} xs={12}>
               <Card>
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
@@ -1364,6 +1450,61 @@ class ConfigurationPage extends React.Component {
                 </CardBody>
               </Card>
             </Col>
+            )}
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Move your test scripts
+                    <ButtonGroup size="sm">
+                      <Button color='dark' onClick={this.moveTestScripts.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup col>
+                      <Label sm={6}>
+                        Component*
+                      </Label>
+                      <Col>
+                        <Input type="select" invalid={this.state.isErrorOnSourceComponent} onChange={this.selectSourceComponent.bind(this)} name="componentList" value={this.state.selectedSourceComponentToMove}>
+                        <option></option>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                      <Label sm={5}>
+                        Select Test to move
+                      </Label>
+                      <Col>
+                          <Select
+                            defaultValue={this.state.listOfTestIdToMove}
+                            isMulti
+                            name="testId"
+                            options={this.state.listOfAllTestID}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.selectTestScriptsToMove.bind(this)}
+                          />
+                        </Col>
+                      <Label sm={6}>
+                        Select Component to Move
+                      </Label>
+                      <Col>
+                        <Input invalid={this.state.isErrorOnDestinationComponent} type="select" onChange={this.selectDestinationComponent.bind(this)} name="componentList" value={this.state.selectedDestinationComponentToMove}>
+                          <option></option>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
             <Col lg={6} md={12} sm={12} xs={12}>
               <Card>
                 <CardHeader>
@@ -1403,7 +1544,6 @@ class ConfigurationPage extends React.Component {
               </Card>
             </Col>
           </Row>
-          )}
         </Fade>
         <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>

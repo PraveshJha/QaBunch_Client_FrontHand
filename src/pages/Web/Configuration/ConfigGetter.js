@@ -403,6 +403,40 @@ export class ConfigGetter {
 
     }
 
+    async getListOfTestCaseFromComponent(componentName) {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return [{ value: 'QB-1', label: 'QB-1' }, { value: 'QB-2', label: 'QB-2' }];
+        }
+        else {
+            var output = [];
+            var listOfTestDetails =[];
+            try {
+                var backendAPI = await Config.backendAPI;
+                if (await Config.backendServiceAt === 'remote') {
+                    backendAPI = await Config.remoteBackendAPI;
+                }
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.get(await backendAPI + 'components/' + await componentName + '/project/' + await selectedProject + '/testingtype/Web', await headers);
+                output = await serverResponse['data'];
+                for(let i=0;i<await output.length;i++)
+                {
+                   var onebyoneValue ={ value: '', label: '' };
+                   onebyoneValue.value = await output[i]['testid']+'@'+await output[i]['testname'];
+                   onebyoneValue.label = await output[i]['testid']+'@'+await output[i]['testname'];
+                   listOfTestDetails.push(await onebyoneValue);
+
+                }
+
+    
+            } catch (error) {
+            }
+            return await listOfTestDetails;
+
+        }
+
+    }
+
 }
 export default new ConfigGetter();
 

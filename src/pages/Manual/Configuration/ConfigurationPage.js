@@ -33,6 +33,7 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import Matcher from '../../../QAautoMATER/funcLib/matcher';
 import TreeMenu from 'react-simple-tree-menu';
 import '../../../../node_modules/react-simple-tree-menu/dist/main.css';
+import Select from 'react-select';
 
 class ConfigurationPage extends React.Component {
   notificationSystem = React.createRef();
@@ -54,14 +55,20 @@ class ConfigurationPage extends React.Component {
     isNameValidforUrlTable: ConfigData.IsNameValidforUrlTable,
 
     //****** Rename Delete Component***************************************************************/
-    folderTreeData :ConfigData.FolderTreeData,
-    selectedPlaceHolderPath :ConfigData.SelectedPlaceHolderPath,
-    selectedPlaceHolderLabel :ConfigData.SelectedPlaceHolderLabel,
+    folderTreeData: ConfigData.FolderTreeData,
+    selectedPlaceHolderPath: ConfigData.SelectedPlaceHolderPath,
+    selectedPlaceHolderLabel: ConfigData.SelectedPlaceHolderLabel,
     modalForDelete: false,
     newComponentName: ConfigData.NewComponentName,
     isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName,
     confirmationModalMessage: '',
     modalActionName: '',
+
+    //*******Move your Test cases *******************************************************/
+    selectedSourceComponentToMove: ConfigData.SelectedSourceComponentToMove,
+    selectedDestinationComponentToMove: ConfigData.SelectedDestinationComponentToMove,
+    listOfAllTestID: ConfigData.ListOfAllTestID,
+    listOfTestIdToMove: ConfigData.ListOfTestIdToMove,
 
 
   };
@@ -87,6 +94,12 @@ class ConfigurationPage extends React.Component {
     this.setState({ selectedPlaceHolderLabel: ConfigData.SelectedPlaceHolderLabel });
     this.setState({ newComponentName: ConfigData.NewComponentName });
     this.setState({ isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName });
+
+    //*** Move your Test cases**********************************************************/
+    this.setState({ selectedSourceComponentToMove: ConfigData.SelectedSourceComponentToMove });
+    this.setState({ selectedDestinationComponentToMove: ConfigData.SelectedDestinationComponentToMove });
+    this.setState({ listOfAllTestID: ConfigData.ListOfAllTestID });
+    this.setState({ listOfTestIdToMove: ConfigData.ListOfTestIdToMove });
 
   }
 
@@ -258,12 +271,10 @@ class ConfigurationPage extends React.Component {
   confirmdelete = async (event) => {
     await event.preventDefault();
     var folderToDelete = await ConfigData.SelectedPlaceHolderPath;
-    if(await folderToDelete ==='')
-    {
+    if (await folderToDelete === '') {
       return await this.getNotification('error', 'Please select component which needs to be deleted.');
     }
-    if(!await folderToDelete.includes('/'))
-    {
+    if (!await folderToDelete.includes('/')) {
       return await this.getNotification('error', 'Please select component under account which needs to be deleted.');
     }
     this.setState({ modalActionName: 'Delete' });
@@ -278,29 +289,29 @@ class ConfigurationPage extends React.Component {
   performModalConfirmationAction = async (event) => {
     await event.preventDefault();
     var actionName = this.state.modalActionName;
-    var Message ='';
+    var Message = '';
     switch (await actionName) {
       case "Delete":
         this.setState({ isPageLoading: true });
         var isSaved = await ConfigGetter.deleteManualComponent();
         this.setState({ isPageLoading: false });
-        Message ='Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
+        Message = 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
         break;
       case "Rename":
         this.setState({ isPageLoading: true });
         var isSaved = await ConfigGetter.renameManualComponent();
         this.setState({ isPageLoading: false });
-        Message ='Test case component are successfully updated.'
+        Message = 'Test case component are successfully updated.'
         break;
       default:
         return;
     }
     if (await isSaved) {
       this.setState({ modalForDelete: false });
-      ConfigData.SelectedPlaceHolderPath =''
-      ConfigData.SelectedPlaceHolderLabel =''
-      this.setState({selectedPlaceHolderPath:''})
-      this.setState({selectedPlaceHolderLabel:''})
+      ConfigData.SelectedPlaceHolderPath = ''
+      ConfigData.SelectedPlaceHolderLabel = ''
+      this.setState({ selectedPlaceHolderPath: '' })
+      this.setState({ selectedPlaceHolderLabel: '' })
       await this.getNotification('success', await Message);
       await new Promise(wait => setTimeout(wait, 2000));
       await window.location.reload();
@@ -318,10 +329,10 @@ class ConfigurationPage extends React.Component {
     this.setState({ isPageLoading: false });
     if (isSaved) {
       this.setState({ modalForDelete: false });
-      ConfigData.SelectedPlaceHolderPath =''
-      ConfigData.SelectedPlaceHolderLabel =''
-      this.setState({selectedPlaceHolderPath:''})
-      this.setState({selectedPlaceHolderLabel:''})
+      ConfigData.SelectedPlaceHolderPath = ''
+      ConfigData.SelectedPlaceHolderLabel = ''
+      this.setState({ selectedPlaceHolderPath: '' })
+      this.setState({ selectedPlaceHolderLabel: '' })
       await this.getNotification('success', 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.');
       await new Promise(wait => setTimeout(wait, 2000));
       await window.location.reload();
@@ -354,12 +365,10 @@ class ConfigurationPage extends React.Component {
   confirmRename = async (event) => {
     await event.preventDefault();
     var folderToRename = await ConfigData.SelectedPlaceHolderPath;
-    if(await folderToRename ==='')
-    {
+    if (await folderToRename === '') {
       return await this.getNotification('error', 'Please select component which needs to be deleted.');
     }
-    if(!await folderToRename.includes('/'))
-    {
+    if (!await folderToRename.includes('/')) {
       return await this.getNotification('error', 'Please select component under account which needs to be deleted.');
     }
     //Verify Name
@@ -375,7 +384,7 @@ class ConfigurationPage extends React.Component {
     folderToRename = folderToRename.split('/')
     const lastIndex = await folderToRename.lastIndexOf('/');
     const parentPath = await folderToRename.slice(0, lastIndex);
-    var isPlaceHolderExist = await ConfigGetter.isPlaceHolderAlreadyExist(await parentPath,await newName.trim());
+    var isPlaceHolderExist = await ConfigGetter.isPlaceHolderAlreadyExist(await parentPath, await newName.trim());
     if (await isPlaceHolderExist) {
       this.setState({ isErrorOnNewComponentName: true });
       return await this.getNotification('error', 'Placeholder ' + ConfigData.SelectedPlaceHolderLabel + ' is already exist.');
@@ -385,7 +394,85 @@ class ConfigurationPage extends React.Component {
     this.setState({ modalForDelete: true });
   }
 
-  
+  //************* Move your test scripts Features *****************************************/
+
+  selectSourceComponentFromTree = async (item) => {
+    var relativePath = await item['key'];
+    if(await relativePath !==this.state.selectedSourceComponentToMove)
+    {
+      ConfigData.SelectedSourceComponentToMove = await relativePath;
+      this.setState({ selectedSourceComponentToMove: await relativePath })
+      if(await relativePath !=='' && (await relativePath.includes('/')))
+      {
+        //** get lis of Test ID */
+        this.setState({listOfTestIdToMove:[]})
+        this.setState({listOfAllTestID:[]})
+        ConfigData.ListOfAllTestID = [];
+        ConfigData.ListOfTestIdToMove =[]
+        this.setState({isPageLoading:true})
+        var output = ConfigGetter.getListOfTestCaseFromComponent(await relativePath);
+        this.setState({isPageLoading:false})
+        ConfigData.ListOfAllTestID = await output;
+        this.setState({listOfAllTestID:await output})
+      }
+      else{
+        this.setState({listOfTestIdToMove:[]})
+        this.setState({listOfAllTestID:[]})
+        ConfigData.ListOfAllTestID = [];
+        ConfigData.ListOfTestIdToMove =[]
+      }
+    }
+  }
+
+  selectTestScriptsToMove = async (event) => {
+    this.setState({ listOfTestIdToMove: [] })
+    ConfigData.ListOfTestIdToMove = await event;
+    this.setState({ listOfTestIdToMove: await event });
+  };
+
+  selectDestinationComponentFromTree = async (item) => {
+    var relativePath = await item['key'];
+    //var folderName = await item['label'];
+    ConfigData.SelectedDestinationComponentToMove = await relativePath;
+    this.setState({ selectedDestinationComponentToMove: await relativePath })
+  }
+
+  moveTestCases = async (event) => {
+    await event.preventDefault();
+    var sourceComponent = await this.state.selectedSourceComponentToMove;
+    if (await sourceComponent === '' && (!await sourceComponent.includes('/'))) {
+      this.setState({ isErrorOnSourceComponent: true })
+      return await this.getNotification('error', 'Source Component can not be blank.');
+    }
+    //Verify Name
+    var destinationComponent = await this.state.selectedDestinationComponentToMove;
+    if (destinationComponent.trim() === '' && (!await destinationComponent.includes('/'))) {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Destination Component can not be blank.');
+    }
+    var allTestID = await this.state.listOfTestIdToMove;
+    if(await allTestID.length ===0)
+    {
+      return await this.getNotification('error', 'Please Select Test to move');
+    }
+    if(await sourceComponent === await destinationComponent)
+    {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Source and Destination Component can not be same.');
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.moveYourTestCases();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      await this.getNotification('success', 'Test cases are successfully moved.');
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      return await this.getNotification('error', 'Unable to move test cases because of ' + Config.ErrorMessage);
+    }
+  }
+
 
 
   //****************** End */********************************** */
@@ -490,8 +577,8 @@ class ConfigurationPage extends React.Component {
               </Card>
             </Col>
           </Row>
-          {Users.isSuperAdmin && (<Row>
-            <Col lg={6} md={12} sm={12} xs={12}>
+          <Row>
+            {Users.isSuperAdmin && (<Col lg={6} md={12} sm={12} xs={12}>
               <Card>
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
@@ -509,7 +596,7 @@ class ConfigurationPage extends React.Component {
                 <CardBody>
                   <Form>
                     <FormGroup col>
-                    <Label sm={5}>
+                      <Label sm={5}>
                         New Name*
                       </Label>
                       <Col>
@@ -529,25 +616,85 @@ class ConfigurationPage extends React.Component {
                 </CardBody>
               </Card>
             </Col>
+            )}
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Move your test cases
+                    <ButtonGroup size="sm">
+                      <Button color='dark' onClick={this.moveTestCases.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup col>
+                      <Label sm={5}>
+                        Component*
+                      </Label>
+                      <Col>
+                        <TreeMenu
+                          cacheSearch
+                          data={this.state.folderTreeData}
+                          hasSearch={false}
+                          onClickItem={this.selectSourceComponentFromTree.bind(this)}
+                        />
+                      </Col>
+                    </FormGroup>
+                    <FormGroup col>
+                      <Label sm={5}>
+                        Select Test to move
+                      </Label>
+                      <Col>
+                        <Select
+                          value={this.state.listOfTestIdToMove}
+                          isMulti
+                          name="testId"
+                          options={this.state.listOfAllTestID}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.selectTestScriptsToMove.bind(this)}
+                        />
+                      </Col>
+                    </FormGroup>
+                    <FormGroup col>
+                      <Label sm={5}>
+                        New Component*
+                      </Label>
+                      <Col>
+                        <TreeMenu
+                          cacheSearch
+                          data={this.state.folderTreeData}
+                          hasSearch={false}
+                          onClickItem={this.selectDestinationComponentFromTree.bind(this)}
+                        />
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
           </Row>
-          )}
         </Fade>
         <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
-            <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
-            <ModalBody>
+          <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
+          <ModalBody>
             {this.state.confirmationModalMessage}
-            </ModalBody>
-            <ModalFooter>
-              <ButtonGroup size="sm">
-                <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
-                  <small>Cancel</small>
-                </Button>
-                <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>
-                  <small>Yes</small>
-                </Button>
-              </ButtonGroup>
-            </ModalFooter>
-          </Modal>
+          </ModalBody>
+          <ModalFooter>
+            <ButtonGroup size="sm">
+              <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+                <small>Cancel</small>
+              </Button>
+              <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>
+                <small>Yes</small>
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </Modal>
       </Page>
     );
   }

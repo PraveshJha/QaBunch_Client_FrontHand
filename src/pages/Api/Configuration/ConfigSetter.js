@@ -172,6 +172,36 @@ export class ConfigSetter {
         }
 
     }
+
+    async moveYourTestScripts() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            var backendApi = Config.backendAPI;
+            var backendServiceLocation = await Config.backendServiceAt;
+            if (backendServiceLocation === 'remote') {
+                backendApi = Config.remoteBackendAPI;
+            }
+            try {
+                var testBody ={};
+                testBody['sourceComponent'] = ConfigData.SelectedSourceComponentToMove;
+                testBody['destinationComponent'] = ConfigData.SelectedDestinationComponentToMove;
+                testBody['listOfTestId'] = ConfigData.ListOfTestIdToMove;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Api/movetestscripts', await headers, await testBody);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+                return false;
+            }
+        }
+
+    }
 }
 export default new ConfigSetter();
 
