@@ -6,11 +6,7 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-import {
-  Button,
-} from 'reactstrap';
-import Matcher from '../../../QAautoMATER/funcLib/matcher';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 
 export class TestScriptGetter {
@@ -675,7 +671,7 @@ export class TestScriptGetter {
         var testscriptData = {};
         testscriptData['step'] = await testStep;
         testscriptData['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA'];
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Users.userSelectedAccount };
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Config.SelectedProject };
         var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, await testscriptData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
@@ -699,7 +695,7 @@ export class TestScriptGetter {
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
         }
-        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Users.userSelectedAccount };
+        var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Config.SelectedProject };
         var allSteps = await TestScriptData.ExternalTestSteps;
         var lines = await allSteps.split('\n');
         var isBDD = false;

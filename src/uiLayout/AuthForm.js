@@ -56,7 +56,7 @@ class AuthForm extends React.Component {
     highlightedUserEmail: false,
     isUserExistOnServer: Users.isUserExistOnServer,
     allAccountList: Users.accounts,
-    userSelectedAccount: Users.userSelectedAccount,
+    userSelectedAccount: localStorage.getItem('UserSelectedAccount'),
     userPassword: Users.userPassword,
     highlightedUserPassword: false,
     highlightedUserAccount: false,
@@ -69,12 +69,16 @@ class AuthForm extends React.Component {
     this.setState({ userEmail: Users.userEmail })
     this.setState({ isUserExistOnServer: Users.isUserExistOnServer })
     this.setState({ allAccountList: Users.accounts })
-    if (Users.accounts.length > 0) {
-      this.setState({ userSelectedAccount: Users.accounts[0] })
-    }
-    else {
-      this.setState({ userSelectedAccount: '' })
-    }
+    // if (Users.accounts.length > 0) {
+    //   this.setState({ userSelectedAccount: Users.accounts[0] })
+    //   localStorage.setItem('UserSelectedAccount',Users.accounts[0])
+    // }
+    // else {
+    //   this.setState({ userSelectedAccount: '' })
+    //   localStorage.setItem('UserSelectedAccount','')
+    // }
+    var account = localStorage.getItem('UserSelectedAccount')
+    this.setState({ userSelectedAccount:await account })
     this.setState({ userPassword: Users.userPassword })
 
   }
@@ -142,7 +146,8 @@ class AuthForm extends React.Component {
       if (await isUserExist) {
         this.setState({ isUserExistOnServer: await Users.isUserExistOnServer });
         this.setState({ allAccountList: await Users.accounts });
-        this.setState({ userSelectedAccount: await Users.userSelectedAccount });
+        this.setState({ userSelectedAccount: await Users.accounts[0] });
+        await localStorage.setItem("UserSelectedAccount", await Users.accounts[0]);
       }
       else {
         this.setState({ highlightedUserEmail: true })
@@ -164,7 +169,7 @@ class AuthForm extends React.Component {
       }
       else {
         this.setState({ highlightedUserPassword: true })
-        return await this.getNotification('error', 'Password does not match');
+        return await this.getNotification('error', await Config.ErrorMessage);
       }
     }
   }
@@ -174,7 +179,8 @@ class AuthForm extends React.Component {
     if (this.state.userSelectedAccount !== await dataChoive) {
       this.setState({ userSelectedAccount: await dataChoive });
       Users.userSelectedAccount = await dataChoive;
-      Config.SelectedProject = await Users.userSelectedAccount;
+      Config.SelectedProject = await dataChoive;
+      await localStorage.setItem("UserSelectedAccount", await dataChoive);
     }
 
   };

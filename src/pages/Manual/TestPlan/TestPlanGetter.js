@@ -3,7 +3,7 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 
 export class TestPlanGetter {

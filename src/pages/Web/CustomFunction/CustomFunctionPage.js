@@ -1225,13 +1225,13 @@ class CustomFunctionPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Custom Page/Function
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.saveCustomPageFunction.bind(this)}>
+                      <Button color='black' onClick={this.saveCustomPageFunction.bind(this)}>
                         <small>Save</small>
                       </Button>
                       <Button color='info' onClick={this.deleteCustomPageFunction.bind(this)}>
                         <small>Delete</small>
                       </Button>
-                      <Button color='dark' disabled={this.state.isRenameButtonDisabled} onClick={this.renameCustomPageFunction.bind(this)}>
+                      <Button color='black' disabled={this.state.isRenameButtonDisabled} onClick={this.renameCustomPageFunction.bind(this)}>
                         <small>Rename</small>
                       </Button>
                     </ButtonGroup>
@@ -1283,13 +1283,13 @@ class CustomFunctionPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Debug Custom Function
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.openDebuggerWindow.bind(this)}>
+                      <Button color='black' onClick={this.openDebuggerWindow.bind(this)}>
                         <small>Debugger Window</small>
                       </Button>
                       <Button color='info' onClick={this.debugTestStep.bind(this)}>
                         <small>Debug step</small>
                       </Button>
-                      <Button color='dark' onClick={this.debugPageFunction.bind(this)}>
+                      <Button color='black' onClick={this.debugPageFunction.bind(this)}>
                         <small>Debug page function</small>
                       </Button>
                     </ButtonGroup>
@@ -1352,13 +1352,13 @@ class CustomFunctionPage extends React.Component {
                       <Input style={{ visibility: this.state.isFileUploadButtonDisplayed ? 'visible' : 'hidden' }} type="file" name="sampleFile" onChange={this.onChangeHandler.bind(this)} />
                     </div>
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewTestStep.bind(this)}>
+                      <Button color='black' onClick={this.addNewTestStep.bind(this)}>
                         <small>Add Step</small>
                       </Button>
                       <Button color='info' onClick={this.deleteRowFromTestStep.bind(this)}>
                         <small>Delete Step</small>
                       </Button>
-                      <Button color='dark' onClick={this.openUtilityData.bind(this)}>
+                      <Button color='black' onClick={this.openUtilityData.bind(this)}>
                         <small>Utility Data</small>
                       </Button>
                     </ButtonGroup>
@@ -1378,7 +1378,7 @@ class CustomFunctionPage extends React.Component {
                                     <div className="d-flex justify-content-between align-items-center">
                                       Page Function
                                       <ButtonGroup size="sm" onClick={this.addNewRowInCustomFunctionTable.bind(this)}>
-                                        <Button color='dark' >
+                                        <Button color='black' >
                                           <small>Add</small>
                                         </Button>
                                         <Button color='info' onClick={this.deleteRowInCustomFunctionTable.bind(this)}>
@@ -1624,7 +1624,7 @@ class CustomFunctionPage extends React.Component {
                 </FormGroup>
                 <FormGroup row>
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.addORinTestStep.bind(this)}>
+                    <Button color='black' onClick={this.addORinTestStep.bind(this)}>
                       <small>Add</small>
                     </Button>
                     <Button color='info' onClick={this.removeOrObject.bind(this)}>
@@ -1647,7 +1647,7 @@ class CustomFunctionPage extends React.Component {
                       <div className="d-flex justify-content-between align-items-center">
                         Choose Data
                         <ButtonGroup size="sm">
-                          <Button color='dark' onClick={this.evaluateDymanicDataValue.bind(this)}>
+                          <Button color='black' onClick={this.evaluateDymanicDataValue.bind(this)}>
                             <small>Evaluate</small>
                           </Button>
                           <Button size="sm" color='info' onClick={this.addUtilityDataInTestSteps.bind(this)}>

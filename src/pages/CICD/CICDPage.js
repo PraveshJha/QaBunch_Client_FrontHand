@@ -45,7 +45,7 @@ class CICDPage extends React.Component {
       isPageLoading: false,
 
       //****** Button Color ***********************************************************
-      buttonWebColor: 'dark',
+      buttonWebColor: 'black',
       buttonApiColor: 'white',
       selectedTab: CICDData.SelectedTab,
       isWebSelected: true,
@@ -140,7 +140,7 @@ class CICDPage extends React.Component {
       this.setState({ isWebSelected: true })
       this.setState({ isPageLoading: true });
       CICDData.SelectedTab = 'Web';
-      this.setState({ buttonWebColor: 'dark' })
+      this.setState({ buttonWebColor: 'black' })
       this.setState({ buttonApiColor: 'white' })
       CICDData.EnvironmentList = [];
       this.setState({ environmentList: CICDData.EnvironmentList });
@@ -202,7 +202,7 @@ class CICDPage extends React.Component {
       this.setState({ isPageLoading: true });
       CICDData.SelectedTab = 'Api';
       this.setState({ buttonWebColor: 'white' })
-      this.setState({ buttonApiColor: 'dark' })
+      this.setState({ buttonApiColor: 'black' })
       CICDData.EnvironmentList = [];
       this.setState({ environmentList: CICDData.EnvironmentList });
       CICDData.SelectedEnv = ''
@@ -584,7 +584,7 @@ class CICDPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Choose Your Test Scripts
                     <ButtonGroup size="sm">
-                      <Button color='dark' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
+                      <Button color='black' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
                         <small>Load</small>
                       </Button>
                       <Button color='info' name="saveCustomSuite" onClick={this.saveTestSuite.bind(this)}>

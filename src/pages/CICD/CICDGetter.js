@@ -4,7 +4,7 @@ import ConfigGetter from '../Api/Configuration/ConfigGetter';
 import GetData from '../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../QAautoMATER/funcLib/DataGeneratorUtility';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class CICDGetter {
 
@@ -24,7 +24,7 @@ export class CICDGetter {
     }
     async getWebButtonColor() {
         if (CICDData.SelectedTab === 'Web') {
-            return 'dark'
+            return 'black'
         }
         else {
             return 'white'
@@ -33,7 +33,7 @@ export class CICDGetter {
 
     async getApiButtonColor() {
         if (CICDData.SelectedTab === 'Api') {
-            return 'dark'
+            return 'black'
         }
         else {
             return 'white'

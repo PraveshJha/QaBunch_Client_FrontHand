@@ -9,7 +9,7 @@ import { TestScriptData } from './Api/TestScript/TestScriptData';
 import { ConfigData } from './Api/Configuration/ConfigData';
 import MockRepoGetter from './Api/MockRepo/MockRepoGetter';
 import { CustomFunctionData } from './Web/CustomFunction/CustomFunctionData';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount');
 export class DataGetter {
 
     async getPastDateList(historyCounter) {

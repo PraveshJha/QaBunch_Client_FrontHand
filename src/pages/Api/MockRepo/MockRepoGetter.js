@@ -9,7 +9,7 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import Matcher from '../../../QAautoMATER/funcLib/matcher';
 import DynamicDataGetter from '../../../QAautoMATER/dynamicData/DynamicData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class MockRepoGetter {
 

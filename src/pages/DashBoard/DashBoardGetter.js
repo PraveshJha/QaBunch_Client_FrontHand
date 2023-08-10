@@ -6,7 +6,8 @@ import { ConfigData } from '../Api/Configuration/ConfigData';
 import ConfigGetter from '../Api/Configuration/ConfigGetter';
 import GetData from '../../QAautoMATER/funcLib/getData';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Users.userSelectedAccount;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+
 export class DashBoardGetter {
 
     async dashboardPageLoadData(selectedTestingType, envChange = false) {
@@ -231,7 +232,7 @@ export class DashBoardGetter {
 
     async getWebButtonColor() {
         if (DashBoardData.SelectedTab === 'Web') {
-            return 'dark'
+            return 'black'
         }
         else {
             return 'white'
@@ -240,7 +241,7 @@ export class DashBoardGetter {
 
     async getApiButtonColor() {
         if (DashBoardData.SelectedTab === 'Api') {
-            return 'dark'
+            return 'black'
         }
         else {
             return 'white'

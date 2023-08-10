@@ -10,7 +10,7 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import ExecutionLabDataGetter from '../ExecutionLab/ExecutionLabDataGetter';
 import { SessionVariable } from '../../SessionVariable';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class TestScriptGetter {
 

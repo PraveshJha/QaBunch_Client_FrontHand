@@ -15,7 +15,7 @@ export const Users = {
 	"isUserEmailValid": false,
 	"isUserExistOnServer": false,
 	"accounts": [],
-	"userSelectedAccount": '',
+	"userSelectedAccount": localStorage.getItem('UserSelectedAccount'),
 	"userPassword": '',
 	"isUserPasswordValid": false,
 	"userToken": localStorage.getItem('Token'),
@@ -24,4 +24,5 @@ export const Users = {
 	"lastName": '',
 	"image": '',
 	"expiresOn": '',
+	"AllUsersData":[],
 };

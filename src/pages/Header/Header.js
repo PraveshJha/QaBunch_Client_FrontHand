@@ -18,6 +18,11 @@ import {
   FormGroup,
   Label,
   Col,
+  Card,
+  CardBody,
+  CardHeader,
+  ButtonGroup,
+  Row,
 } from 'reactstrap';
 import bn from '../../utils/bemnames';
 import {
@@ -33,6 +38,13 @@ import { LoaderMessage } from '../../pages/LoaderMessage';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
 import GetData from '../../QAautoMATER/funcLib/getData';
 import helpFile from '../../help/Help.pdf'
+import BootstrapTable from "react-bootstrap-table-next";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import cellEditFactory from 'react-bootstrap-table2-editor';
+import { UserProfile } from '../Web/WebPageTableHeader';
+import HeaderGetter from './HeaderGetter';
+import DataGetter from '../DataGetter';
 const bem = bn.create('header');
 
 class Header extends React.Component {
@@ -49,12 +61,15 @@ class Header extends React.Component {
     isErrorOnConfirmPassword: false,
     newPassword: '',
     confirmPassword: '',
-    selectedProject: Users.userSelectedAccount,
+    selectedProject: Config.SelectedProject,
     editProfileScreen: false,
     isErrorOnFirstName: false,
     isErrorOnLastName: false,
     userFirstName: Users.firstName,
-    userLastName: Users.lastName
+    userLastName: Users.lastName,
+    newUserProfile: false,
+    userProfileData:[],
+    selectedRowFromUserProfileTable:-1,
 
   };
 
@@ -91,9 +106,10 @@ class Header extends React.Component {
       }
       var dataforSend = {};
       dataforSend['userEmail'] = await Users.userEmail;
-      dataforSend['projectName'] = await Users.userSelectedAccount;
+      dataforSend['projectName'] = await  localStorage.getItem('UserSelectedAccount');
       var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
       await restAPI.post(backendApi + 'uidebug/debuggerwindow/quit', await headers, await dataforSend);
+      await localStorage.removeItem('UserSelectedAccount');
     }
     catch (error) {
     }
@@ -269,6 +285,80 @@ class Header extends React.Component {
 
   }
 
+  toggleNewProfileScreen = async () => {
+    this.setState({ newUserProfile: false });
+  }
+
+  openNewProfilePage = async (event) => {
+    this.setState({userProfileData:Users.AllUsersData})
+    this.setState({ newUserProfile: true })
+  };
+
+  selectRadioButtonFromUserProfileTable = async (row, isSelect) => {
+    if (await isSelect) {
+      this.setState({ selectedRowFromUserProfileTable: await row.id });
+    }
+  }
+
+  addNewRowInUserTable = async (event) => {
+    await event.preventDefault();
+    var tableData = this.state.userProfileData;
+    var checkData = await HeaderGetter.isNewUserDataValid(await tableData);
+    if(!await checkData['isValid'])
+    {
+      return await this.getNotification('error', await checkData['errorMessage']);
+    }
+    var lastId = await tableData.length + 1;
+    var newRow = { id: lastId, email: '', firstname: '', lastname: '', password: '' }
+    this.setState({ userProfileData: [...this.state.userProfileData, newRow] });
+
+  }
+
+  deleteRowFromUserTable = async (event) => {
+    await event.preventDefault();
+    var allDataFromTable = this.state.userProfileData;
+    var selectedRowId = await Number(await this.state.selectedRowFromUserProfileTable)
+    if (await selectedRowId > 0 && await selectedRowId <= allDataFromTable.length) {
+      var email = await allDataFromTable[Number(selectedRowId)-1]['email'];
+      var useremail = await Users.userEmail;
+      if(await email.toString().toLowerCase() === await useremail.toString().toLowerCase())
+      {
+        return await this.getNotification('error', "You can not delete your own account "+await email);
+      }
+      var dataAfterDelete = await DataGetter.updateTableAfterDeleteRowId(allDataFromTable, this.state.selectedRowFromUserProfileTable)
+      this.setState({ userProfileData: await dataAfterDelete });
+      this.setState({ selectedRowFromUserProfileTable: await Number(await selectedRowId) - 1 })
+    }
+    else {
+      return await this.getNotification('error', "No row is selected for delete");
+    }
+
+  }
+
+  createNewUserProfile = async (event) => {
+    await event.preventDefault();
+    var tableData = this.state.userProfileData;
+    var checkData = await HeaderGetter.isNewUserDataValid(await tableData);
+    if(!await checkData['isValid'])
+    {
+      return await this.getNotification('error', await checkData['errorMessage']);
+    }
+    this.setState({ isPageLoading: true })
+    var usercreationData = await HeaderGetter.createNewProfileData(await tableData);
+    this.setState({ isPageLoading: false })
+    if(await usercreationData)
+    {
+      this.setState({newUserProfile:false})
+      await this.getNotification('success', await Config.ErrorMessage);
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else{
+      return await this.getNotification('error', await Config.ErrorMessage);
+    }
+
+  }
+
   //************************* Notification ***************************************************************
   async getNotification(level, message) {
     const notification = this.notificationSystem.current;
@@ -280,6 +370,12 @@ class Header extends React.Component {
   }
 
   render() {
+
+    const selectRowFromUserProfileTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromUserProfileTable,
+      selected: [this.state.selectedRowFromUserProfileTable]
+    };
 
     return (
       <Navbar light expand className={bem.b('bg-white')}>
@@ -325,6 +421,10 @@ class Header extends React.Component {
                   className="border-light"
                 >
                   <ListGroup flush>
+                    {Users.isSuperAdmin && (<ListGroupItem tag="button" onClick={this.openNewProfilePage.bind(this)} action className="border-light">
+                      Add User
+                    </ListGroupItem>
+                    )}
                     <ListGroupItem tag="button" onClick={this.changePassword.bind(this)} action className="border-light">
                       Change password
                     </ListGroupItem>
@@ -409,6 +509,56 @@ class Header extends React.Component {
               <FormGroup row>
                 <Button color='dark' onClick={this.updateProfile.bind(this)} >Update profile</Button>
               </FormGroup>
+            </Form>
+          </ModalBody>
+        </Modal>
+        <Modal size="xl" isOpen={this.state.newUserProfile} className={this.props.className} backdrop="static">
+          <ModalHeader toggle={this.toggleNewProfileScreen.bind(this)}>Add/Edit User Profile</ModalHeader>
+          <ModalBody>
+            <Form>
+              <Row>
+                <Col lg={12} md={12} sm={12} xs={12}>
+                  <Card>
+                    <CardHeader>
+                      <div className="d-flex justify-content-between align-items-center">
+                      Users
+                        <ButtonGroup size="sm" >
+                          <Button color='black' onClick={this.addNewRowInUserTable.bind(this)}>
+                            <small>Add</small>
+                          </Button>
+                          <Button color='info' onClick={this.deleteRowFromUserTable.bind(this)}>
+                            <small>Delete</small>
+                          </Button>
+                          <Button color='black' onClick={this.createNewUserProfile.bind(this)}>
+                            <small>Save</small>
+                          </Button>
+                        </ButtonGroup>
+                      </div>
+                    </CardHeader>
+                    <CardBody>
+                      <Col>
+                        <BootstrapTable
+                          keyField='id'
+                          data={this.state.userProfileData}
+                          columns={UserProfile}
+                          wrapperClasses="table-responsive"
+                          striped
+                          hover
+                          condensed
+                          selectRow={selectRowFromUserProfileTable}
+                          cellEdit={cellEditFactory({
+                            mode: 'click',
+                            blurToSave: true,
+                            afterSaveCell: (oldValue, newValue, row, column) => {
+                              //this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction })
+                            }
+                          })}
+                        />
+                      </Col>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
             </Form>
           </ModalBody>
         </Modal>

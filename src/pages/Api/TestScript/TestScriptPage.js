@@ -1281,7 +1281,7 @@ class TestScriptPage extends React.Component {
                     </Col>
                     <Col>
                       <ButtonGroup size="sm">
-                        <Button color='dark' onClick={this.renameTestId.bind(this)}>
+                        <Button color='black' onClick={this.renameTestId.bind(this)}>
                           <small>Rename Test Id</small>
                         </Button>
                       </ButtonGroup>
@@ -1372,13 +1372,13 @@ class TestScriptPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   API scripts
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.debugTestScript.bind(this)}>
+                    <Button color='black' onClick={this.debugTestScript.bind(this)}>
                       <small>Debug</small>
                     </Button>
                     <Button color='info' onClick={this.saveTestScript.bind(this)}>
                       <small>Save</small>
                     </Button>
-                    <Button color='dark' onClick={this.deleteTestId.bind(this)}>
+                    <Button color='black' onClick={this.deleteTestId.bind(this)}>
                       <small>Delete</small>
                     </Button>
                   </ButtonGroup>
@@ -1398,13 +1398,13 @@ class TestScriptPage extends React.Component {
                                   <div className="d-flex justify-content-between align-items-center">
                                     Api
                                     <ButtonGroup size="sm">
-                                      <Button color='dark' onClick={this.addNewRowForDependendentTable.bind(this)}>
+                                      <Button color='black' onClick={this.addNewRowForDependendentTable.bind(this)}>
                                         <small>Add</small>
                                       </Button>
                                       <Button color='info' onClick={this.debugDependentTestScript.bind(this)}>
                                         <small>Debug</small>
                                       </Button>
-                                      <Button color='dark' onClick={this.deleteRowFromDependendentApiTable.bind(this)}>
+                                      <Button color='black' onClick={this.deleteRowFromDependendentApiTable.bind(this)}>
                                         <small>Delete</small>
                                       </Button>
                                     </ButtonGroup>
@@ -1440,7 +1440,7 @@ class TestScriptPage extends React.Component {
                                 <CardHeader>
                                   <div className="d-flex justify-content-between align-items-center">
                                     Choose Existing Api
-                                    <Button size="sm" color='dark' onClick={this.debugDependentTestScript.bind(this)}>
+                                    <Button size="sm" color='black' onClick={this.debugDependentTestScript.bind(this)}>
                                       <small>Debug</small>
                                     </Button>
                                   </div>
@@ -1479,13 +1479,13 @@ class TestScriptPage extends React.Component {
                                   <div className="d-flex justify-content-between align-items-center">
                                     Response Key
                                     <ButtonGroup size="sm">
-                                      <Button color='dark' onClick={this.addDependentResponseKey.bind(this)}>
+                                      <Button color='black' onClick={this.addDependentResponseKey.bind(this)}>
                                         <small>Add</small>
                                       </Button>
                                       <Button color='info' onClick={this.saveResponseKeyDataTable.bind(this)}>
                                         <small>Save</small>
                                       </Button>
-                                      <Button color='dark' onClick={this.deleteRowFromDependendentResponseKeyTable.bind(this)}>
+                                      <Button color='black' onClick={this.deleteRowFromDependendentResponseKeyTable.bind(this)}>
                                         <small>Delete</small>
                                       </Button>
                                     </ButtonGroup>
@@ -1517,7 +1517,7 @@ class TestScriptPage extends React.Component {
                                 <CardHeader>
                                   <div className="d-flex justify-content-between align-items-center">
                                     Dependent Api
-                                    <Button size="sm" color='dark' onClick={this.deleteRowFromDependendentApiTable.bind(this)}>
+                                    <Button size="sm" color='black' onClick={this.deleteRowFromDependendentApiTable.bind(this)}>
                                       <small>Delete</small>
                                     </Button>
                                   </div>
@@ -1556,7 +1556,7 @@ class TestScriptPage extends React.Component {
                         <div className="d-flex justify-content-between align-items-center">
                           Request Header
                           <ButtonGroup size="sm">
-                            <Button color='dark' onClick={this.addRowInRequestHeaderTable.bind(this)}>
+                            <Button color='black' onClick={this.addRowInRequestHeaderTable.bind(this)}>
                               <small>Add</small>
                             </Button>
                             <Button color='info' onClick={this.deleteRowFromRequestHeaderTable.bind(this)}>
@@ -1594,7 +1594,7 @@ class TestScriptPage extends React.Component {
                       <CardHeader>
                         <div className="d-flex justify-content-between align-items-center">
                           Request Body
-                          <Button disabled={this.state.isDynamicDataButtonDisable} color='dark' size="sm" onClick={this.openDynamicTestDataModal.bind(this)}>
+                          <Button disabled={this.state.isDynamicDataButtonDisable} color='black' size="sm" onClick={this.openDynamicTestDataModal.bind(this)}>
                             <small>Select Dynamic Data</small>
                           </Button>
                         </div>
@@ -1614,7 +1614,7 @@ class TestScriptPage extends React.Component {
                         <div className="d-flex justify-content-between align-items-center">
                           Save Request parameter
                           <ButtonGroup size="sm">
-                            <Button color='dark' onClick={this.addRowInRequestVariableTable.bind(this)}>
+                            <Button color='black' onClick={this.addRowInRequestVariableTable.bind(this)}>
                               <small>Add</small>
                             </Button>
                             <Button color='info' onClick={this.deleteRowFromRequestVariableTable.bind(this)}>
@@ -1653,7 +1653,7 @@ class TestScriptPage extends React.Component {
                         <div className="d-flex justify-content-between align-items-center">
                           Assertion
                           <ButtonGroup size="sm">
-                            <Button color='dark' onClick={this.addRowInAssertionTable.bind(this)}>
+                            <Button color='black' onClick={this.addRowInAssertionTable.bind(this)}>
                               <small>Add</small>
                             </Button>
                             <Button color='info' onClick={this.deleteRowFromAssertionTable.bind(this)}>
@@ -1767,7 +1767,7 @@ class TestScriptPage extends React.Component {
                     <div className="d-flex justify-content-between align-items-center">
                       Choose Data
                       <ButtonGroup size="sm">
-                        <Button color='dark' onClick={this.evaluateDymanicDataValue.bind(this)}>
+                        <Button color='black' onClick={this.evaluateDymanicDataValue.bind(this)}>
                           <small>Evaluate</small>
                         </Button>
                         <Button size="sm" color='info' onClick={this.updateRequestBodyKeyData.bind(this)}>

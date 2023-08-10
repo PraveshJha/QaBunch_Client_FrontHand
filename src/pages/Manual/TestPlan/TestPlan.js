@@ -496,7 +496,7 @@ class TestPlanPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Select or Create Test Plan
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.createNewTestPlan.bind(this)}>
+                      <Button color='black' onClick={this.createNewTestPlan.bind(this)}>
                         <small>New Test Plan</small>
                       </Button>
                       {(Users.isSuperAdmin && !this.state.isUserSelectedNewTestPlan) && (<Button color='info' onClick={this.deleteTestPlan.bind(this)}>
@@ -610,7 +610,7 @@ class TestPlanPage extends React.Component {
                       </Col>
                     </div> */}
                     <ButtonGroup size="sm">
-                      <Button color='dark' name="loadtestCases" onClick={this.loadTestCase.bind(this)}>
+                      <Button color='black' name="loadtestCases" onClick={this.loadTestCase.bind(this)}>
                         <small>Load Test Cases</small>
                       </Button>
                       <Button color='info' name="updateTestPlan" onClick={this.updateTestPlan.bind(this)}>

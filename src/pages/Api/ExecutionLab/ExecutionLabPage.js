@@ -394,7 +394,7 @@ class ExecutionLabPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   API Test Scripts
                   <ButtonGroup size="sm">
-                    <Button color='dark' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
+                    <Button color='black' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
                       <small>Load</small>
                     </Button>
                     <Button color='info' onClick={this.ExecuteAPIScripts.bind(this)}>

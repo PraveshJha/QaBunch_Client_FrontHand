@@ -430,7 +430,7 @@ class MockRepoPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   Mock Response
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.saveMockData.bind(this)}>
+                    <Button color='black' onClick={this.saveMockData.bind(this)}>
                       <small>Save</small>
                     </Button>
                     <Button color='info' onClick={this.deleteMockData.bind(this)}>
@@ -447,7 +447,7 @@ class MockRepoPage extends React.Component {
                         <div className="d-flex justify-content-between align-items-center">
                           Response Header
                           <ButtonGroup size="sm">
-                            <Button color='dark' onClick={this.addRowInResponseHeaderTable.bind(this)}>
+                            <Button color='black' onClick={this.addRowInResponseHeaderTable.bind(this)}>
                               <small>Add</small>
                             </Button>
                             <Button color='info' onClick={this.deleteRowFromResponseHeaderTable.bind(this)}>
@@ -484,7 +484,7 @@ class MockRepoPage extends React.Component {
                       <CardHeader>
                         <div className="d-flex justify-content-between align-items-center">
                           Response Body
-                          <Button disabled={this.state.isDynamicDataButtonDisable} color='dark' size="sm" onClick={this.openDynamicTestDataModal.bind(this)}>
+                          <Button disabled={this.state.isDynamicDataButtonDisable} color='black' size="sm" onClick={this.openDynamicTestDataModal.bind(this)}>
                             <small>Select Dynamic Data</small>
                           </Button>
                         </div>
@@ -513,7 +513,7 @@ class MockRepoPage extends React.Component {
                     <div className="d-flex justify-content-between align-items-center">
                       Choose Data
                       <ButtonGroup size="sm">
-                        <Button color='dark' onClick={this.evaluateDymanicDataValue.bind(this)}>
+                        <Button color='black' onClick={this.evaluateDymanicDataValue.bind(this)}>
                           <small>Evaluate</small>
                         </Button>
                         <Button size="sm" color='info' onClick={this.updateRequestBodyKeyData.bind(this)}>

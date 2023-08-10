@@ -1397,7 +1397,7 @@ class TestScriptPage extends React.Component {
                             <div className="d-flex justify-content-between align-items-center">
                               Test Management Tool
                               <ButtonGroup size="sm">
-                                <Button color='dark' onClick={this.fetchTestCaseFromTestTool.bind(this)}>
+                                <Button color='black' onClick={this.fetchTestCaseFromTestTool.bind(this)}>
                                   <small>Get Test Case Details</small>
                                 </Button>
                               </ButtonGroup>
@@ -1465,13 +1465,13 @@ class TestScriptPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Basic Details
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.saveTestScript.bind(this)}>
+                      <Button color='black' onClick={this.saveTestScript.bind(this)}>
                         <small>Save</small>
                       </Button>
                       <Button color='info' onClick={this.deleteTestScript.bind(this)}>
                         <small>Delete</small>
                       </Button>
-                      <Button color='dark' disabled={this.state.isRenameButtonDisabled} onClick={this.renameTestScript.bind(this)}>
+                      <Button color='black' disabled={this.state.isRenameButtonDisabled} onClick={this.renameTestScript.bind(this)}>
                         <small>Rename</small>
                       </Button>
                     </ButtonGroup>
@@ -1534,13 +1534,13 @@ class TestScriptPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Debug Test script
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.openDebuggerWindow.bind(this)}>
+                      <Button color='black' onClick={this.openDebuggerWindow.bind(this)}>
                         <small>Debugger Window</small>
                       </Button>
                       <Button color='info' onClick={this.debugTestStep.bind(this)}>
                         <small>Debug step</small>
                       </Button>
-                      <Button color='dark' onClick={this.debugPageFunction.bind(this)}>
+                      <Button color='black' onClick={this.debugPageFunction.bind(this)}>
                         <small>Debug page function</small>
                       </Button>
                     </ButtonGroup>
@@ -1603,7 +1603,7 @@ class TestScriptPage extends React.Component {
                       <Input style={{ visibility: this.state.isFileUploadButtonDisplayed ? 'visible' : 'hidden' }} type="file" name="sampleFile" onChange={this.onChangeHandler.bind(this)} />
                     </div>
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewTestStep.bind(this)}>
+                      <Button color='black' onClick={this.addNewTestStep.bind(this)}>
                         <small>Add Step</small>
                       </Button>
                       <Button color='info' onClick={this.deleteRowFromTestStep.bind(this)}>
@@ -1626,7 +1626,7 @@ class TestScriptPage extends React.Component {
                                     <div className="d-flex justify-content-between align-items-center">
                                       Page Function
                                       <ButtonGroup size="sm" >
-                                        <Button color='dark' onClick={this.addNewRowInCustomFunctionTable.bind(this)}>
+                                        <Button color='black' onClick={this.addNewRowInCustomFunctionTable.bind(this)}>
                                           <small>Add</small>
                                         </Button>
                                         <Button color='info' onClick={this.deleteRowInCustomFunctionTable.bind(this)}>
@@ -1786,13 +1786,13 @@ class TestScriptPage extends React.Component {
                           <div className="d-flex justify-content-between align-items-center">
                             Add or Select data
                             <ButtonGroup size="sm">
-                              {/* <Button color='dark'>
+                              {/* <Button color='black'>
                               <small>Common Data</small>
                             </Button>
                             <Button color='info'>
                               <small>Test Data</small>
                             </Button> */}
-                              <Button color='dark' onClick={this.openUtilityData.bind(this)}>
+                              <Button color='black' onClick={this.openUtilityData.bind(this)}>
                                 <small>Utility Data</small>
                               </Button>
                             </ButtonGroup>
@@ -1806,7 +1806,7 @@ class TestScriptPage extends React.Component {
                                   <div className="d-flex justify-content-between align-items-center">
                                     Common Data Set
                                     <ButtonGroup size="sm">
-                                      <Button color='dark' onClick={this.addNewData.bind(this)}>
+                                      <Button color='black' onClick={this.addNewData.bind(this)}>
                                         <small>Add</small>
                                       </Button>
                                       <Button color='info' onClick={this.deleteTestData.bind(this)}>
@@ -1864,13 +1864,13 @@ class TestScriptPage extends React.Component {
                                       </Col>
                                       <Col>
                                         <ButtonGroup size="sm">
-                                          <Button color='dark' onClick={this.addNewColumnInTestData.bind(this)}>
+                                          <Button color='black' onClick={this.addNewColumnInTestData.bind(this)}>
                                             <small>Add Column</small>
                                           </Button>
                                           <Button color='info' onClick={this.deleteColumnFromTestData.bind(this)}>
                                             <small>Delete Column</small>
                                           </Button>
-                                          <Button color='dark' onClick={this.addNewRowInTestData.bind(this)}>
+                                          <Button color='black' onClick={this.addNewRowInTestData.bind(this)}>
                                             <small>Add Row</small>
                                           </Button>
                                           <Button color='info' onClick={this.deleteRowInTestData.bind(this)}>
@@ -1978,7 +1978,7 @@ class TestScriptPage extends React.Component {
                 </FormGroup>
                 <FormGroup row>
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.addORinTestStep.bind(this)}>
+                    <Button color='black' onClick={this.addORinTestStep.bind(this)}>
                       <small>Add</small>
                     </Button>
                     <Button color='info' onClick={this.removeOrObject.bind(this)}>
@@ -2001,7 +2001,7 @@ class TestScriptPage extends React.Component {
                       <div className="d-flex justify-content-between align-items-center">
                         Choose Data
                         <ButtonGroup size="sm">
-                          <Button color='dark' onClick={this.evaluateDymanicDataValue.bind(this)}>
+                          <Button color='black' onClick={this.evaluateDymanicDataValue.bind(this)}>
                             <small>Evaluate</small>
                           </Button>
                           <Button size="sm" color='info' onClick={this.addUtilityDataInTestSteps.bind(this)}>

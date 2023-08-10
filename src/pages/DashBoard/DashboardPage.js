@@ -46,7 +46,7 @@ class DashboardPage extends React.Component {
       isPageLoading: false,
 
       //****** Button Color ***********************************************************
-      buttonWebColor: 'dark',
+      buttonWebColor: 'black',
       buttonApiColor: 'white',
 
       //****** WIDGET Data ***********************************************************
@@ -311,7 +311,7 @@ class DashboardPage extends React.Component {
     if (DashBoardData.SelectedTab !== 'Web') {
       this.setState({ isPageLoading: true });
       DashBoardData.SelectedTab = 'Web';
-      this.setState({ buttonWebColor: 'dark' })
+      this.setState({ buttonWebColor: 'black' })
       this.setState({ buttonApiColor: 'white' })
       DashBoardData.IsViewResultButtonDisabled = true;
       this.setState({ isViewResultButtonDisabled: true });
@@ -389,7 +389,7 @@ class DashboardPage extends React.Component {
       this.setState({ isPageLoading: true });
       DashBoardData.SelectedTab = 'Api';
       this.setState({ buttonWebColor: 'white' })
-      this.setState({ buttonApiColor: 'dark' })
+      this.setState({ buttonApiColor: 'black' })
       DashBoardData.IsViewResultButtonDisabled = true;
       this.setState({ isViewResultButtonDisabled: true });
       DashBoardData.SelectedExecutionDate = '';
@@ -720,7 +720,7 @@ class DashboardPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Detail Execution Report Last {this.state.defaultSaveDaysToReport} Days
                     {/* <small> Last {this.state.defaultSaveDaysToReport} Days</small> */}
-                    <Button size="sm" color='dark' disabled={this.state.isViewResultButtonDisabled} onClick={this.viewReport.bind(this)} >
+                    <Button size="sm" color='black' disabled={this.state.isViewResultButtonDisabled} onClick={this.viewReport.bind(this)} >
                       <small>View Reports</small>
                     </Button>
                   </div>

@@ -5,7 +5,7 @@ import { AutoScriptData } from './AutoScriptData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class AutoScriptGetter {
 

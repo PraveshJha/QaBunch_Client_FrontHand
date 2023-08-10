@@ -1,5 +1,6 @@
 import axios, * as others from 'axios';
 var FormData  = require('form-data')
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 export class RestApi {
 
     //#region [Rest Api method]
@@ -15,6 +16,7 @@ export class RestApi {
 
     async get(url, requestHeader) {
         requestHeader['Access-Control-Allow-Origin']= '*';
+        requestHeader['UserSelectedAccount']= await selectedProject;
         var Response;
         try {
             let config = {
@@ -35,6 +37,7 @@ export class RestApi {
 
     async post(url, requestHeader, requestBody) {
         requestHeader['Access-Control-Allow-Origin']= '*';
+        requestBody['userSelectedAccount'] = await selectedProject;
         var Response;
         try {
             let config = {
@@ -83,6 +86,7 @@ export class RestApi {
 
     async put(url, requestHeader, requestBody) {
         requestHeader['Access-Control-Allow-Origin']= '*';
+        requestBody['userSelectedAccount'] = await selectedProject;
         var Response;
         try {
             let config = {
@@ -103,6 +107,7 @@ export class RestApi {
 
     async patch(url, requestHeader, requestBody) {
         requestHeader['Access-Control-Allow-Origin']= '*';
+        requestBody['userSelectedAccount'] = await selectedProject;
         var Response;
         try {
             let config = {

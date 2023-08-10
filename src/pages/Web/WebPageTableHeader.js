@@ -762,3 +762,80 @@ export var CustomLocator = [{
 }
 ];
 
+export var UserProfile = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '60px' }
+},
+{
+	dataField: 'email',
+	text: 'Email*',
+	validator: async (newValue, row, column, done) => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Email can not be blank'
+			});
+		}
+		if (!emailRegex.test(await newValue)) {
+			return done({
+				valid: false,
+				message: 'Please Provide valid Email address'
+			});
+		}
+		else {
+			return done();
+		}
+		
+	}
+},
+{
+	dataField: 'firstname',
+	text: 'First Name*',
+	validator: async (newValue, row, column, done) => {
+		var format = /[^A-Za-z-]/ig;
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'First name can not be blank'
+			});
+		}
+		if (format.test(await newValue)) {
+			return done({
+				valid: false,
+				message: 'First name should not have special character and number.'
+			});
+		}
+		else {
+			return done();
+		}
+		
+	}
+},
+{
+	dataField: 'lastname',
+	text: 'Last Name',
+	validator: async (newValue, row, column, done) => {
+		return done();
+		
+	}
+},
+{
+	dataField: 'password',
+	text: 'Temp Password*',
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Temp password can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+		
+	},
+},
+];
+

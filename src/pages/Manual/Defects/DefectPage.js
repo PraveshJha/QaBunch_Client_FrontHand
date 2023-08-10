@@ -43,7 +43,7 @@ import '../../../../node_modules/react-simple-tree-menu/dist/main.css';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount');
 const formats = [
   'header',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
@@ -130,8 +130,10 @@ class DefectPage extends React.Component {
 
   }
   componentDidMount = async () => {
+    this.setState({isPageLoading:true})
     await window.scrollTo(0, 0);
     await DefectGetter.loadDefectPage();
+    this.setState({isPageLoading:false})
 
     //**** Test Folder*********************************************************
     this.setState({ folderTreeData: {} }, () => { this.setState({ folderTreeData: DefectData.FolderTreeData }); });
@@ -754,7 +756,7 @@ class DefectPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Add new defect
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.createNewDefect.bind(this)}>
+                      <Button color='black' onClick={this.createNewDefect.bind(this)}>
                         <small>Create new defect</small>
                       </Button>
                     </ButtonGroup>
@@ -942,7 +944,7 @@ class DefectPage extends React.Component {
                       <div className="d-flex justify-content-between align-items-center">
                         Defect Id : {this.state.defectId}
                         <ButtonGroup size="sm">
-                          <Button color='dark' onClick={this.updateDefect.bind(this)}>
+                          <Button color='black' onClick={this.updateDefect.bind(this)}>
                             <small>Update</small>
                           </Button>
                           {Users.isSuperAdmin && (<Button color='info' onClick={this.confirmdelete.bind(this)}>
@@ -1099,7 +1101,7 @@ class DefectPage extends React.Component {
                               </Col>
                               <Col>
                                 <ButtonGroup size="sm">
-                                  <Button color='dark' onClick={this.saveTestComment.bind(this)}>
+                                  <Button color='black' onClick={this.saveTestComment.bind(this)}>
                                     <small>Add Comment</small>
                                   </Button>
                                 </ButtonGroup>
@@ -1136,7 +1138,7 @@ class DefectPage extends React.Component {
             </ModalBody>
             <ModalFooter>
               <ButtonGroup size="sm">
-                <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+                <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
                   <small>Cancel</small>
                 </Button>
                 <Button color='info' onClick={this.deleteDefectId.bind(this)}>

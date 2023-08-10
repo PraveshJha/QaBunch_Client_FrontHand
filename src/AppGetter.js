@@ -9,14 +9,15 @@ export class AppGetter {
                 backendAPI = await Config.remoteBackendAPI;
             }
             try {
+                var testBody ={};
+                var userAccount = await  localStorage.getItem('UserSelectedAccount');
+                testBody['userSelectedAccount']= await userAccount;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var loginDetails = await restAPI.post(await backendAPI + 'usersession', await headers, {});
+                var loginDetails = await restAPI.post(await backendAPI + 'usersession', await headers, await testBody);
                 loginDetails = await loginDetails['data'];
                 if (await loginDetails['isUserAuthenticated']) {
                     Users.isUserAuthenticated = true;
                     Users.userEmail = await Users.userEmail;
-                    Users.userSelectedAccount = await loginDetails['selectedAccount'];
-                    Config.SelectedProject =  await Users.userSelectedAccount;
                     if (await loginDetails['isDemoUser']) {
                         Config.isDemo = true;
                     }
@@ -24,6 +25,9 @@ export class AppGetter {
                     Users.lastName = await loginDetails['lastName'];
                     Users.expiresOn = await loginDetails['expiresOn'];
                     Users.isSuperAdmin = await loginDetails['isSuperAdmin'];
+                    Users.AllUsersData = await loginDetails['allUsersProfile']; 
+                    Users.userSelectedAccount = await userAccount;
+                    Config.SelectedProject = await userAccount;
                 }
                 else {
                     Users.isUserAuthenticated = false;

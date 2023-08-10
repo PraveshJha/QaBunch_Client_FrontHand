@@ -3,8 +3,7 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
-const selectedProject = Config.SelectedProject;
-const selectedUserEmail = Users.userEmail;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class DefectGetter {
 

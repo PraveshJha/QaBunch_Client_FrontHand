@@ -163,8 +163,11 @@ export class GetData {
             try {
                 var userEmail = localStorage.getItem('UserEmail');
                 var token = localStorage.getItem('Token');
+                var testBody ={};
+                var userAccount = await  localStorage.getItem('UserSelectedAccount');
+                testBody['userSelectedAccount']= await userAccount;
                 var headers = { 'Authorization': await token, userEmail: await userEmail };
-                var loginDetails = await restAPI.post(await backendAPI + 'usersession', await headers, {});
+                var loginDetails = await restAPI.post(await backendAPI + 'usersession', await headers, await testBody);
                 loginDetails = await loginDetails['data'];
                 if (await loginDetails['isUserAuthenticated']) {
                     if(await loginDetails['isDemoUser'])
@@ -174,9 +177,10 @@ export class GetData {
                     Users.firstName = await loginDetails['firstName'];
                     Users.lastName = await loginDetails['lastName'];
                     Users.expiresOn = await loginDetails['expiresOn'];
-                    Users.userSelectedAccount = await loginDetails['selectedAccount'];
                     Users.isSuperAdmin = await loginDetails['isSuperAdmin'];
-                    Config.SelectedProject = await Users.userSelectedAccount;
+                    Users.AllUsersData = await loginDetails['allUsersProfile'];
+                    Users.userSelectedAccount = await userAccount;
+                    Config.SelectedProject = await userAccount;
                     return true;
                 }
                 else {

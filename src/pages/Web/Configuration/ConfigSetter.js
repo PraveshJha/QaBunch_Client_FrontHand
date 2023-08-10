@@ -1,7 +1,7 @@
 import { Config, Users } from '../../../QAautoMATER/Config';
 import { ConfigData } from './ConfigData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ConfigSetter {
 

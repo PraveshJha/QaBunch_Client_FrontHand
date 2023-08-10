@@ -45,7 +45,7 @@ import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
 import TreeMenu from 'react-simple-tree-menu';
 import '../../../../node_modules/react-simple-tree-menu/dist/main.css';
 import { OutTable, ExcelRenderer } from 'react-excel-renderer';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount');
 
 class TestCasePagePage extends React.Component {
   notificationSystem = React.createRef();
@@ -133,7 +133,9 @@ class TestCasePagePage extends React.Component {
   }
   componentDidMount = async () => {
     await window.scrollTo(0, 0);
+    this.setState({isPageLoading:true})
     await TestCaseGetter.loadTestCasePage();
+    this.setState({isPageLoading:false})
 
     //**** Test Folder*********************************************************
     this.setState({ folderTreeData: {} }, () => { this.setState({ folderTreeData: TestCaseData.FolderTreeData }); });
@@ -1024,7 +1026,7 @@ class TestCasePagePage extends React.Component {
                           </Col>
                           <Col>
                             <ButtonGroup size="sm">
-                              <Button color='dark' onClick={this.importTestCases.bind(this)}>
+                              <Button color='black' onClick={this.importTestCases.bind(this)}>
                                 <small>Import</small>
                               </Button>
                             </ButtonGroup>
@@ -1045,7 +1047,7 @@ class TestCasePagePage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     New Test Case Details
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.saveTestCase.bind(this)}>
+                      <Button color='black' onClick={this.saveTestCase.bind(this)}>
                         <small>Save Test Case</small>
                       </Button>
                     </ButtonGroup>
@@ -1167,7 +1169,7 @@ class TestCasePagePage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Test Component structure
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewPlaceHolder.bind(this)}>
+                      <Button color='black' onClick={this.addNewPlaceHolder.bind(this)}>
                         <small>Create Placeholder</small>
                       </Button>
                     </ButtonGroup>
@@ -1225,7 +1227,7 @@ class TestCasePagePage extends React.Component {
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <Button color='dark' onClick={this.createNewPlaceHolder.bind(this)} >Save</Button>
+                  <Button color='black' onClick={this.createNewPlaceHolder.bind(this)} >Save</Button>
                 </FormGroup>
               </Form>
             </ModalBody>
@@ -1240,13 +1242,13 @@ class TestCasePagePage extends React.Component {
                       <div className="d-flex justify-content-between align-items-center">
                         Test Id : {this.state.testId}
                         <ButtonGroup size="sm">
-                          <Button color='dark' onClick={this.updateTestCase.bind(this)}>
+                          <Button color='black' onClick={this.updateTestCase.bind(this)}>
                             <small>Update</small>
                           </Button>
                           <Button color='info' onClick={this.automateTestCase.bind(this)}>
                             <small>Automate</small>
                           </Button >
-                          {(this.state.testCaseCreatedBy.toLocaleLowerCase().trim() === Users.userEmail.toLocaleLowerCase().trim() || Users.isSuperAdmin === true) && (<Button color='dark' onClick={this.confirmdelete.bind(this)}>
+                          {(this.state.testCaseCreatedBy.toLocaleLowerCase().trim() === Users.userEmail.toLocaleLowerCase().trim() || Users.isSuperAdmin === true) && (<Button color='black' onClick={this.confirmdelete.bind(this)}>
                             <small>Delete</small>
                           </Button>
                           )}
@@ -1402,7 +1404,7 @@ class TestCasePagePage extends React.Component {
                               </Col>
                               <Col>
                                 <ButtonGroup size="sm">
-                                  <Button color='dark' onClick={this.saveTestComment.bind(this)}>
+                                  <Button color='black' onClick={this.saveTestComment.bind(this)}>
                                     <small>Add Comment</small>
                                   </Button>
                                 </ButtonGroup>
@@ -1439,7 +1441,7 @@ class TestCasePagePage extends React.Component {
             </ModalBody>
             <ModalFooter>
               <ButtonGroup size="sm">
-                <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+                <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
                   <small>Cancel</small>
                 </Button>
                 <Button color='info' onClick={this.deleteTestCase.bind(this)}>

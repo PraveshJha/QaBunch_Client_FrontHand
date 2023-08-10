@@ -176,13 +176,13 @@ class TestDataPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   Add or Update Common Test Data
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.addNewData.bind(this)}>
+                    <Button color='black' onClick={this.addNewData.bind(this)}>
                       <small>Add</small>
                     </Button>
                     <Button color='info' onClick={this.saveCommonTestData.bind(this)}>
                       <small>Save</small>
                     </Button>
-                    <Button color='dark' onClick={this.deleteTestData.bind(this)}>
+                    <Button color='black' onClick={this.deleteTestData.bind(this)}>
                       <small>Delete</small>
                     </Button>
                   </ButtonGroup>

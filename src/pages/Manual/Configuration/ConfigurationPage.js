@@ -74,7 +74,9 @@ class ConfigurationPage extends React.Component {
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
+    this.setState({isPageLoading:true})
     await ConfigGetter.manualConfigPageLoad();
+    this.setState({isPageLoading:false})
 
     //****** Test Configuration  ***********************************************************
     this.setState({ listOfTestCycle: ConfigData.ListOfTestCycle })
@@ -514,7 +516,7 @@ class ConfigurationPage extends React.Component {
                           </Input>
                         </Col>
                         <Col >
-                          <Button size="sm" color='dark' onClick={this.saveCurrentCycle.bind(this)}>
+                          <Button size="sm" color='black' onClick={this.saveCurrentCycle.bind(this)}>
                             <small>Save</small>
                           </Button>
                         </Col>
@@ -528,7 +530,7 @@ class ConfigurationPage extends React.Component {
                           </Input>
                         </Col>
                         <Col>
-                          <Button color='dark' size="sm" onClick={this.saveNewCycle.bind(this)}>
+                          <Button color='black' size="sm" onClick={this.saveNewCycle.bind(this)}>
                             <small>Save</small>
                           </Button>
                         </Col>
@@ -544,13 +546,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Add new environment
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewUrlForEnvironment.bind(this)}>
+                      <Button color='black' onClick={this.addNewUrlForEnvironment.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveUrlTableData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteUrlFromUrlTable.bind(this)}>
+                      <Button color='black' onClick={this.deleteUrlFromUrlTable.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -584,7 +586,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Rename/Delete test component
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.confirmRename.bind(this)}>
+                      <Button color='black' onClick={this.confirmRename.bind(this)}>
                         <small>Rename</small>
                       </Button>
                       <Button color='info' onClick={this.confirmdelete.bind(this)}>
@@ -623,7 +625,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Move your test cases
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.moveTestCases.bind(this)}>
+                      <Button color='black' onClick={this.moveTestCases.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>
@@ -686,7 +688,7 @@ class ConfigurationPage extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup size="sm">
-              <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+              <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
                 <small>Cancel</small>
               </Button>
               <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>

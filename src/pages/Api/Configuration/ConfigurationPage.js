@@ -931,7 +931,7 @@ class ConfigurationPage extends React.Component {
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
                     Default Configuration
-                    <Button size="sm" color='dark' onClick={this.saveDefaultConfiguration.bind(this)}>
+                    <Button size="sm" color='black' onClick={this.saveDefaultConfiguration.bind(this)}>
                       <small>Save</small>
                     </Button>
                   </div>
@@ -979,13 +979,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Environment
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewEnvironmentName.bind(this)}>
+                      <Button color='black' onClick={this.addNewEnvironmentName.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveNewEnvironment.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteEnvironmentFromList.bind(this)}>
+                      <Button color='black' onClick={this.deleteEnvironmentFromList.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1018,13 +1018,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     URL
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewUrlForEnvironment.bind(this)}>
+                      <Button color='black' onClick={this.addNewUrlForEnvironment.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveUrlTableData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteUrlFromUrlTable.bind(this)}>
+                      <Button color='black' onClick={this.deleteUrlFromUrlTable.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1067,13 +1067,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Http Header
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addHttpHeaderData.bind(this)}>
+                      <Button color='black' onClick={this.addHttpHeaderData.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveHttpHeaderTableData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteKeyFromHttpHeaderTable.bind(this)}>
+                      <Button color='black' onClick={this.deleteKeyFromHttpHeaderTable.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1106,13 +1106,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Authorization
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addAutherizationData.bind(this)}>
+                      <Button color='black' onClick={this.addAutherizationData.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveAutherizationTableData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteKeyFromAutherizationTable.bind(this)}>
+                      <Button color='black' onClick={this.deleteKeyFromAutherizationTable.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1147,7 +1147,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Cleanup Reports
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.deleteReportForDays.bind(this)}>
+                      <Button color='black' onClick={this.deleteReportForDays.bind(this)}>
                         <small>Save</small>
                       </Button>
                       <Button color='info' onClick={this.deleteAllReports.bind(this)}>
@@ -1193,7 +1193,7 @@ class ConfigurationPage extends React.Component {
                     <div className="d-flex justify-content-between align-items-center">
                       Rename/Delete test component
                       <ButtonGroup size="sm">
-                        <Button color='dark' onClick={this.confirmRename.bind(this)}>
+                        <Button color='black' onClick={this.confirmRename.bind(this)}>
                         <small>Rename</small>
                       </Button>
                         <Button color='info' onClick={this.confirmdelete.bind(this)}>
@@ -1234,7 +1234,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Move your test scripts
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.moveTestScripts.bind(this)}>
+                      <Button color='black' onClick={this.moveTestScripts.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>
@@ -1289,7 +1289,7 @@ class ConfigurationPage extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup size="sm">
-              <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+              <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
                 <small>Cancel</small>
               </Button>
               <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>

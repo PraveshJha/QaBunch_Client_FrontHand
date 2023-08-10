@@ -49,7 +49,9 @@ class ObjectRepositoryPage extends React.Component {
   }
   componentWillMount = async () => {
     window.scrollTo(0, 0);
+    this.setState({isPageLoading:true})
     await ORGetter.orPageLoad();
+    this.setState({isPageLoading:false})
 
     //**** Common Test Data*********************************************************
     this.setState({ allORTableData: ORData.AllORTableData });
@@ -205,13 +207,13 @@ class ObjectRepositoryPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     UI Element Attribute
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewData.bind(this)}>
+                      <Button color='black' onClick={this.addNewData.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveCommonTestData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteTestData.bind(this)}>
+                      <Button color='black' onClick={this.deleteTestData.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -264,7 +266,7 @@ class ObjectRepositoryPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Set up tag for automatic web element creation
                     <ButtonGroup size="sm">
-                      <Button color='info' onClick={this.saveElementTagData.bind(this)}>
+                      <Button color='black' onClick={this.saveElementTagData.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>

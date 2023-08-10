@@ -1097,7 +1097,7 @@ class ConfigurationPage extends React.Component {
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
                     Default Configuration
-                    <Button size="sm" color='dark' onClick={this.saveDefaultConfiguration.bind(this)}>
+                    <Button size="sm" color='black' onClick={this.saveDefaultConfiguration.bind(this)}>
                       <small>Save</small>
                     </Button>
                   </div>
@@ -1153,13 +1153,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Add new environment
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewUrlForEnvironment.bind(this)}>
+                      <Button color='black' onClick={this.addNewUrlForEnvironment.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveUrlTableData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteUrlFromUrlTable.bind(this)}>
+                      <Button color='black' onClick={this.deleteUrlFromUrlTable.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1192,7 +1192,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Default screen
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.saveDefaultScreen.bind(this)}>
+                      <Button color='black' onClick={this.saveDefaultScreen.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>
@@ -1246,13 +1246,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Emulator Screen
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewEmulatorInfo.bind(this)}>
+                      <Button color='black' onClick={this.addNewEmulatorInfo.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveEmulatorScreenData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteEmulatorInfo.bind(this)}>
+                      <Button color='black' onClick={this.deleteEmulatorInfo.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1285,13 +1285,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Test Management tool setup
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewToolInfo.bind(this)}>
+                      <Button color='black' onClick={this.addNewToolInfo.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveToolInfo.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteToolInfo.bind(this)}>
+                      <Button color='black' onClick={this.deleteToolInfo.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1326,7 +1326,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Capability Setup
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.saveCapabilityData.bind(this)}>
+                      <Button color='black' onClick={this.saveCapabilityData.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>
@@ -1371,7 +1371,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Cleanup Reports
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.deleteReportForDays.bind(this)}>
+                      <Button color='black' onClick={this.deleteReportForDays.bind(this)}>
                         <small>Save</small>
                       </Button>
                       <Button color='info' onClick={this.deleteAllReports.bind(this)}>
@@ -1418,7 +1418,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Rename/Delete test component
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.confirmRename.bind(this)}>
+                      <Button color='black' onClick={this.confirmRename.bind(this)}>
                         <small>Rename</small>
                       </Button>
                       <Button color='info' onClick={this.confirmdelete.bind(this)}>
@@ -1457,7 +1457,7 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Move your test scripts
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.moveTestScripts.bind(this)}>
+                      <Button color='black' onClick={this.moveTestScripts.bind(this)}>
                         <small>Save</small>
                       </Button>
                     </ButtonGroup>
@@ -1511,13 +1511,13 @@ class ConfigurationPage extends React.Component {
                   <div className="d-flex justify-content-between align-items-center">
                     Add your locator for web element identification
                     <ButtonGroup size="sm">
-                      <Button color='dark' onClick={this.addNewLocatorInfo.bind(this)}>
+                      <Button color='black' onClick={this.addNewLocatorInfo.bind(this)}>
                         <small>Add</small>
                       </Button>
                       <Button color='info' onClick={this.saveLocatorData.bind(this)}>
                         <small>Save</small>
                       </Button>
-                      <Button color='dark' onClick={this.deleteLocatorInfo.bind(this)}>
+                      <Button color='black' onClick={this.deleteLocatorInfo.bind(this)}>
                         <small>Delete</small>
                       </Button>
                     </ButtonGroup>
@@ -1552,7 +1552,7 @@ class ConfigurationPage extends React.Component {
           </ModalBody>
           <ModalFooter>
             <ButtonGroup size="sm">
-              <Button color='dark' onClick={this.toggleDeleteModal.bind(this)}>
+              <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
                 <small>Cancel</small>
               </Button>
               <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>

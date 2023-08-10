@@ -6,7 +6,7 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class CustomFunctionGetter {
 

@@ -4,7 +4,7 @@ import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import  GetData  from '../../../QAautoMATER/funcLib/getData';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class DashboardGetter {
 

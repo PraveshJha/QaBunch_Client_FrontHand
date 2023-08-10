@@ -23,10 +23,9 @@ export class AuthGetter {
                 if (await userDetails['isUserExistonServer']) {
                     Users.isUserExistOnServer = true;
                     Users.accounts = await userDetails['accounts'];
-                    Users.userSelectedAccount = Users.accounts[0];
-                    Config.SelectedProject = Users.userSelectedAccount;
+                    Users.userSelectedAccount = await userDetails['accounts'][0];
+                    Config.SelectedProject = await userDetails['accounts'][0];
                     Config.Project = Users.accounts;
-                    Users.expiresOn = await userDetails['expiresOn'];
                     return true;
                 }
                 else {
@@ -56,12 +55,14 @@ export class AuthGetter {
             return true;
         }
         else {
+
             var backendApi = await Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
                 backendApi = Config.remoteBackendAPI;
             }
-            var userData = { userEmail: Users.userEmail, password: await Users.userPassword, account: await Users.userSelectedAccount }
+            var userAccount = await  localStorage.getItem('UserSelectedAccount');
+            var userData = { userEmail: Users.userEmail, password: await Users.userPassword, account: await userAccount }
             var userDetails = await restAPI.post(await backendApi + 'users', {}, await userData);
             userDetails = await userDetails['data'];
             if (await userDetails['isUserAuthenticated']) {
@@ -75,10 +76,15 @@ export class AuthGetter {
                 Users.firstName = await userDetails['firstName'];
                 Users.lastName = await userDetails['lastName'];
                 Users.isSuperAdmin = await userDetails['isSuperAdmin'];
+                Users.AllUsersData = await userDetails['allUsersProfile']; 
+                Users.expiresOn = await userDetails['expiresOn']; 
+                Users.userSelectedAccount = await userAccount;
+                Config.SelectedProject = await userAccount;
                 return true;
             }
             else {
                 Users.isUserAuthenticated = false;
+                Config.ErrorMessage = await userDetails['errorMessage'];
                 return false;
             }
         }

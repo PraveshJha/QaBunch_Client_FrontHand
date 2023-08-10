@@ -340,7 +340,7 @@ class ExecutionLabPage extends React.Component {
             <div className="d-flex justify-content-between align-items-center">
               Test Step Results ({ExecutionLabData.ExecutionTimeForTestScripts[row.id]} seconds)
               {row.status === 'Fail' && (<ButtonGroup size="sm">
-                <Button color='dark' name="createnewDefect" onClick={(e) => this.createNewDefect(assertionData, e)} >
+                <Button color='black' name="createnewDefect" onClick={(e) => this.createNewDefect(assertionData, e)} >
                   <small>Create new defect</small>
                 </Button>
               </ButtonGroup>
@@ -533,7 +533,7 @@ class ExecutionLabPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   UI Test Scripts
                   <ButtonGroup size="sm">
-                    <Button color='dark' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
+                    <Button color='black' name="loadTestScript" onClick={this.LoadTestScripts.bind(this)}>
                       <small>Load</small>
                     </Button>
                     <Button color='info' name="run" onClick={this.ExecuteUIScripts.bind(this)}>

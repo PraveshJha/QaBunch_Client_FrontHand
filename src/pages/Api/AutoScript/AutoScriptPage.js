@@ -245,7 +245,7 @@ class AutoScriptPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   Basic Details
                   <ButtonGroup size="sm">
-                    <Button color='dark' onClick={this.saveTestScript.bind(this)}>
+                    <Button color='black' onClick={this.saveTestScript.bind(this)}>
                       <small>Create New API Scripts</small>
                     </Button>
                   </ButtonGroup>
@@ -358,7 +358,7 @@ class AutoScriptPage extends React.Component {
                 <div className="d-flex justify-content-between align-items-center">
                   New API Test Scripts
                   <ButtonGroup size="sm">
-                    <Button color='dark' name="savetestScript">
+                    <Button color='black' name="savetestScript">
                       <small>Save</small>
                     </Button>
                   </ButtonGroup>

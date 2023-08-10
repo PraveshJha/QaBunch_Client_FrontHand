@@ -4,7 +4,7 @@ import GetData from '../../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 import FileLib from '../../../QAautoMATER/funcLib/fileLib';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ConfigGetter {
 

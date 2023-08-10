@@ -6,7 +6,7 @@ import { ConfigData } from '../../Api/Configuration/ConfigData';
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import demoImage from '../../../image/profiletemplate.jpg'
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = Config.SelectedProject;
+const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 export class ExecutionLabDataGetter {
 
   async ExecutionLabPageLoadData() {
