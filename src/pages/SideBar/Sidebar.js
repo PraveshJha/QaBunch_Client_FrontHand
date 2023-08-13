@@ -6,10 +6,10 @@ import {
   MdSettings,
   MdOutlineCloud,
   MdOutlineTakeoutDining,
-  MdAssistantNavigation
+  MdAssistantNavigation,
 } from 'react-icons/md';
-import { ImLab, ImCommand, ImCodepen, ImLibrary,ImMan,ImBug } from "react-icons/im";
-import { AiFillApi, AiOutlineShopping, AiOutlineDatabase,AiFillBulb,AiFillRobot } from "react-icons/ai";
+import { ImLab, ImCommand, ImCodepen, ImLibrary, ImMan, ImBug } from "react-icons/im";
+import { AiFillApi, AiOutlineShopping, AiOutlineDatabase, AiFillBulb, AiFillRobot,AiOutlineMobile } from "react-icons/ai";
 import { NavLink } from 'react-router-dom';
 import {
   Collapse,
@@ -57,6 +57,15 @@ const automationTestingComponents = [
   { to: '/ui/cicd', name: 'Ci/Cd', exact: true, Icon: AiFillApi }
 ];
 
+const mobileTestingComponents = [
+  { to: '/mobile/testscript', name: 'Test Script', exact: false, Icon: ImCommand },
+  { to: '/mobile/executionlab', name: 'Execution lab', exact: false, Icon: ImLab },
+  { to: '/mobile/customfunction', name: 'Custom Page Function', exact: false, Icon: MdOutlineTakeoutDining },
+  { to: '/mobile/or', name: 'Object repository', exact: false, Icon: AiOutlineShopping },
+  { to: '/mobile/testdata', name: 'Test data', exact: false, Icon: AiOutlineDatabase },
+  { to: '/mobile/configuration', name: 'Configuration', exact: false, Icon: MdSettings }
+];
+
 // const navItems = [
 //   { to: '/dashboard', name: 'Dashboard', exact: true, Icon: MdLeaderboard },
 //   { to: '/cicd', name: 'Ci/Cd', exact: true, Icon: AiFillApi },
@@ -77,6 +86,7 @@ class Sidebar extends React.Component {
     isApiComponentsOpen: false,
     isManualComponentOpen: false,
     isAutomationComponentOpen: false,
+    isMobileTestingComponentOpen: false,
   };
 
   handleClick = name => () => {
@@ -98,6 +108,7 @@ class Sidebar extends React.Component {
     }
     this.setState({ isApiComponentsOpen: false });
     this.setState({ isManualComponentOpen: false });
+    this.setState({ isMobileTestingComponentOpen: false });
 
   };
 
@@ -110,6 +121,7 @@ class Sidebar extends React.Component {
     }
     this.setState({ isUIComponentsOpen: false });
     this.setState({ isManualComponentOpen: false });
+    this.setState({ isMobileTestingComponentOpen: false });
   };
 
   handleManualComponentClick = () => () => {
@@ -121,6 +133,7 @@ class Sidebar extends React.Component {
     }
     this.setState({ isApiComponentsOpen: false });
     this.setState({ isUIComponentsOpen: false });
+    this.setState({ isMobileTestingComponentOpen: false });
     this.setState({ isAutomationComponentOpen: false });
   };
 
@@ -132,6 +145,18 @@ class Sidebar extends React.Component {
       this.setState({ isAutomationComponentOpen: true });
     }
     this.setState({ isManualComponentOpen: false });
+  };
+
+  handleMobileClick = () => () => {
+    if (this.state.isMobileTestingComponentOpen) {
+      this.setState({ isMobileTestingComponentOpen: false });
+    }
+    else {
+      this.setState({ isMobileTestingComponentOpen: true });
+    }
+    this.setState({ isUIComponentsOpen: false });
+    this.setState({ isManualComponentOpen: false });
+    this.setState({ isApiComponentsOpen: false });
   };
 
   render() {
@@ -309,100 +334,122 @@ class Sidebar extends React.Component {
                   </BSNavLink>
                 </NavItem>
               ))}
-                          <NavItem
-              className={bem.e('nav-item')}
-              onClick={this.handleUIClick()}
-            >
-              <BSNavLink className={bem.e('nav-item-collapse')}>
-                <div className="d-flex">
-                  <MdMonitor className={bem.e('nav-item-icon')} />
-                  <span className=" align-self-start">UI Testing</span>
-                </div>
-                <MdKeyboardArrowDown
-                  className={bem.e('nav-item-icon')}
-                  style={{
-                    padding: 0,
-                    transform: this.state.isUIComponentsOpen
-                      ? 'rotate(0deg)'
-                      : 'rotate(-90deg)',
-                    transitionDuration: '0.3s',
-                    transitionProperty: 'transform',
-                  }}
-                />
-              </BSNavLink>
-            </NavItem>
-            <Collapse isOpen={this.state.isUIComponentsOpen}>
-              {uiTestingComponents.map(({ to, name, exact, Icon }, index) => (
-                <NavItem key={index} className={bem.e('nav-item')}>
-                  <BSNavLink
-                    id={`navItem-${name}-${index}`}
-                    className="active"
-                    tag={NavLink}
-                    to={to}
-                    exact={exact.toString()}
-                  >
-                    <Icon className={bem.e('nav-item-icon')} />
-                    <span className="">{name}</span>
-                  </BSNavLink>
-                </NavItem>
-              ))}
-            </Collapse>
-            <NavItem
-              className={bem.e('nav-item')}
-              onClick={this.handleApiClick()}>
-              <BSNavLink className={bem.e('nav-item-collapse')}>
-                <div className="d-flex">
-                  <MdOutlineCloud className={bem.e('nav-item-icon')} />
-                  <span className=" align-self-start">Api Testing</span>
-                </div>
-                <MdKeyboardArrowDown
-                  className={bem.e('nav-item-icon')}
-                  style={{
-                    padding: 0,
-                    transform: this.state.isApiComponentsOpen
-                      ? 'rotate(0deg)'
-                      : 'rotate(-90deg)',
-                    transitionDuration: '0.3s',
-                    transitionProperty: 'transform',
-                  }}
-                />
-              </BSNavLink>
-            </NavItem>
-            <Collapse isOpen={this.state.isApiComponentsOpen}>
-              {apiTestingComponents.map(({ to, name, exact, Icon }, index) => (
-                <NavItem key={index} className={bem.e('nav-item')}>
-                  <BSNavLink
-                    id={`navItem-${name}-${index}`}
-                    className="active"
-                    tag={NavLink}
-                    to={to}
-                    exact={exact.toString()}
-                  >
-                    <Icon className={bem.e('nav-item-icon')} />
-                    <span className="">{name}</span>
-                  </BSNavLink>
-                </NavItem>
-              ))}
-            </Collapse>
-            </Collapse>
-          </Nav>
-          {/* <Nav vertical>
-            {navDevItems.map(({ to, name, exact, Icon }, index) => (
-              <NavItem key={index} className={bem.e('nav-item')}>
-                <BSNavLink
-                  id={`navItem-${name}-${index}`}
-                  className="active"
-                  tag={NavLink}
-                  to={to}
-                  exact={exact.toString()}
-                >
-                  <Icon className={bem.e('nav-item-icon')} />
-                  <span className="">{name}</span>
+              <NavItem
+                className={bem.e('nav-item')}
+                onClick={this.handleUIClick()}
+              >
+                <BSNavLink className={bem.e('nav-item-collapse')}>
+                  <div className="d-flex">
+                    <MdMonitor className={bem.e('nav-item-icon')} />
+                    <span className=" align-self-start">UI Testing</span>
+                  </div>
+                  <MdKeyboardArrowDown
+                    className={bem.e('nav-item-icon')}
+                    style={{
+                      padding: 0,
+                      transform: this.state.isUIComponentsOpen
+                        ? 'rotate(0deg)'
+                        : 'rotate(-90deg)',
+                      transitionDuration: '0.3s',
+                      transitionProperty: 'transform',
+                    }}
+                  />
                 </BSNavLink>
               </NavItem>
-            ))}
-          </Nav> */}
-
+              <Collapse isOpen={this.state.isUIComponentsOpen}>
+                {uiTestingComponents.map(({ to, name, exact, Icon }, index) => (
+                  <NavItem key={index} className={bem.e('nav-item')}>
+                    <BSNavLink
+                      id={`navItem-${name}-${index}`}
+                      className="active"
+                      tag={NavLink}
+                      to={to}
+                      exact={exact.toString()}
+                    >
+                      <Icon className={bem.e('nav-item-icon')} />
+                      <span className="">{name}</span>
+                    </BSNavLink>
+                  </NavItem>
+                ))}
+              </Collapse>
+              <NavItem
+                className={bem.e('nav-item')}
+                onClick={this.handleApiClick()}>
+                <BSNavLink className={bem.e('nav-item-collapse')}>
+                  <div className="d-flex">
+                    <MdOutlineCloud className={bem.e('nav-item-icon')} />
+                    <span className=" align-self-start">Api Testing</span>
+                  </div>
+                  <MdKeyboardArrowDown
+                    className={bem.e('nav-item-icon')}
+                    style={{
+                      padding: 0,
+                      transform: this.state.isApiComponentsOpen
+                        ? 'rotate(0deg)'
+                        : 'rotate(-90deg)',
+                      transitionDuration: '0.3s',
+                      transitionProperty: 'transform',
+                    }}
+                  />
+                </BSNavLink>
+              </NavItem>
+              <Collapse isOpen={this.state.isApiComponentsOpen}>
+                {apiTestingComponents.map(({ to, name, exact, Icon }, index) => (
+                  <NavItem key={index} className={bem.e('nav-item')}>
+                    <BSNavLink
+                      id={`navItem-${name}-${index}`}
+                      className="active"
+                      tag={NavLink}
+                      to={to}
+                      exact={exact.toString()}
+                    >
+                      <Icon className={bem.e('nav-item-icon')} />
+                      <span className="">{name}</span>
+                    </BSNavLink>
+                  </NavItem>
+                ))}
+              </Collapse>
+              {Config.isMobileComponentDisplayed && (<NavItem
+                className={bem.e('nav-item')}
+                onClick={this.handleMobileClick()}>
+                <BSNavLink className={bem.e('nav-item-collapse')}>
+                  <div className="d-flex">
+                    <AiOutlineMobile className={bem.e('nav-item-icon')} />
+                    <span className=" align-self-start">Mobile Testing</span>
+                  </div>
+                  <MdKeyboardArrowDown
+                    className={bem.e('nav-item-icon')}
+                    style={{
+                      padding: 0,
+                      transform: this.state.isMobileTestingComponentOpen
+                        ? 'rotate(0deg)'
+                        : 'rotate(-90deg)',
+                      transitionDuration: '0.3s',
+                      transitionProperty: 'transform',
+                    }}
+                  />
+                </BSNavLink>
+              </NavItem>
+              )}
+              {Config.isMobileComponentDisplayed && (<Collapse isOpen={this.state.isMobileTestingComponentOpen}>
+                {mobileTestingComponents.map(({ to, name, exact, Icon }, index) => (
+                  <NavItem key={index} className={bem.e('nav-item')}>
+                    <BSNavLink
+                      id={`navItem-${name}-${index}`}
+                      className="active"
+                      tag={NavLink}
+                      to={to}
+                      exact={exact.toString()}
+                    >
+                      <Icon className={bem.e('nav-item-icon')} />
+                      <span className="">{name}</span>
+                    </BSNavLink>
+                  </NavItem>
+                ))}
+              </Collapse>
+              )}
+            </Collapse>
+          </Nav>
         </div>
       </aside>
     );

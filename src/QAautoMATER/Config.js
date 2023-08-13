@@ -8,6 +8,7 @@ export const Config = {
 	"backendServiceAt": "remote", //local or remote
 	"fileSystemtechniques": "api", //local or api,
 	"isManualComponentDisplayed": true,
+	"isMobileComponentDisplayed": false,
 };
 export const Users = {
 	"userEmail": localStorage.getItem('UserEmail'),

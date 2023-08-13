@@ -9,6 +9,7 @@ import { TestScriptData } from "./TestScript/TestScriptData";
 import { CustomFunctionData } from "./CustomFunction/CustomFunctionData";
 import CustomFunctionGetter from "./CustomFunction/CustomFunctionGetter";
 import TestScriptGetter from "./TestScript/TestScriptGetter";
+import { ORData } from "./ObjectRepository/ORData";
 export var EnvironmentURLTableHeader = [{
 	dataField: 'id',
 	text: '#',
@@ -358,7 +359,13 @@ export var ORTableHeader = [{
 	},
 	editor: {
 		type: Type.SELECT,
-		options: [{ label: 'Id', value: 'Id' }, { label: 'Name', value: 'Name' }, { label: 'Xpath', value: 'Xpath' }, { label: 'LinkText', value: 'LinkText' }, { label: 'PartialLinkText', value: 'PartialLinkText' }, { label: 'Class', value: 'Class' }, { label: 'Tag', value: 'Tag' }, { label: 'CssSelector', value: 'CssSelector' }],
+		//options: [{ label: 'Id', value: 'Id' }, { label: 'Name', value: 'Name' }, { label: 'Xpath', value: 'Xpath' }, { label: 'LinkText', value: 'LinkText' }, { label: 'PartialLinkText', value: 'PartialLinkText' }, { label: 'Class', value: 'Class' }, { label: 'Tag', value: 'Tag' }, { label: 'CssSelector', value: 'CssSelector' }],
+		//options: await ORData.AllLocatorList
+		getOptions: (setOptions) => {
+			setTimeout(() => {
+				setOptions(ORData.AllLocatorList);
+			}, 0);
+		}
 	},
 	filter: textFilter(
 		{

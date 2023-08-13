@@ -8,7 +8,7 @@ export class ORGetter {
 
     async orPageLoad() {
         await this.readORData();
-        ORData.AllConfigData=await ConfigGetter.readConfigurationFile('Web');
+        ORData.AllConfigData=await ConfigGetter.readConfigurationFile('Mobile');
         await this.setLocator();
     }
 
@@ -28,7 +28,7 @@ export class ORGetter {
                 dataforSend['keyForAddandUpdate'] = await ORData.NewAndUpdatedElement;
                 dataforSend['keyForDelete'] = await ORData.DeletedKey;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+                var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers, await dataforSend);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];
@@ -50,7 +50,7 @@ export class ORGetter {
                 backendApi = Config.remoteBackendAPI;
             }
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            var serverResponse = await restAPI.get(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers,);
+            var serverResponse = await restAPI.get(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers,);
             var ORDataDetails = await serverResponse['data'];
             if (ORDataDetails === undefined) {
                 ORData.AllORTableData = [];
@@ -112,7 +112,7 @@ export class ORGetter {
                 var dataforSend = {};
                 dataforSend['elementtag'] = await ORData.ORTagDataToSave;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web/updatetag', await headers, await dataforSend);
+                var serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile/updatetag', await headers, await dataforSend);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];

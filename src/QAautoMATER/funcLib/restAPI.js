@@ -16,6 +16,7 @@ export class RestApi {
 
     async get(url, requestHeader) {
         requestHeader['Access-Control-Allow-Origin']= '*';
+        //** Passing value in header */
         requestHeader['UserSelectedAccount']= await selectedProject;
         var Response;
         try {

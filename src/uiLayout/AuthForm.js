@@ -40,6 +40,11 @@ const DefectPage = React.lazy(() => import('../pages/Manual/Defects/DefectPage')
 const TestPlanPage = React.lazy(() => import('../pages/Manual/TestPlan/TestPlan'));
 const ManualDashboardPage = React.lazy(() => import('../pages/Manual/Dashboard/DashboardPage'));
 
+//*****  Mobile Page  ***************************
+const MobileConfigurationPage = React.lazy(() => import('../pages/Mobile/Configuration/ConfigurationPage'));
+const MobileTestDataPage = React.lazy(() => import('../pages/Mobile/TestData/TestDataPage'));
+const MobileORPage = React.lazy(() => import('../pages/Mobile/ObjectRepository/ObjectRepositoryPage'));
+
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
 };
@@ -213,6 +218,9 @@ class AuthForm extends React.Component {
                 <Route path="mn/defects" element={<DefectPage />} />
                 <Route path="mn/testplan" element={<TestPlanPage />} />
                 <Route path="mn/dashboard" element={<ManualDashboardPage />} />
+                <Route path="mobile/configuration" element={<MobileConfigurationPage />} />
+                <Route path="mobile/testdata" element={<MobileTestDataPage />} />
+                <Route path="mobile/or" element={<MobileORPage />} />
               </Routes>
             </React.Suspense>
           </MainLayout>
