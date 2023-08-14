@@ -125,13 +125,13 @@ export class ORGetter {
     async  setLocator()
     {
       var allBaseData =[];
-      allBaseData.push({label:'Id',value:'Id'});
-      allBaseData.push({label:'Name',value:'Name'}); 
-      allBaseData.push({label:'Xpath',value:'Xpath'}); 
-      allBaseData.push({label:'LinkText',value:'LinkText'}); 
-      allBaseData.push({label:'PartialLinkText',value:'PartialLinkText'}); 
-      allBaseData.push({label:'Class',value:'Class'}); 
-      allBaseData.push({label:'CssSelector',value:'CssSelector'}); 
+      allBaseData.push({label:'id',value:'id'});
+      allBaseData.push({label:'name',value:'name'}); 
+      allBaseData.push({label:'xpath',value:'xpath'}); 
+      allBaseData.push({label:'linktext',value:'linktext'}); 
+      allBaseData.push({label:'partiallinktext',value:'partiallinktext'}); 
+      allBaseData.push({label:'class',value:'class'}); 
+      allBaseData.push({label:'cssselector',value:'cssselector'}); 
       if(Config.isDemo)
       {
         ORData.AllLocatorList = await allBaseData;

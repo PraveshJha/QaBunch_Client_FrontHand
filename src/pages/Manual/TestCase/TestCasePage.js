@@ -800,9 +800,12 @@ class TestCasePagePage extends React.Component {
     }
     var fileName = this.state.bulkUploadFile['name'];
     var fileExtension = await fileName.split('.').pop();
-    if (await fileExtension.trim().toLowerCase() !== "xlsx") {
-      return await this.getNotification('error', 'Please upload excel file , supported version is xlsx');
+    if (!(await fileExtension.trim().toLowerCase() === "xlsx" || await fileExtension.trim().toLowerCase() === "csv")) {
+      return await this.getNotification('error', 'Please upload excel/csv file , supported version is xlsx or csv');
     }
+    // if (await fileExtension.trim().toLowerCase() !== "xlsx") {
+    //   return await this.getNotification('error', 'Please upload excel file , supported version is xlsx');
+    // }
     try {
       var excelInfo = null;
       //var excelInfo = await ExcelRenderer(await this.state.bulkUploadFile);

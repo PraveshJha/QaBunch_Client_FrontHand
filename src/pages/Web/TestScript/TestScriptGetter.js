@@ -938,13 +938,13 @@ export class TestScriptGetter {
   {
     if(Config.isDemo)
     {
-      TestScriptData.AllLocatorList = ['Id','Name','Xpath','LinkText','PartialLinkText','Class','CssSelector'];
+      TestScriptData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector'];
     }
     else{
       var allLOc = await TestScriptData.AllConfigData['Locator'];
       if(await allLOc === undefined)
       {
-        TestScriptData.AllLocatorList = ['Id','Name','Xpath','LinkText','PartialLinkText','Class','CssSelector'];
+        TestScriptData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector'];
       }
       else{
         TestScriptData.AllLocatorList = await allLOc;

@@ -620,12 +620,12 @@ export class CustomFunctionGetter {
   }
   async setLocator() {
     if (Config.isDemo) {
-      CustomFunctionData.AllLocatorList = ['Id', 'Name', 'Xpath', 'LinkText', 'PartialLinkText', 'Class', 'CssSelector'];
+      CustomFunctionData.AllLocatorList =['id','name','xpath','linktext','partiallinktext','class','cssselector']
     }
     else {
       var allLOc = await CustomFunctionData.AllConfigData['Locator'];
       if (await allLOc === undefined) {
-        CustomFunctionData.AllLocatorList = ['Id', 'Name', 'Xpath', 'LinkText', 'PartialLinkText', 'Class', 'CssSelector'];
+        CustomFunctionData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector']
       }
       else {
         CustomFunctionData.AllLocatorList = await allLOc;
