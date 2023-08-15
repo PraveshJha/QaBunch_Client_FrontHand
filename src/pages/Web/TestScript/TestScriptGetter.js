@@ -6,8 +6,6 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
-
 
 export class TestScriptGetter {
 
@@ -81,6 +79,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = await Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -110,6 +109,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = await Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -157,6 +157,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendAPI = await Config.backendAPI;
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
@@ -237,6 +238,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var appUrl = await TestScriptData.AppUrl;
         var screen = await TestScriptData.SelectedScreenOption;
         var device = await TestScriptData.SelectedDevice;
@@ -347,6 +349,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -392,6 +395,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -424,6 +428,7 @@ export class TestScriptGetter {
       }
       catch (error) { }
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -506,6 +511,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendAPI = await Config.backendAPI;
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
@@ -529,6 +535,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var componentName = TestScriptData.SelectedComponent;
         var existingTestId = TestScriptData.TestId;
         var oldName = TestScriptData.TestName.trim();
@@ -558,6 +565,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -584,6 +592,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -877,6 +886,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendAPI = await Config.backendAPI;
         if (Config.backendServiceAt === 'remote') {
           backendAPI = await Config.remoteBackendAPI;
@@ -914,6 +924,7 @@ export class TestScriptGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {

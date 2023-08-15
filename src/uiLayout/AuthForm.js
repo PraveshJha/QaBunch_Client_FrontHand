@@ -74,15 +74,12 @@ class AuthForm extends React.Component {
     this.setState({ userEmail: Users.userEmail })
     this.setState({ isUserExistOnServer: Users.isUserExistOnServer })
     this.setState({ allAccountList: Users.accounts })
-    // if (Users.accounts.length > 0) {
-    //   this.setState({ userSelectedAccount: Users.accounts[0] })
-    //   localStorage.setItem('UserSelectedAccount',Users.accounts[0])
-    // }
-    // else {
-    //   this.setState({ userSelectedAccount: '' })
-    //   localStorage.setItem('UserSelectedAccount','')
-    // }
-    var account = localStorage.getItem('UserSelectedAccount')
+    var account = localStorage.getItem('UserSelectedAccount');
+    if(await account ===null)
+    {
+      localStorage.setItem('UserSelectedAccount',await Users.accounts[0]);
+      account = await Users.accounts[0]; 
+    }
     this.setState({ userSelectedAccount:await account })
     this.setState({ userPassword: Users.userPassword })
 
@@ -151,8 +148,19 @@ class AuthForm extends React.Component {
       if (await isUserExist) {
         this.setState({ isUserExistOnServer: await Users.isUserExistOnServer });
         this.setState({ allAccountList: await Users.accounts });
-        this.setState({ userSelectedAccount: await Users.accounts[0] });
-        await localStorage.setItem("UserSelectedAccount", await Users.accounts[0]);
+        var selectedAcoount =  await Users.userSelectedAccount;
+        if(await selectedAcoount !=='')
+        {
+          this.setState({ userSelectedAccount: await Users.accounts[0] });
+          await localStorage.setItem("UserSelectedAccount", await Users.accounts[0]);
+          Users.userSelectedAccount = await Users.accounts[0];
+          Config.SelectedProject = await Users.accounts[0];
+        }
+        else{
+          await localStorage.setItem("UserSelectedAccount", await selectedAcoount);
+          Users.userSelectedAccount = await selectedAcoount;
+          Config.SelectedProject = await selectedAcoount;
+        }
       }
       else {
         this.setState({ highlightedUserEmail: true })
@@ -186,6 +194,7 @@ class AuthForm extends React.Component {
       Users.userSelectedAccount = await dataChoive;
       Config.SelectedProject = await dataChoive;
       await localStorage.setItem("UserSelectedAccount", await dataChoive);
+      Users.userSelectedAccount = dataChoive
     }
 
   };

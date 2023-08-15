@@ -1,7 +1,5 @@
 import { Config, Users } from '../../QAautoMATER/Config';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
-
 
 export class HeaderGetter {
 

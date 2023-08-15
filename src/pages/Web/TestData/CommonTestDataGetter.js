@@ -1,7 +1,6 @@
 import { TestData } from './TestData';
 import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class CommonTestDataGetter {
 
@@ -16,6 +15,7 @@ export class CommonTestDataGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {
@@ -41,6 +41,7 @@ export class CommonTestDataGetter {
             TestData.AllCommonTestData = [{ id: 1, key: 'searchItem', value: 'QAautoMATER' }];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

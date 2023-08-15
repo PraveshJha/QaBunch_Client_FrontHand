@@ -6,7 +6,7 @@ import { ConfigData } from '../Api/Configuration/ConfigData';
 import ConfigGetter from '../Api/Configuration/ConfigGetter';
 import GetData from '../../QAautoMATER/funcLib/getData';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+
 
 export class DashBoardGetter {
 
@@ -18,6 +18,7 @@ export class DashBoardGetter {
         var allconfigData = {};
         var dashBoardData = {}
         if (!Config.isDemo) {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             allconfigData = await ConfigGetter.readConfigurationFile(await DashBoardData.SelectedTab);
             ConfigData.AllConfigData = await allconfigData;
             var backendAPI = await Config.backendAPI;
@@ -253,6 +254,7 @@ export class DashBoardGetter {
             DashBoardData.ListOfExecutionTimeForaDay = ['10:00 AM', '06:00 PM']
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -334,6 +336,7 @@ export class DashBoardGetter {
             }
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -415,6 +418,7 @@ export class DashBoardGetter {
             DashBoardData.FailedComponentInLastXResults = failedData;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -468,6 +472,7 @@ export class DashBoardGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendAPI = await Config.backendAPI;
                 if (Config.backendServiceAt === 'remote') {
                     backendAPI = await Config.remoteBackendAPI;

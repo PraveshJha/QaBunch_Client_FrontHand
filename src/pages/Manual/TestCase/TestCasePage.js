@@ -135,7 +135,7 @@ class TestCasePagePage extends React.Component {
     await window.scrollTo(0, 0);
     this.setState({isPageLoading:true})
     await TestCaseGetter.loadTestCasePage();
-    this.setState({isPageLoading:false})
+    
 
     //**** Test Folder*********************************************************
     this.setState({ folderTreeData: {} }, () => { this.setState({ folderTreeData: TestCaseData.FolderTreeData }); });
@@ -194,6 +194,15 @@ class TestCasePagePage extends React.Component {
     this.setState({ newTestCaseComment: TestCaseData.NewTestCaseComment });
     this.setState({ isErrorOnTestComment: TestCaseData.IsErrorOnTestComment });
 
+    // Create Reference Of Element
+    this.refTestTitle = React.createRef();
+    this.refTestReference = React.createRef();
+    this.refTestExpectedResults = React.createRef();
+
+    //* at the end 
+    this.setState({isPageLoading:false})
+
+
   }
 
   //************************* Notification ***************************************************************
@@ -214,7 +223,7 @@ class TestCasePagePage extends React.Component {
     if (await this.state.testcaseName !== await dataChoice) {
       TestCaseData.TestcaseName = await dataChoice;
       this.setState({ testcaseName: await dataChoice });
-      var format = /[^A-Za-z ,]/ig;
+      var format = /[^A-Za-z-._ ]/ig;
       if (await format.test(await dataChoice)) {
         TestCaseData.IsErrorOnTestCase = true;
         this.setState({ isErrorOnTestCase: true });
@@ -355,6 +364,7 @@ class TestCasePagePage extends React.Component {
         if (isSaved) {
           this.setState({ testcaseName: '' });
           TestCaseData.TestcaseName = '';
+          this.refTestTitle.current.value = '';
           this.setState({ testcasePriority: 'Medium' });
           TestCaseData.TestcasePriority = 'Medium';
           this.setState({ testCaseTestingType: 'Functional' });
@@ -363,14 +373,10 @@ class TestCasePagePage extends React.Component {
           TestCaseData.TestCaseAutomationType = 'Not Automated';
           this.setState({ testCaseReference: '' });
           TestCaseData.TestCaseReference = '';
-          this.setState({ testCasePreCondition: '' });
-          TestCaseData.TestCasePreCondition = '';
-          this.setState({ testCaseTestData: '' });
-          TestCaseData.TestCaseTestData = '';
-          this.setState({ testCaseTestSteps: '' });
-          TestCaseData.TestCaseTestSteps = '';
+          this.refTestReference.current.value = '';
           this.setState({ testCaseExpectedResults: '' });
           TestCaseData.TestCaseExpectedResults = '';
+          this.refTestExpectedResults.current.value = '';
           return await this.getNotification('success', 'Test case is successfully created.');
         }
         else {
@@ -565,10 +571,14 @@ class TestCasePagePage extends React.Component {
       this.setState({ isTestNameSame: false });
       TestCaseData.UpdatedTestName = await dataChoice;
       this.setState({ updatedTestName: await dataChoice });
-      var format = /[^A-Za-z ]/ig;
+      var format = /[^A-Za-z-._ ]/ig;
       if (await format.test(await dataChoice)) {
         TestCaseData.IsErrorOnUPdatedTestCaseName = true;
         this.setState({ isErrorOnUPdatedTestCaseName: true });
+      }
+      if(await dataChoice.toString().trim()==='')
+      {
+        this.setState({ isErrorOnUPdatedTestCaseName: true })
       }
     }
     else {
@@ -659,6 +669,10 @@ class TestCasePagePage extends React.Component {
       dataChoice = await dataChoice.toString();
       TestCaseData.UpdatedTestSteps = await dataChoice;
       this.setState({ updatedTestSteps: await dataChoice });
+      if(await dataChoice.toString().trim() ==='')
+      {
+        this.setState({ isErrorOnUpdatedTestSteps: true })
+      }
     }
     else {
       this.setState({ isTestStepsSame: true });
@@ -691,11 +705,11 @@ class TestCasePagePage extends React.Component {
     ///****   Verify Require Filed */
     if (await testTitle.toString().trim() === '') {
       errorMessage = 'Title can not be blank.'
-      this.setState({ isErrorOnTestCase: true })
+      this.setState({ isErrorOnUPdatedTestCaseName: true })
     }
     if (await testBody.toString().trim() === '') {
       errorMessage = errorMessage + 'Steps can not be blank.'
-      this.setState({ isErrorOnTestSteps: true })
+      this.setState({ isErrorOnUpdatedTestSteps: true })
     }
     if (await errorMessage !== '') {
       return await this.getNotification('error', "Please fill the required section.");
@@ -965,6 +979,8 @@ class TestCasePagePage extends React.Component {
   render() {
     const rowEvents = {
       onClick: (e, row, rowIndex) => {
+        this.setState({isErrorOnUPdatedTestCaseName:false});
+        this.setState({isErrorOnUpdatedTestSteps:false});
         this.setState({ isPageLoading: true });
         TestCaseData.TestId = row.testId;
         this.setState({ testId: row.testId })
@@ -1063,7 +1079,7 @@ class TestCasePagePage extends React.Component {
                         Title*
                       </Label>
                       <Col>
-                        <Input type="text" invalid={this.state.isErrorOnTestCase} onChange={this.addNewTestCaseName.bind(this)} name="testcaseName" >
+                        <Input type="text" invalid={this.state.isErrorOnTestCase} onChange={this.addNewTestCaseName.bind(this)} innerRef={this.refTestTitle} name="testcaseName" defaultValue={this.state.testcaseName}>
                         </Input>
                       </Col>
                       <FormGroup row>
@@ -1115,7 +1131,7 @@ class TestCasePagePage extends React.Component {
                           References
                         </Label>
                         <Col>
-                          <Input type="text" onChange={this.addTestReference.bind(this)} name="testcaseReference">
+                          <Input type="text" onChange={this.addTestReference.bind(this)} name="testcaseReference" innerRef={this.refTestReference} defaultValue={this.state.testCaseReference}>
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1124,14 +1140,14 @@ class TestCasePagePage extends React.Component {
                           Preconditions
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestPrecondition.bind(this)} name="testcasePrecondition">
+                          <Input type="textarea" onChange={this.addTestPrecondition.bind(this)} name="testcasePrecondition" defaultValue={this.state.testCasePreCondition}>
                           </Input>
                         </Col>
                         <Label sm={3}>
                           Test data
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestData.bind(this)} name="testcaseName">
+                          <Input type="textarea" onChange={this.addTestData.bind(this)} name="testcaseName" defaultValue={this.state.testCaseTestData}>
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1140,7 +1156,7 @@ class TestCasePagePage extends React.Component {
                           Steps*
                         </Label>
                         <Col>
-                          <Input type="textarea" invalid={this.state.isErrorOnTestSteps} onChange={this.addTestSteps.bind(this)} name="testcaseTestSteps">
+                          <Input type="textarea" invalid={this.state.isErrorOnTestSteps} onChange={this.addTestSteps.bind(this)} name="testcaseTestSteps" defaultValue={this.state.testCaseTestSteps}>
                           </Input>
                         </Col>
                       </FormGroup>
@@ -1149,7 +1165,7 @@ class TestCasePagePage extends React.Component {
                           Expected Result
                         </Label>
                         <Col>
-                          <Input type="textarea" onChange={this.addTestExpectedResults.bind(this)} name="testExpected" >
+                          <Input type="textarea" onChange={this.addTestExpectedResults.bind(this)} name="testExpected" innerRef={this.refTestExpectedResults} defaultValue={this.state.testCaseExpectedResults}>
                           </Input>
                         </Col>
                       </FormGroup>

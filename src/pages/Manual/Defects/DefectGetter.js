@@ -3,7 +3,7 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+
 
 export class DefectGetter {
 
@@ -77,6 +77,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['defectName'] = await DefectData.DefectTitle;
             testBody['placeHolder'] = await DefectData.PlaceHolderName;
@@ -107,6 +108,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['newPlaceHolderName'] = await DefectData.NewPlaceHolderName.trim();
             testBody['relativePath'] = await DefectData.SelectedPlaceHolderPath.trim();
@@ -157,6 +159,7 @@ export class DefectGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['componentPath'] = await relativePath;
                 var backendApi = Config.backendAPI;
@@ -182,6 +185,7 @@ export class DefectGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['componentPath'] = await relativePath;
                 var backendApi = Config.backendAPI;
@@ -206,6 +210,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['testComment'] = await testComment;
             var testCasePath = DefectData.UpdatedTestPlaceHolder + '/' + DefectData.UpdatedTestCycle + '/' + DefectData.DefectId;
@@ -229,6 +234,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = DefectData.UpdatedTestPlaceHolder + '/' + DefectData.UpdatedTestCycle + '/' + DefectData.DefectId;
             testBody['testPath'] = await testCasePath;
@@ -250,6 +256,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = DefectData.UpdatedTestPlaceHolder + '/' + DefectData.UpdatedTestCycle + '/' + DefectData.DefectId;
             testBody['testPath'] = await testCasePath;
@@ -280,6 +287,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = DefectData.UpdatedTestPlaceHolder + '/' + DefectData.UpdatedTestCycle + '/' + DefectData.DefectId;
             testBody['testPath'] = await testCasePath;
@@ -303,6 +311,7 @@ export class DefectGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = DefectData.UpdatedTestPlaceHolder + '/' + DefectData.UpdatedTestCycle + '/' + DefectData.TestId;
             testBody['testName'] = await DefectData.UpdatedTestName;

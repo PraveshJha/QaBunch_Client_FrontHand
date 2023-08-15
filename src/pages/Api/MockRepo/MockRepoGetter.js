@@ -9,7 +9,6 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import Matcher from '../../../QAautoMATER/funcLib/matcher';
 import DynamicDataGetter from '../../../QAautoMATER/dynamicData/DynamicData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class MockRepoGetter {
 
@@ -27,6 +26,7 @@ export class MockRepoGetter {
             MockData.AllComponentList = ["LandingPage", "SignIn", "ProductList", "ShoppingCart", "BookingSummary"];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -72,6 +72,7 @@ export class MockRepoGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var componentName = await MockData.SelectedComponent;
             var testId = await MockData.SelectedTestId;
             var testName = await MockData.TestName;
@@ -136,6 +137,7 @@ export class MockRepoGetter {
             MockData.AllTestIdWithName = TestDetails;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allTestIdDetailsForComponent = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             if (await allTestIdDetailsForComponent.length > 0) {
                 MockData.AllTestIdWithName = await allTestIdDetailsForComponent;
@@ -178,6 +180,7 @@ export class MockRepoGetter {
             return {}
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -197,6 +200,7 @@ export class MockRepoGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;

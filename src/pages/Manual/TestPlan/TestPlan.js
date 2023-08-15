@@ -460,6 +460,11 @@ class TestPlanPage extends React.Component {
       TestPlanData.DeletedTestID ={};
       TestPlanData.UpdatedRemarksData ={};
       await this.getNotification('success', 'Test plan ' + newTestPlanName + ' is successfully saved.');
+      if(await isNewTestPlan)
+      {
+        await new Promise(wait => setTimeout(wait, 3000));
+        await window.location.reload();
+      }
     }
     else {
       await this.getNotification('error', 'Unable to save Test plan ' + await newTestPlanName + ' because of ' + Config.ErrorMessage);

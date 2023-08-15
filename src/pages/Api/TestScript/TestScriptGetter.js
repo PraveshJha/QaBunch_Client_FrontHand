@@ -10,7 +10,6 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import ExecutionLabDataGetter from '../ExecutionLab/ExecutionLabDataGetter';
 import { SessionVariable } from '../../SessionVariable';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class TestScriptGetter {
 
@@ -33,6 +32,7 @@ export class TestScriptGetter {
             TestScriptData.AllComponentList = ["LandingPage", "SignIn", "ProductList", "ShoppingCart", "BookingSummary"];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -220,6 +220,7 @@ export class TestScriptGetter {
             TestScriptData.DependentTestIdList = await allTestIdwithName;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allTestIdDetailsForComponent = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             for (let i = 0; i < await allTestIdDetailsForComponent.length; i++) {
                 testId = await allTestIdDetailsForComponent[i]['testid'];
@@ -263,6 +264,7 @@ export class TestScriptGetter {
                 return true;
             }
             else {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendAPI = await Config.backendAPI;
                 if (Config.backendServiceAt === 'remote') {
                     backendAPI = await Config.remoteBackendAPI;
@@ -368,6 +370,7 @@ export class TestScriptGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testDetails = {};
             testDetails['ComponentUrl'] = TestScriptData.SelectedComponentUrl;
             testDetails['RelativeUrl'] = TestScriptData.RelativeUrl;
@@ -546,6 +549,7 @@ export class TestScriptGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var componentName = TestScriptData.ComponentName.trim();
             var existingTestId = TestScriptData.TestId.trim();
             var newTestId = TestScriptData.NewTestId.trim();

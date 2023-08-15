@@ -6,8 +6,6 @@ import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
-
 
 export class ExecutionLabDataGetter {
 
@@ -36,6 +34,7 @@ export class ExecutionLabDataGetter {
             ExecutionLabData.SelectedComponent = "All";
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -101,6 +100,7 @@ export class ExecutionLabDataGetter {
 
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var requestBody = {};
             requestBody['environment'] = await environment;
             requestBody['threadCount'] = await threadCount;
@@ -187,6 +187,7 @@ export class ExecutionLabDataGetter {
             }
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             for (let i = 0; i < allComponentTestDetails.length; i++) {
                 rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }

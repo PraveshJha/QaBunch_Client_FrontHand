@@ -2,7 +2,6 @@ import { ORData } from './ORData';
 import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import ConfigGetter from '../../Web/Configuration/ConfigGetter'
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ORGetter {
 
@@ -19,6 +18,7 @@ export class ORGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {
@@ -44,6 +44,7 @@ export class ORGetter {
             ORData.AllORTableData = [{ id: 1, name: 'inputUserName', locator: 'Name', locatorproperty: 'username', alternatexpath: '' }];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -104,6 +105,7 @@ export class ORGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {

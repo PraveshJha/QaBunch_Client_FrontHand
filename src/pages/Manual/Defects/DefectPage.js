@@ -209,7 +209,7 @@ class DefectPage extends React.Component {
     if (await this.state.defectTitle !== await dataChoice) {
       DefectData.DefectTitle = await dataChoice;
       this.setState({ defectTitle: await dataChoice });
-      var format = /[^A-Za-z ,0-9.-]/ig;
+      var format = /[^A-Za-z._0-9- ]/ig;
       if (await format.test(await dataChoice)) {
         DefectData.IsErrorOnDefectTitle = true;
         this.setState({ isErrorOnDefectTitle: true });
@@ -398,7 +398,9 @@ class DefectPage extends React.Component {
           DefectData.DefectAssignedTo =[];
           this.setState({selectedTestId:[]})
           DefectData.SelectedTestId =[];
-          return await this.getNotification('success', 'Defect is successfully created.');
+          await this.getNotification('success', 'Defect is successfully created.');
+          await new Promise(wait => setTimeout(wait, 2000));
+          await window.location.reload();
         }
         else {
           return await this.getNotification('error', 'Unable to create new defect because of ' + Config.ErrorMessage);
@@ -549,10 +551,14 @@ class DefectPage extends React.Component {
       this.setState({ isDefectNameSame: false });
       DefectData.UpdatedDefectTitle = await dataChoice;
       this.setState({ updatedDefectTitle: await dataChoice });
-      var format = /[^A-Za-z ]/ig;
+      var format = /[^A-Za-z._0-9- ]/ig;
       if (await format.test(await dataChoice)) {
         DefectData.IsErrorOnUpdatedDefectTitle = true;
         this.setState({ isErrorOnUpdatedDefectTitle: true });
+      }
+      if(await dataChoice.toString().trim()==='')
+      {
+        this.setState({ isErrorOnUpdatedDefectTitle: true })
       }
     }
     else {
@@ -613,6 +619,9 @@ class DefectPage extends React.Component {
       this.setState({ isErrorOnUpdatedDefectTitle: true })
     }
     if (await testBody.toString().trim() === '') {
+      errorMessage = errorMessage + 'Steps to reproduce can not be blank.'
+    }
+    if (await testBody.toString().trim() === '<p><br></p>') {
       errorMessage = errorMessage + 'Steps to reproduce can not be blank.'
     }
     if (await errorMessage !== '') {

@@ -1,7 +1,7 @@
 import { ConfigData } from './ConfigData';
 import { Config,Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+
 
 export class ConfigGetter {
 
@@ -15,7 +15,7 @@ export class ConfigGetter {
             return true;
         }
         else {
-
+            const selectedProject = await  localStorage.getItem('UserSelectedAccount')
             var defaultConfigData = {};
             defaultConfigData["DefaultSelectedEnvironment"] = ConfigData.DefaultSelectedEnvironment;
             defaultConfigData["DefaultReportTrailCount"] = ConfigData.DefaultReportTrailCount;
@@ -58,6 +58,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            const selectedProject = await  localStorage.getItem('UserSelectedAccount')
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

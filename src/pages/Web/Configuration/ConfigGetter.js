@@ -4,7 +4,6 @@ import GetData from '../../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 import FileLib from '../../../QAautoMATER/funcLib/fileLib';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ConfigGetter {
 
@@ -110,6 +109,7 @@ export class ConfigGetter {
     }
 
     async readConfigurationFile(testingType = 'Api') {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         if (Config.fileSystemtechniques === 'local') {
             return await FileLib.readFile(selectedProject + '/' + testingType + '/Configuration.json');
         }
@@ -277,6 +277,7 @@ export class ConfigGetter {
         }
         else {
           try {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
               backendAPI = await Config.remoteBackendAPI;
@@ -299,6 +300,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -328,6 +330,7 @@ export class ConfigGetter {
         }
         else {
           try {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
               backendAPI = await Config.remoteBackendAPI;
@@ -379,6 +382,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -412,6 +416,7 @@ export class ConfigGetter {
             var output = [];
             var listOfTestDetails =[];
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendAPI = await Config.backendAPI;
                 if (await Config.backendServiceAt === 'remote') {
                     backendAPI = await Config.remoteBackendAPI;

@@ -78,8 +78,6 @@ export class AuthGetter {
                 Users.isSuperAdmin = await userDetails['isSuperAdmin'];
                 Users.AllUsersData = await userDetails['allUsersProfile']; 
                 Users.expiresOn = await userDetails['expiresOn']; 
-                Users.userSelectedAccount = await userAccount;
-                Config.SelectedProject = await userAccount;
                 return true;
             }
             else {

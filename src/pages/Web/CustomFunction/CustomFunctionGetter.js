@@ -6,7 +6,6 @@ import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtil
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class CustomFunctionGetter {
 
@@ -41,6 +40,7 @@ export class CustomFunctionGetter {
         backendApi = await Config.remoteBackendAPI;
       }
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
         serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
         var customFunctionData = await serverResponse['data'];
@@ -71,6 +71,7 @@ export class CustomFunctionGetter {
         backendApi = Config.remoteBackendAPI;
       }
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
         var serverResponse = await restAPI.get(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers);
         var commonData = await serverResponse['data'];
@@ -95,6 +96,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -124,6 +126,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -189,6 +192,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var appUrl = await CustomFunctionData.AppUrl;
         var screen = await CustomFunctionData.SelectedScreenOption;
         var device = await CustomFunctionData.SelectedDevice;
@@ -226,6 +230,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -265,6 +270,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -376,6 +382,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -401,6 +408,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -459,6 +467,7 @@ export class CustomFunctionGetter {
     }
     else {
       try {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -549,6 +558,7 @@ export class CustomFunctionGetter {
 
     }
     else {
+      var selectedProject = await  localStorage.getItem('UserSelectedAccount');
       var backendApi = Config.backendAPI;
       var backendServiceLocation = await Config.backendServiceAt;
       if (backendServiceLocation === 'remote') {

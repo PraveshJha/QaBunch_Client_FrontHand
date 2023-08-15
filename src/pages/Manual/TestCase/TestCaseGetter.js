@@ -3,7 +3,7 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+
 
 export class TestCaseGetter {
 
@@ -26,6 +26,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['testCaseName'] = await TestCaseData.TestcaseName;
             testBody['placeHolder'] = await TestCaseData.PlaceHolderName;
@@ -58,6 +59,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['newPlaceHolderName'] = await TestCaseData.NewPlaceHolderName.trim();
             testBody['relativePath'] = await TestCaseData.SelectedPlaceHolderPath.trim();
@@ -108,6 +110,7 @@ export class TestCaseGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['componentPath'] = await relativePath;
                 var backendApi = Config.backendAPI;
@@ -132,6 +135,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['testComment'] = await testComment;
             var testCasePath = TestCaseData.UpdatedTestPlaceHolder + '/' + TestCaseData.UpdatedTestCycle + '/' + TestCaseData.TestId;
@@ -155,6 +159,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = TestCaseData.UpdatedTestPlaceHolder + '/' + TestCaseData.UpdatedTestCycle + '/' + TestCaseData.TestId;
             testBody['testPath'] = await testCasePath;
@@ -176,6 +181,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = TestCaseData.UpdatedTestPlaceHolder + '/' + TestCaseData.UpdatedTestCycle + '/' + TestCaseData.TestId;
             testBody['testPath'] = await testCasePath;
@@ -208,6 +214,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = TestCaseData.UpdatedTestPlaceHolder + '/' + TestCaseData.UpdatedTestCycle + '/' + TestCaseData.TestId;
             testBody['testPath'] = await testCasePath;
@@ -231,6 +238,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             var testCasePath = TestCaseData.UpdatedTestPlaceHolder + '/' + TestCaseData.UpdatedTestCycle + '/' + TestCaseData.TestId;
             testBody['testName'] = await TestCaseData.UpdatedTestName;
@@ -338,6 +346,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             if( await testcaseName ==='' || await component ==='' )
             {
                 return ;
@@ -374,6 +383,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var basePath = await selectedProject;
             var allPathDetails = await allComponent.split('/');
             for (let j = 0; j < await allPathDetails.length; j++) {
@@ -416,6 +426,7 @@ export class TestCaseGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['newPlaceHolderName'] = await newPlaceHolderName;
             testBody['relativePath'] = await relativePath;

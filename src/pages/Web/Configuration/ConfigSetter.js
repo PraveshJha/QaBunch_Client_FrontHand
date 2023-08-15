@@ -1,7 +1,6 @@
 import { Config, Users } from '../../../QAautoMATER/Config';
 import { ConfigData } from './ConfigData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ConfigSetter {
 
@@ -26,6 +25,7 @@ export class ConfigSetter {
                 backendApi = Config.remoteBackendAPI;
             }
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
                 var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Web/defaultconfiguration', await headers, await defaultConfigData);
                 var saveFile = await serverResponse['data'];
@@ -48,6 +48,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -77,6 +78,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var defaultConfigData = {};
             defaultConfigData["DefaultExecutionPlatform"] = ConfigData.DefaultExecutionPlatform;
             defaultConfigData["DefaultBrowser"] = ConfigData.DefaultBrowser;
@@ -110,6 +112,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -138,6 +141,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -164,6 +168,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var capData = {};
             capData["HubUrl"] = ConfigData.ServerUrl;
             capData["Capabilities"] = ConfigData.AllCapabilities;
@@ -194,7 +199,7 @@ export class ConfigSetter {
             return true;
         }
         else {
-
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var reportData = {};
             reportData["envName"] = await envName;
             reportData["days"] = await daysToDelete;
@@ -224,6 +229,7 @@ export class ConfigSetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -256,6 +262,7 @@ export class ConfigSetter {
                 backendApi = Config.remoteBackendAPI;
             }
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody ={};
                 testBody['sourceComponent'] = ConfigData.SelectedSourceComponentToMove;
                 testBody['destinationComponent'] = ConfigData.SelectedDestinationComponentToMove;

@@ -1,7 +1,6 @@
 import { ConfigData } from './ConfigData';
 import { Config, Users } from '../../../QAautoMATER/Config';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class ConfigGetter {
 
@@ -62,6 +61,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['newTestCycle'] = await ConfigData.NewTestCycle;
             var backendApi = Config.backendAPI;
@@ -79,6 +79,7 @@ export class ConfigGetter {
     }
 
     async getConfigData() {
+        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
@@ -96,6 +97,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testBody = {}
             testBody['currentTestCycle'] = await ConfigData.CurrentTestCycle;
             var backendApi = Config.backendAPI;
@@ -117,6 +119,7 @@ export class ConfigGetter {
 
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = await Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -164,6 +167,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -191,6 +195,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -250,6 +255,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
@@ -280,6 +286,7 @@ export class ConfigGetter {
             return [{ value: 'QB-1', label: 'QB-1' }, { value: 'QB-2', label: 'QB-2' }];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var output = [];
             var listOfTestDetails =[];
             try {
@@ -316,6 +323,7 @@ export class ConfigGetter {
             return true;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

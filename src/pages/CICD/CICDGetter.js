@@ -4,7 +4,6 @@ import ConfigGetter from '../Api/Configuration/ConfigGetter';
 import GetData from '../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../QAautoMATER/funcLib/DataGeneratorUtility';
 import restAPI from '../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
 
 export class CICDGetter {
 
@@ -72,6 +71,7 @@ export class CICDGetter {
             CICDData.SelectedComponent = "All";
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -110,6 +110,7 @@ export class CICDGetter {
             }
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, CICDData.SelectedTab, componentName);
             for (let i = 0; i < allComponentTestDetails.length; i++) {
                 var rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }
@@ -198,6 +199,7 @@ export class CICDGetter {
             CICDData.AllTestSuite = ['Regression', 'Smoke', 'Sanity'];
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -221,7 +223,7 @@ export class CICDGetter {
             return true;
         }
         else {
-
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var testSuiteData = {};
             testSuiteData["fileName"] = CICDData.SelectedTestSuite;
             testSuiteData["environment"] = CICDData.SelectedEnv;
@@ -255,6 +257,7 @@ export class CICDGetter {
 
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {

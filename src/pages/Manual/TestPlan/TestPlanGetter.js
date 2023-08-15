@@ -3,8 +3,6 @@ import { Config, Users } from '../../../QAautoMATER/Config';
 import ConfigGetter from '../Configuration/ConfigGetter';
 import { ConfigData } from '../Configuration/ConfigData';
 import restAPI from '../../../QAautoMATER/funcLib/restAPI';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount')
-
 
 export class TestPlanGetter {
 
@@ -34,6 +32,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['testCycle'] = await testCycle;
                 var backendApi = Config.backendAPI;
@@ -58,6 +57,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendApi = Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {
@@ -91,6 +91,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['testCycle'] = await testCycle;
                 testBody['testPlanName'] = await testPlanName;
@@ -139,6 +140,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 TestPlanData.ListOfUsers = [];
                 await this.getListOfUser();
                 TestPlanData.ListOfTestCases = [];
@@ -167,6 +169,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 var isNewPlan = await TestPlanData.IsUserSelectedNewTestPlan;
                 testBody['testPlanName'] = await testPlanName;
@@ -273,6 +276,7 @@ export class TestPlanGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var testBody = {}
                 testBody['testPlanName'] = await testPlanName;
                 testBody['testCycle'] = await TestPlanData.SelectedTestCycle;
