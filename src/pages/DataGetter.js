@@ -9,7 +9,7 @@ import { TestScriptData } from './Api/TestScript/TestScriptData';
 import { ConfigData } from './Api/Configuration/ConfigData';
 import MockRepoGetter from './Api/MockRepo/MockRepoGetter';
 import { CustomFunctionData } from './Web/CustomFunction/CustomFunctionData';
-const selectedProject = await  localStorage.getItem('UserSelectedAccount');
+
 export class DataGetter {
 
     async getPastDateList(historyCounter) {
@@ -28,6 +28,7 @@ export class DataGetter {
             return allTestId;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allTestIdDetailsForComponent = await GetData.getListOfTestIdAndTestName(selectedProject, projectType, componentName);
             if (await allTestIdDetailsForComponent.length > 0) {
                 TestScriptData.AllTestIdWithName = await allTestIdDetailsForComponent;
@@ -459,6 +460,7 @@ export class DataGetter {
             backendAPI = await Config.remoteBackendAPI;
         }
         try {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
             var serverResponse = await RestApi.get(backendAPI + 'testscripts/component/' + component + '/testId/' + testId + '@' + testName + '/project/' + selectedProject + '/testingtype/' + testingtype, await headers);
             return serverResponse['data']
@@ -514,6 +516,7 @@ export class DataGetter {
             output['allTestId'] = await allTestId;
         }
         else {
+            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
             var allTestIdDetailsForComponent = await GetData.getListOfTestIdAndTestName(selectedProject, await projectType, await componentName);
             if (await allTestIdDetailsForComponent.length > 0) {
                 var testIdWithName = await allTestIdDetailsForComponent;
@@ -534,6 +537,7 @@ export class DataGetter {
         }
         else {
             try {
+                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                 var backendApi = await Config.backendAPI;
                 var backendServiceLocation = await Config.backendServiceAt;
                 if (backendServiceLocation === 'remote') {
@@ -623,6 +627,7 @@ export class DataGetter {
             }
             else {
                 try {
+                    var selectedProject = await  localStorage.getItem('UserSelectedAccount');
                     var backendApi = await Config.backendAPI;
                     var backendServiceLocation = await Config.backendServiceAt;
                     if (backendServiceLocation === 'remote') {
