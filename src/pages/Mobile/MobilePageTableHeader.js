@@ -42,27 +42,11 @@ export var EnvironmentURLTableHeader = [{
 	}
 },
 {
-	dataField: 'url',
-	text: 'URL',
+	dataField: 'apk',
+	text: 'App apk',
 	headerStyle: { width: '120px' },
 	validator: async (newValue, row, column, done) => {
-		if (await newValue.trim() === '') {
-			return done({
-				valid: false,
-				message: 'URL can not be blank'
-			});
-		}
-		var allColumnValue = await GetData.jsonArrayGetallKeyValue(ConfigData.EnvUrlList, 'url')
-		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
-		if (isPresent) {
-			return done({
-				valid: false,
-				message: 'URL can not be duplicate.'
-			});
-		}
-		else {
-			return done();
-		}
+		return done();
 	}
 }
 ];
@@ -236,11 +220,11 @@ export var ORElementTagHeader = [{
 }, {
 	dataField: 'type',
 	text: 'Webelement type',
-	editable:false,
+	editable: false,
 },
 {
 	dataField: 'tag',
-	text: 'Tag',
+	text: 'Android Tag',
 	validator: async (newValue, row, column, done) => {
 		if (await newValue.trim() === '') {
 			return done({
@@ -252,6 +236,211 @@ export var ORElementTagHeader = [{
 			return done();
 		}
 	},
+},
+{
+	dataField: 'iostag',
+	text: 'iOS Tag',
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Tag can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+	},
+}
+];
+export var EmulatorTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '30px' }
+},
+{
+	dataField: 'platform',
+	text: 'Platform',
+	headerStyle: { width: '80px' },
+	editor: {
+		type: Type.SELECT,
+		options: [{ label: 'Android', value: 'Android' }, { label: 'iOS', value: 'iOS' }],
+	},
+},
+{
+	dataField: 'device',
+	text: 'Device Type',
+	headerStyle: { width: '80px' },
+	editor: {
+		type: Type.SELECT,
+		options: [{ label: 'Mobile', value: 'Mobile' }, { label: 'Tablet', value: 'Tablet' }],
+	},
+},
+{
+	dataField: 'name',
+	text: 'Screen Name',
+	headerStyle: { width: '120px' },
+	validator: async (newValue, row, column, done) => {
+		var format = /[^A-Za-z0-9-_. ]/ig;
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Screen Name can not be blank'
+			});
+		}
+		if (format.test(await newValue)) {
+			return done({
+				valid: false,
+				message: 'Screen Name should not have special character.'
+			});
+		}
+		var allColumnValue = await GetData.jsonArrayGetallKeyValue(ConfigData.AllEmulatorTableData, 'name')
+		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+		if (isPresent) {
+			return done({
+				valid: false,
+				message: 'Screen Name can not be duplicate.'
+			});
+		}
+		else {
+			return done();
+		}
+	}
+},
+{
+	dataField: 'apppackage',
+	text: 'appPackage',
+	headerStyle: { width: '120px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'appPackage can not be blank.'
+			});
+		}
+		return done();
+	}
+},
+{
+	dataField: 'apppactivity',
+	text: 'appActivity',
+	headerStyle: { width: '120px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'appActivity can not be blank.'
+			});
+		}
+		return done();
+	}
+}
+];
+export var TestToolTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '30px' }
+},
+{
+	dataField: 'tool',
+	text: 'Tool',
+	headerStyle: { width: '80px' },
+	editor: {
+		type: Type.SELECT,
+		options: [{ label: 'Jira', value: 'Jira' }, { label: 'TestRail', value: 'TestRail' }, { label: 'Zypher', value: 'Zypher' }],
+	},
+	validator: async (newValue, row, column, done) => {
+		var allColumnValue = await GetData.jsonArrayGetallKeyValue(ConfigData.AllTestManagementToolData, 'tool')
+		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+		if (isPresent) {
+			return done({
+				valid: false,
+				message: 'Tool name can not be duplicate.'
+			});
+		}
+		else {
+			return done();
+		}
+	}
+},
+{
+	dataField: 'url',
+	text: 'Url',
+	headerStyle: { width: '130px' },
+	validator: async (newValue, row, column, done) => {
+		var allColumnValue = await GetData.jsonArrayGetallKeyValue(ConfigData.AllTestManagementToolData, 'url')
+		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+		if (isPresent) {
+			return done({
+				valid: false,
+				message: 'Url can not be duplicate.'
+			});
+		}
+		else {
+			return done();
+		}
+	}
+},
+{
+	dataField: 'username',
+	text: 'Username',
+	headerStyle: { width: '80px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Width can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+	}
+},
+{
+	dataField: 'password',
+	text: 'Password',
+	headerStyle: { width: '80px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Hieght can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+	}
+}
+];
+export var CustomLocator = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '60px' }
+},
+{
+	dataField: 'locator',
+	text: 'Locator',
+	validator: async (newValue, row, column, done) => {
+		var format = /[^A-Za-z-]/ig;
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Locator can not be blank'
+			});
+		}
+		if (format.test(await newValue)) {
+			return done({
+				valid: false,
+				message: 'Locator should not have special character and number.'
+			});
+		}
+		else {
+			return done();
+		}
+		
+	}
 }
 ];
 

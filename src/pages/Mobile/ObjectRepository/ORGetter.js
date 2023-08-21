@@ -90,7 +90,7 @@ export class ORGetter {
             var tagData = await Object.keys(await elementKeyData);
             for (let i = 0; i < await tagData.length; i++) {
                 var eleName = await tagData[i];
-                var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName] };
+                var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName],iostag:'' };
                 allTagData.push(await allDetails);
             }
             ORData.ORElementTagData = await allTagData;
@@ -127,13 +127,10 @@ export class ORGetter {
     async  setLocator()
     {
       var allBaseData =[];
-      allBaseData.push({label:'Id',value:'Id'});
-      allBaseData.push({label:'Name',value:'Name'}); 
-      allBaseData.push({label:'Xpath',value:'Xpath'}); 
-      allBaseData.push({label:'LinkText',value:'LinkText'}); 
-      allBaseData.push({label:'PartialLinkText',value:'PartialLinkText'}); 
-      allBaseData.push({label:'Class',value:'Class'}); 
-      allBaseData.push({label:'CssSelector',value:'CssSelector'}); 
+      allBaseData.push({label:'Id',value:'id'});
+      allBaseData.push({label:'Name',value:'class'}); 
+      allBaseData.push({label:'Xpath',value:'text'}); 
+      allBaseData.push({label:'LinkText',value:'class'}); 
       if(Config.isDemo)
       {
         ORData.AllLocatorList = await allBaseData;

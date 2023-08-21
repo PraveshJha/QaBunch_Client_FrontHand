@@ -51,6 +51,10 @@ export class ConfigGetter {
 
         }
         else{
+            if(await configDataResponse['Environment'] ===undefined)
+            {
+                configDataResponse['Environment']=[];
+            }
             ConfigData.EnvUrlList = await configDataResponse['Environment'];
         }
     }

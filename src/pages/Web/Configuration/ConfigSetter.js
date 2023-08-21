@@ -237,7 +237,7 @@ export class ConfigSetter {
             }
             try {
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/savelocatordata', await headers, {'alllocator':await allocatorData});
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Web/savelocatordata', await headers, {'alllocator':await allocatorData});
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];

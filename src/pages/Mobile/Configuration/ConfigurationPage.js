@@ -29,8 +29,10 @@ import NotificationSystem from 'react-notification-system';
 import PageLoader from 'react-fullpage-custom-loader'
 import { LoaderMessage } from '../../LoaderMessage';
 import { Config, Users } from '../../../QAautoMATER/Config';
-import { EnvironmentURLTableHeader } from '../MobilePageTableHeader'
+import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader,CustomLocator } from '../MobilePageTableHeader'
 import Select from 'react-select';
+import ReactJson from 'react-json-view'
+import Matcher from '../../../QAautoMATER/funcLib/matcher';
 
 class ConfigurationPage extends React.Component {
   notificationSystem = React.createRef();
@@ -41,25 +43,71 @@ class ConfigurationPage extends React.Component {
 
     //****** default Configuration  ***********************************************************
     environmentList: ConfigData.EnvironmentList,
-    isErrorOnDefaultSelectedEnvironment:false,
-    defaultSelectedEnvironment:ConfigData.DefaultSelectedEnvironment,
-    maxReportCounter:ConfigData.MaxReportCounter,
-    defaultReportTrailCount:ConfigData.DefaultReportTrailCount,
-    isErrorOnReportTrailCount:false,
-    defaultSaveDaysToReport:ConfigData.DefaultSaveDaysToReport,
-    isErrorOnDaysSavetoReport:false,
-    defaultSaveDaysToDevelopment:ConfigData.DefaultSaveDaysToDevelopment,
-    isErrorOnDayToSeeDevelopment:false,
-    screenshotOptionList:ConfigData.ScreenshotOptionList,
-    selectedScreenshot:ConfigData.SelectedScreenshot,
-    isErroronDefaultDecice:false,
-    deviceList:ConfigData.DeviceList,
-    defaultDevice:ConfigData.DefaultDevice,
+    isErrorOnDefaultSelectedEnvironment: false,
+    defaultSelectedEnvironment: ConfigData.DefaultSelectedEnvironment,
+    maxReportCounter: ConfigData.MaxReportCounter,
+    defaultReportTrailCount: ConfigData.DefaultReportTrailCount,
+    isErrorOnReportTrailCount: false,
+    defaultSaveDaysToReport: ConfigData.DefaultSaveDaysToReport,
+    isErrorOnDaysSavetoReport: false,
+    defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment,
+    isErrorOnDayToSeeDevelopment: false,
+    screenshotOptionList: ConfigData.ScreenshotOptionList,
+    selectedScreenshot: ConfigData.SelectedScreenshot,
+    isErroronDefaultExecutionPlatform: false,
+    executionPlatformList: ConfigData.ExecutionPlatformList,
+    defaultExecutionPlatform: ConfigData.DefaultExecutionPlatform,
 
     //****** Add New Environment ***********************************************************
-    envUrlList:ConfigData.EnvUrlList,
-    selectedRowFromUrlTable:ConfigData.SelectedRowFromUrlTable,
-    isNameValidforUrlTable:true,
+    envUrlList: ConfigData.EnvUrlList,
+    selectedRowFromUrlTable: ConfigData.SelectedRowFromUrlTable,
+    isNameValidforUrlTable: true,
+
+    //****** Add Device ***********************************************************
+    selectedRowFromEmulatorTable: ConfigData.SelectedRowFromEmulatorTable,
+    allEmulatorTableData: ConfigData.AllEmulatorTableData,
+    isDataValidInEmulatorTable: ConfigData.IsDataValidInEmulatorTable,
+
+    //****** Test Managment Tool Data ******************************************************
+    allTestManagementToolData: ConfigData.AllTestManagementToolData,
+    selectedRowFromToolTable: ConfigData.SelectedRowFromToolTable,
+    isDataValidInToolTable: ConfigData.IsDataValidInToolTable,
+
+    //****** Capabilities setup *********************************************************************************
+    allExecutionServer: ConfigData.AllExecutionServer,
+    isErrorOnExecutionAt: ConfigData.IsErrorOnExecutionAt,
+    executionServer: ConfigData.ExecutionServer,
+    isErrorOnServerUrl: ConfigData.IsErrorOnServerUrl,
+    serverUrl: ConfigData.ServerUrl,
+    allCapabilities: ConfigData.AllCapabilities,
+
+    //****** Report Clean up setup *********************************************************************************
+    cleanUpEnvironment: ConfigData.CleanUpEnvironment,
+    selectedDaysForDelete: ConfigData.SelectedDaysForDelete,
+    isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment,
+    isErrorOnDayToDelete: ConfigData.IsErrorOnDayToDelete,
+
+    //*** Rename delete Component**********************************************************/
+    selectedComponent: ConfigData.SelectedComponent,
+    modalForDelete: false,
+    componentList: ConfigData.ComponentList,
+    newComponentName: ConfigData.NewComponentName,
+    isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName,
+    confirmationModalMessage: '',
+    modalActionName: '',
+
+    //*******Move your Test scripts *******************************************************/
+    selectedSourceComponentToMove: ConfigData.SelectedSourceComponentToMove,
+    selectedDestinationComponentToMove: ConfigData.SelectedDestinationComponentToMove,
+    listOfAllTestID: ConfigData.ListOfAllTestID,
+    listOfTestIdToMove: ConfigData.ListOfTestIdToMove,
+    isErrorOnDestinationComponent: false,
+    isErrorOnDestinationComponent: false,
+
+    //*** Add Custom Locator**************************************************************/
+    allElementLocator: ConfigData.AllElementLocator,
+    isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable,
+    selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable,
 
   };
   async componentDidMount() {
@@ -76,12 +124,54 @@ class ConfigurationPage extends React.Component {
     this.setState({ defaultSaveDaysToDevelopment: ConfigData.DefaultSaveDaysToDevelopment })
     this.setState({ screenshotOptionList: ConfigData.ScreenshotOptionList })
     this.setState({ selectedScreenshot: ConfigData.SelectedScreenshot })
-    this.setState({ deviceList: ConfigData.DeviceList })
-    this.setState({ defaultDevice: ConfigData.DefaultDevice })
+    this.setState({ executionPlatformList: ConfigData.ExecutionPlatformList })
+    this.setState({ defaultExecutionPlatform: ConfigData.DefaultExecutionPlatform })
 
     //****** Add New Environment ***********************************************************
     this.setState({ envUrlList: ConfigData.EnvUrlList })
     this.setState({ selectedRowFromUrlTable: ConfigData.SelectedRowFromUrlTable })
+
+
+    //****** Add Device ***********************************************************
+    this.setState({ selectedRowFromEmulatorTable: ConfigData.SelectedRowFromEmulatorTable })
+    this.setState({ allEmulatorTableData: ConfigData.AllEmulatorTableData })
+    this.setState({ isDataValidInEmulatorTable: ConfigData.IsDataValidInEmulatorTable })
+
+    //****** Test Managment Tool Data ******************************************************
+    this.setState({ allTestManagementToolData: ConfigData.AllTestManagementToolData })
+    this.setState({ selectedRowFromToolTable: ConfigData.SelectedRowFromToolTable })
+    this.setState({ isDataValidInToolTable: ConfigData.IsDataValidInToolTable })
+
+    //****** Capabilities setup *********************************************************************************
+    this.setState({ allExecutionServer: ConfigData.AllExecutionServer });
+    this.setState({ isErrorOnExecutionAt: ConfigData.IsErrorOnExecutionAt });
+    this.setState({ executionServer: ConfigData.ExecutionServer });
+    this.setState({ isErrorOnServerUrl: ConfigData.IsErrorOnServerUrl });
+    this.setState({ serverUrl: ConfigData.ServerUrl });
+    this.setState({ allCapabilities: ConfigData.AllCapabilities });
+
+    //****** Report Clean up setup *********************************************************************************
+    this.setState({ cleanUpEnvironment: ConfigData.CleanUpEnvironment });
+    this.setState({ selectedDaysForDelete: ConfigData.SelectedDaysForDelete });
+    this.setState({ isErrorOnCleanUpEnvironment: ConfigData.IsErrorOnCleanUpEnvironment });
+
+    //*** Rename delete Component**********************************************************/
+    this.setState({ selectedComponent: ConfigData.SelectedComponent });
+    this.setState({ componentList: ConfigData.ComponentList });
+    this.setState({ newComponentName: ConfigData.NewComponentName });
+    this.setState({ isErrorOnNewComponentName: ConfigData.IsErrorOnNewComponentName });
+
+    //*** Move your Test Scripts**********************************************************/
+    this.setState({ selectedSourceComponentToMove: ConfigData.SelectedSourceComponentToMove });
+    this.setState({ selectedDestinationComponentToMove: ConfigData.SelectedDestinationComponentToMove });
+    this.setState({ listOfAllTestID: ConfigData.ListOfAllTestID });
+    this.setState({ listOfTestIdToMove: ConfigData.ListOfTestIdToMove });
+
+    //*** Add Custom Locator**************************************************************/
+    this.setState({ allElementLocator: ConfigData.AllElementLocator });
+    this.setState({ isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable });
+    this.setState({ selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable });
+
 
     //**** Page Load at End */
     this.setState({ isPageLoading: false });
@@ -148,10 +238,10 @@ class ConfigurationPage extends React.Component {
 
   selectDefaultDevice = async (event) => {
     var envChoice = await event.target.value;
-    this.setState({isErroronDefaultDecice:false})
-    if (this.state.defaultDevice !== await envChoice) {
-      this.setState({ defaultDevice: await envChoice });
-      ConfigData.DefaultDevice = await envChoice;
+    this.setState({ isErroronDefaultExecutionPlatform: false })
+    if (this.state.defaultExecutionPlatform !== await envChoice) {
+      this.setState({ defaultExecutionPlatform: await envChoice });
+      ConfigData.DefaultExecutionPlatform = await envChoice;
     }
   };
 
@@ -161,45 +251,45 @@ class ConfigurationPage extends React.Component {
     var reportTrail = this.state.defaultReportTrailCount;
     var daysSaveToReport = this.state.defaultSaveDaysToReport;
     var daystoSeeforDevelopment = this.state.defaultSaveDaysToDevelopment;
-    var defaultDevice = this.state.defaultDevice;
+    var defaultDevice = this.state.defaultExecutionPlatform;
     var screenshotOption = this.state.selectedScreenshot;
-    var errorMessage ='';
+    var errorMessage = '';
     if (environment.toString().trim() === '') {
       this.setState({ isErrorOnDefaultSelectedEnvironment: true })
-      errorMessage ='Environment.'
+      errorMessage = 'Environment.'
     }
-    if (Number(await reportTrail) ===0) {
+    if (Number(await reportTrail) === 0) {
       this.setState({ isErrorOnReportTrailCount: true })
-      errorMessage =errorMessage+'Report trail count to show.'
+      errorMessage = errorMessage + 'Report trail count to show.'
     }
     if (Number(daysSaveToReport) === 0) {
       this.setState({ isErrorOnDaysSavetoReport: true })
-      errorMessage =errorMessage+'Days save to report.'
+      errorMessage = errorMessage + 'Days save to report.'
     }
     if (Number(daystoSeeforDevelopment) === 0) {
       this.setState({ isErrorOnDayToSeeDevelopment: true })
-      errorMessage =errorMessage+'Days to see development/execution count.'
+      errorMessage = errorMessage + 'Days to see development/execution count.'
     }
     if (defaultDevice.toString().trim() === '') {
       this.setState({ isErroronDefaultDecice: true })
-      errorMessage =errorMessage+'Device.'
+      errorMessage = errorMessage + 'Device.'
     }
-    if (await errorMessage !=='') {
+    if (await errorMessage !== '') {
       return await this.getNotification('error', 'Please fill the highlited value on Default Configuration section.');
     }
     if (await reportTrail.toString().includes('.')) {
       this.setState({ isErrorOnReportTrailCount: true })
-      errorMessage =errorMessage+'Report trail count to show.'
+      errorMessage = errorMessage + 'Report trail count to show.'
     }
     if (daysSaveToReport.toString().includes('.')) {
       this.setState({ isErrorOnDaysSavetoReport: true })
-      errorMessage =errorMessage+'Days save to report.'
+      errorMessage = errorMessage + 'Days save to report.'
     }
     if (daystoSeeforDevelopment.toString().includes('.')) {
       this.setState({ isErrorOnDayToSeeDevelopment: true })
-      errorMessage =errorMessage+'Days to see development/execution count.'
+      errorMessage = errorMessage + 'Days to see development/execution count.'
     }
-    if (await errorMessage !=='') {
+    if (await errorMessage !== '') {
       return await this.getNotification('error', 'Please fill the highlited value on Default Configuration section.');
     }
     this.setState({ isPageLoading: true });
@@ -227,15 +317,14 @@ class ConfigurationPage extends React.Component {
     var allUrlList = await this.state.envUrlList;
     if (await allUrlList.length > 0) {
       var prevComponentName = allUrlList[allUrlList.length - 1]['name'];
-      var prevComponentUrl = allUrlList[allUrlList.length - 1]['url'];
-      if (prevComponentName.toString().trim() === "" || prevComponentUrl.toString().trim() === '') {
+      if (prevComponentName.toString().trim() === "") {
         this.setState({ isNameValidforUrlTable: false });
-        return await this.getNotification('error', "Please add the correct Env name and Url from 'ADD NEW ENVIRONMENT' section");
+        return await this.getNotification('error', "Please add the correct Env name in 'ADD NEW ENVIRONMENT' section");
       }
     }
     this.setState({ isNameValidforUrlTable: true });
     var lastId = allUrlList.length + 1;
-    var newRow = { id: lastId, name: '', url: '' };
+    var newRow = { id: lastId, name: '', apk: ''};
     this.setState({ envUrlList: [...this.state.envUrlList, newRow] });
     ConfigData.EnvUrlList.push(newRow);
 
@@ -264,9 +353,9 @@ class ConfigurationPage extends React.Component {
     if (this.state.isNameValidforUrlTable) {
       if (allUrlList.length > 0) {
         var componentName = allUrlList[allUrlList.length - 1]['name'];
-        var componentUrl = allUrlList[allUrlList.length - 1]['url'];
-        if (componentName.trim() === '' || componentUrl.trim() === '') {
-          return await this.getNotification('error', "Please add the correct environment and URL in 'ADD NEW ENVIRONMENTs' table");
+        var componentUrl = allUrlList[allUrlList.length - 1]['apk'];
+        if (componentName.trim() === '') {
+          return await this.getNotification('error', "Please add the correct environment and apk path in 'ADD NEW ENVIRONMENTs' table");
         }
       }
       ConfigData.EnvUrlList = allUrlList;
@@ -274,7 +363,7 @@ class ConfigurationPage extends React.Component {
       var isSaved = await ConfigGetter.saveURLDetails();
       this.setState({ isPageLoading: false });
       if (isSaved) {
-        return await this.getNotification('success', 'Environment and Url information is successfully saved.');
+        return await this.getNotification('success', 'Environment and mobile app information is successfully saved.');
       }
       else {
         return await this.getNotification('error', 'Unable to save Environment and Url information because of ' + Config.ErrorMessage);
@@ -286,6 +375,579 @@ class ConfigurationPage extends React.Component {
     }
   }
 
+  ////******* Add Device Type */
+  selectRadioButtonFromEmulatorTable = async (row, isSelect) => {
+    if (await isSelect) {
+      ConfigData.SelectedRowFromEmulatorTable = await row.id;
+      this.setState({ selectedRowFromEmulatorTable: await row.id });
+    }
+  }
+
+  addNewEmulatorInfo = async (event) => {
+    await event.preventDefault();
+    var allDeviceDetails = this.state.allEmulatorTableData;
+    if (allDeviceDetails.length > 0) {
+      var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['device'];
+      var deviceName = allDeviceDetails[allDeviceDetails.length - 1]['name'];
+      var platform = allDeviceDetails[allDeviceDetails.length - 1]['platform'];
+      var appPackage = allDeviceDetails[allDeviceDetails.length - 1]['apppackage'];
+      var appActivity = allDeviceDetails[allDeviceDetails.length - 1]['apppactivity'];
+      if (await deviceType.toString().trim() === "" || await deviceName.toString().trim() === '' || await platform.toString().trim() === '' || await appPackage.toString().trim() === '' || await appActivity.toString().trim() === '') {
+        this.setState({ isDataValidInEmulatorTable: false });
+        return await this.getNotification('error', "Please add correct detsils in 'Add Device' section");
+      }
+    }
+    this.setState({ isDataValidInEmulatorTable: true });
+    var lastId = allDeviceDetails.length + 1;
+    var newRow = { id: lastId, platform: '', device: '', name: '',apppackage:'',apppactivity:'' };
+    this.setState({ allEmulatorTableData: [...this.state.allEmulatorTableData, newRow] });
+    ConfigData.AllEmulatorTableData.push(newRow);
+
+  }
+
+  deleteEmulatorInfo = async (event) => {
+    await event.preventDefault();
+    var deviceInfo = this.state.allEmulatorTableData;
+    if (deviceInfo.length === 0) {
+      return await this.getNotification('error', "No device information is found under 'Add Device' section");
+    }
+    if (Number(this.state.selectedRowFromEmulatorTable) > 0 && Number(this.state.selectedRowFromEmulatorTable) <= deviceInfo.length) {
+      var dataAfterDelete = await ConfigGetter.updateRowIdAfterDelete(deviceInfo, this.state.selectedRowFromEmulatorTable)
+      this.setState({ allEmulatorTableData: [] }, () => { this.setState({ allEmulatorTableData: dataAfterDelete }); });
+      ConfigData.AllEmulatorTableData = dataAfterDelete;
+    }
+    else {
+      this.setState({ isDataValidInEmulatorTable: false });
+      return await this.getNotification('error', 'Please select any device information for delete');
+    }
+  }
+
+  saveEmulatorScreenData = async (event) => {
+    await event.preventDefault();
+    var allDeviceDetails = this.state.allEmulatorTableData;
+    if (this.state.isDataValidInEmulatorTable) {
+      if (allDeviceDetails.length > 0) {
+        var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['device'];
+        var deviceName = allDeviceDetails[allDeviceDetails.length - 1]['name'];
+        var platform = allDeviceDetails[allDeviceDetails.length - 1]['platform'];
+        var appPackage = allDeviceDetails[allDeviceDetails.length - 1]['apppackage'];
+        var appActivity = allDeviceDetails[allDeviceDetails.length - 1]['apppactivity'];
+        if (await deviceType.toString().trim() === '' || await deviceName.toString().trim() === '' || await platform.toString().trim() === '' || await appPackage.toString().trim() === '' || await appActivity.toString().trim() === '') {
+          return await this.getNotification('error', "Please add the correct device information in 'Add device' table");
+        }
+      }
+      ConfigData.AllEmulatorTableData = allDeviceDetails;
+      this.setState({ isPageLoading: true });
+      var isSaved = await ConfigGetter.saveEmulatorData();
+      this.setState({ isPageLoading: false });
+      if (isSaved) {
+        return await this.getNotification('success', 'Add device information is successfully saved.');
+      }
+      else {
+        return await this.getNotification('error', 'Unable to save device information because of ' + Config.ErrorMessage);
+      }
+
+    }
+    else {
+      return await this.getNotification('error', "Please add the correct information in 'Add Device' table");
+    }
+  }
+
+  //********************* Tool section ********************************//
+  selectRadioButtonFromToolTable = async (row, isSelect) => {
+    if (await isSelect) {
+      ConfigData.SelectedRowFromToolTable = await row.id;
+      this.setState({ selectedRowFromToolTable: await row.id });
+    }
+  }
+
+  addNewToolInfo = async (event) => {
+    await event.preventDefault();
+    var allToolDetails = this.state.allTestManagementToolData;
+    if (allToolDetails.length > 0) {
+      var toolName = allToolDetails[allToolDetails.length - 1]['tool'];
+      var url = allToolDetails[allToolDetails.length - 1]['url'];
+      var userName = allToolDetails[allToolDetails.length - 1]['username'];
+      var password = allToolDetails[allToolDetails.length - 1]['password'];
+      if (toolName.toString().trim() === "" || url.toString().trim() === '' || userName.toString().trim() === '' || password.toString().trim() === '') {
+        this.setState({ isDataValidInToolTable: false });
+        return await this.getNotification('error', "Please add correct detsils in 'TEST MANAGEMENT TOOL SETUP' section");
+      }
+    }
+    this.setState({ isDataValidInToolTable: true });
+    var lastId = allToolDetails.length + 1;
+    var newRow = { id: lastId, tool: '', url: '', username: '', password: '' };
+    this.setState({ allTestManagementToolData: [...this.state.allTestManagementToolData, newRow] });
+    ConfigData.AllTestManagementToolData.push(newRow);
+  }
+
+  deleteToolInfo = async (event) => {
+    await event.preventDefault();
+    var allToolDetails = this.state.allTestManagementToolData;
+    if (allToolDetails.length === 0) {
+      return await this.getNotification('error', "No information is found under 'TEST MANAGEMENT TOOL SETUP' section");
+    }
+    if (Number(this.state.selectedRowFromToolTable) > 0 && Number(this.state.selectedRowFromToolTable) <= allToolDetails.length) {
+      var toolInfoAfterDelete = await ConfigGetter.updateRowIdAfterDelete(allToolDetails, this.state.selectedRowFromToolTable)
+      this.setState({ allTestManagementToolData: [] }, () => { this.setState({ allTestManagementToolData: toolInfoAfterDelete }); });
+      ConfigData.AllTestManagementToolData = toolInfoAfterDelete;
+    }
+    else {
+      this.setState({ isDataValidInToolTable: false });
+      return await this.getNotification('error', "No Row is selected in 'TEST MANAGEMENT TOOL SETUP' section");
+    }
+  }
+
+  saveToolInfo = async (event) => {
+    await event.preventDefault();
+    var allToolDetails = this.state.allTestManagementToolData;
+    if (this.state.isDataValidInToolTable) {
+      if (allToolDetails.length > 0) {
+        var toolName = allToolDetails[allToolDetails.length - 1]['tool'];
+        var url = allToolDetails[allToolDetails.length - 1]['url'];
+        var userName = allToolDetails[allToolDetails.length - 1]['username'];
+        var password = allToolDetails[allToolDetails.length - 1]['password'];
+        if (toolName.toString().trim() === '' || url.toString().trim() === '' || userName.toString().trim() === '' || password.toString().trim() === '') {
+          return await this.getNotification('error', "Please add the correct device information in 'TEST MANAGEMENT TOOL SETUP table");
+        }
+      }
+      ConfigData.AllTestManagementToolData = allToolDetails;
+      this.setState({ isPageLoading: true });
+      var isSaved = await ConfigGetter.saveToolsData();
+      this.setState({ isPageLoading: false });
+      if (isSaved) {
+        return await this.getNotification('success', 'TEST MANAGEMENT TOOL SETUP information is successfully saved.');
+      }
+      else {
+        return await this.getNotification('error', 'Unable to save information because of ' + Config.ErrorMessage);
+      }
+
+    }
+    else {
+      return await this.getNotification('error', "Please add the correct Component and URL in 'TEST MANAGEMENT TOOL SETUP' table");
+    }
+  }
+
+  //******* Capability Section********************************************** */
+  //************************* CAPABILITY setup**********************************/
+
+  selectCapabilityServer = async (event) => {
+    this.setState({ isErrorOnExecutionAt: false })
+    var dataChoice = await event.target.value;
+    if (this.state.executionServer !== await dataChoice) {
+      this.setState({ executionServer: await dataChoice });
+      ConfigData.ExecutionServer = await dataChoice;
+      await ConfigGetter.setAllCapability(await dataChoice);
+      this.setState({ serverUrl: ConfigData.ServerUrl })
+      this.setState({ allCapabilities: ConfigData.AllCapabilities })
+    }
+  };
+
+  addServerUrl = async (event) => {
+    this.setState({ isErrorOnServerUrl: false })
+    var dataChoice = await event.target.value;
+    if (this.state.serverUrl !== await dataChoice) {
+      this.setState({ serverUrl: await dataChoice });
+      ConfigData.ServerUrl = await dataChoice;
+      if (await dataChoice.trim() === '') {
+        this.setState({ isErrorOnServerUrl: true });
+        return;
+      }
+    }
+
+  };
+
+  addCapabilitiesItem = async (updated_src) => {
+    var allDataSet = await updated_src['updated_src'];
+    this.setState({ allCapabilities: await allDataSet });
+    ConfigData.AllCapabilities = await allDataSet;
+  }
+
+  editCapabilitiesItem = async (updated_src) => {
+    var allDataSet = await updated_src['updated_src'];
+    this.setState({ AllCapabilities: await allDataSet });
+    ConfigData.AllCapabilities = await allDataSet;
+  }
+
+  deleteCapabilitiesItem = async (updated_src) => {
+    var allDataSet = await updated_src['updated_src'];
+    this.setState({ AllCapabilities: await allDataSet });
+    ConfigData.AllCapabilities = await allDataSet;
+  }
+
+  saveCapabilityData = async (event) => {
+    await event.preventDefault();
+    var executionAt = this.state.executionServer;
+    if (executionAt.toString().trim() === '') {
+      this.setState({ isErrorOnExecutionAt: true });
+      return await this.getNotification('error', "Execution server can not be blank.");
+    }
+    var serverUrl = this.state.serverUrl;
+    if (serverUrl.toString().trim() === '') {
+      this.setState({ isErrorOnServerUrl: true });
+      return await this.getNotification('error', "HUb Url can not be blank.");
+    }
+    var capItem = this.state.allCapabilities;
+    try {
+      if (Object.keys(await capItem).length === 0) {
+        return await this.getNotification('error', "Please add the correct capabilities");
+      }
+    }
+    catch (error) {
+      return await this.getNotification('error', "Please add the correct capabilities");
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.saveCapabilityDataOnServer();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Capabilities information is successfully saved.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to save Capabilities information because of ' + Config.ErrorMessage);
+    }
+  }
+
+  //****** Clean Up Configuration***************************************************
+
+  selectCleanUpEnvironment = async (event) => {
+    this.setState({ isErrorOnCleanUpEnvironment: false })
+    var dataChoice = await event.target.value;
+    if (this.state.cleanUpEnvironment !== await dataChoice) {
+      this.setState({ cleanUpEnvironment: await dataChoice });
+      ConfigData.CleanUpEnvironment = await dataChoice;
+    }
+  };
+
+  selectKeepDaysToDate = async (event) => {
+    this.setState({ isErrorOnDayToDelete: false })
+    var dataChoice = await event.target.value;
+    if (this.state.selectedDaysForDelete !== await dataChoice) {
+      this.setState({ selectedDaysForDelete: await dataChoice });
+      ConfigData.SelectedDaysForDelete = await dataChoice;
+    }
+  };
+
+  deleteReportForDays = async (event) => {
+    await event.preventDefault();
+    var envforDelete = this.state.cleanUpEnvironment;
+    if (await envforDelete === '') {
+      this.setState({ isErrorOnCleanUpEnvironment: true });
+      return await this.getNotification('error', "Please select environment first.");
+    }
+    var daysToDelete = this.state.selectedDaysForDelete;
+    if (await daysToDelete === '') {
+      this.setState({ isErrorOnDayToDelete: true });
+      return await this.getNotification('error', "Please select environment first.");
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.deleteReportData(await envforDelete, await daysToDelete);
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Report data is successfully cleanup.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to delete report data because of ' + Config.ErrorMessage);
+    }
+
+
+  }
+
+  deleteAllReports = async (event) => {
+    await event.preventDefault();
+    var envforDelete = this.state.cleanUpEnvironment;
+    if (await envforDelete === '') {
+      this.setState({ isErrorOnCleanUpEnvironment: true });
+      return await this.getNotification('error', "Please select environment first.");
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.deleteReportData(await envforDelete, 'All Days');
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Report data is successfully cleanup.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to delete report data because of ' + Config.ErrorMessage);
+    }
+
+  }
+
+  // Delete Component 
+  confirmdelete = async (event) => {
+    await event.preventDefault();
+    var folderToDelete = await ConfigData.SelectedComponent;
+    if (await folderToDelete === '') {
+      return await this.getNotification('error', 'Please select component which needs to be deleted.');
+    }
+    this.setState({ modalActionName: 'Delete' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentDeleteMessage });
+    this.setState({ modalForDelete: true });
+  }
+
+  toggleDeleteModal = async () => {
+    this.setState({ modalForDelete: false });
+  }
+
+  performModalConfirmationAction = async (event) => {
+    await event.preventDefault();
+    var actionName = this.state.modalActionName;
+    var Message = '';
+    switch (await actionName) {
+      case "Delete":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.deleteAutomationComponent();
+        this.setState({ isPageLoading: false });
+        Message = 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.'
+        break;
+      case "Rename":
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.renameAutomationComponent();
+        this.setState({ isPageLoading: false });
+        Message = 'Test case component are successfully updated.'
+        break;
+      default:
+        return;
+    }
+
+    if (await isSaved) {
+      this.setState({ modalForDelete: false });
+      this.setState({ modalActionName: '' })
+      ConfigData.SelectedComponent = ''
+      this.setState({ selectedComponent: '' })
+      await this.getNotification('success', await Message);
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      this.setState({ modalForDelete: false });
+      return await this.getNotification('error', 'Unable to ' + await actionName + ' component because of ' + Config.ErrorMessage);
+    }
+  }
+
+  deleteComponent = async (event) => {
+    await event.preventDefault();
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.deleteAutomationComponent();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      this.setState({ modalForDelete: false });
+      ConfigData.SelectedComponent = ''
+      this.setState({ selectedComponent: '' })
+      await this.getNotification('success', 'Components and all test cases, along with the subcomponents inside them, are successfully deleted.');
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      this.setState({ modalForDelete: false });
+      return await this.getNotification('error', 'Unable to delete component because of ' + Config.ErrorMessage);
+    }
+  }
+
+  selectComponent = async (event) => {
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedComponent !== await selectedComponent) {
+      this.setState({ selectedComponent: await selectedComponent })
+      ConfigData.SelectedComponent = await selectedComponent;
+    }
+
+  };
+
+  addNewComponent = async (event) => {
+    this.setState({ isErrorOnNewComponentName: false })
+    var dataChoice = await event.target.value;
+    if (this.state.newComponentName !== await dataChoice) {
+      this.setState({ newComponentName: await dataChoice });
+      ConfigData.NewComponentName = await dataChoice;
+      if (await dataChoice.trim() === '') {
+        this.setState({ isErrorOnNewComponentName: true });
+        return;
+      }
+      var format = /[^A-Za-z -]/ig;
+      if (await format.test(await dataChoice)) {
+        ConfigData.IsErrorOnNewComponentName = true;
+        this.setState({ isErrorOnNewComponentName: true });
+      }
+    }
+
+  };
+
+  confirmRename = async (event) => {
+    await event.preventDefault();
+    var folderToRename = await ConfigData.SelectedComponent;
+    if (await folderToRename === '') {
+      return await this.getNotification('error', 'Please select component which needs to be renamed.');
+    }
+    //Verify Name
+    var newName = await this.state.newComponentName;
+    if (newName.trim() === '') {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'New component name can not be blank.');
+    }
+    if (this.state.isErrorOnNewComponentName) {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'Please provide correct Component name , component name can only accept aphabets.');
+    }
+    var isAleadyExist = await Matcher.isValuePresentInArray(ConfigData.ComponentList, await newName.trim());
+    if (await isAleadyExist) {
+      this.setState({ isErrorOnNewComponentName: true })
+      return await this.getNotification('error', 'New Component Name is already exist on the server.Please choose different name.');
+    }
+    this.setState({ modalActionName: 'Rename' });
+    this.setState({ confirmationModalMessage: ConfigData.ComponentRenameMessage });
+    this.setState({ modalForDelete: true });
+  }
+
+  //************* Move your test scripts Features *****************************************/
+
+  selectSourceComponent = async (event) => {
+    this.setState({ isErrorOnSourceComponent: false })
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedSourceComponentToMove !== await selectedComponent) {
+      this.setState({ selectedSourceComponentToMove: await selectedComponent })
+      ConfigData.SelectedSourceComponentToMove = await selectedComponent;
+      if (await selectedComponent !== '') {
+        //** get lis of Test ID */
+        var output = ConfigGetter.getListOfTestCaseFromComponent(await selectedComponent);
+        ConfigData.ListOfAllTestID = await output;
+        this.setState({ listOfAllTestID: await output })
+      }
+    }
+
+  };
+
+  selectDestinationComponent = async (event) => {
+    this.setState({ isErrorOnDestinationComponent: false })
+    var selectedComponent = await event.target.value;
+    if (this.state.selectedDestinationComponentToMove !== await selectedComponent) {
+      this.setState({ selectedDestinationComponentToMove: await selectedComponent })
+      ConfigData.SelectedDestinationComponentToMove = await selectedComponent;
+    }
+
+  };
+
+  selectTestScriptsToMove = async (event) => {
+    this.setState({ listOfTestIdToMove: [] })
+    ConfigData.ListOfTestIdToMove = await event;
+    this.setState({ listOfTestIdToMove: await event });
+  };
+
+  moveTestScripts = async (event) => {
+    await event.preventDefault();
+    var sourceComponent = await this.state.selectedSourceComponentToMove;
+    if (await sourceComponent === '') {
+      this.setState({ isErrorOnSourceComponent: true })
+      return await this.getNotification('error', 'Source Component can not be blank.');
+    }
+    //Verify Name
+    var destinationComponent = await this.state.selectedDestinationComponentToMove;
+    if (destinationComponent.trim() === '') {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Destination Component can not be blank.');
+    }
+    var allTestID = await this.state.listOfTestIdToMove;
+    if (await allTestID.length === 0) {
+      return await this.getNotification('error', 'Please Select Test to move');
+    }
+    if (await sourceComponent === await destinationComponent) {
+      this.setState({ isErrorOnDestinationComponent: true })
+      return await this.getNotification('error', 'Source and Destination Component can not be same.');
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.moveYourTestScripts();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      await this.getNotification('success', 'Test scripts are successfully moved.');
+      await new Promise(wait => setTimeout(wait, 2000));
+      await window.location.reload();
+    }
+    else {
+      return await this.getNotification('error', 'Unable to move test scripts because of ' + Config.ErrorMessage);
+    }
+  }
+
+    //********************* Locator section ********************************//
+
+    addNewLocatorInfo = async (event) => {
+      await event.preventDefault();
+      var allLocator = await this.state.allElementLocator;
+      if (await allLocator.length > 0) {
+        var locatorName = allLocator[allLocator.length - 1]['locator'];
+        if (locatorName.toString().trim() === "") {
+          this.setState({ isDataValidInLocatorTable: false });
+          return await this.getNotification('error', "Please add correct detsils in 'ADD YOUR LOCATOR' section");
+        }
+      }
+      this.setState({ isDataValidInLocatorTable: true });
+      var lastId = allLocator.length + 1;
+      var newRow = { id: lastId, locator: '' };
+      this.setState({ allElementLocator: [...this.state.allElementLocator, newRow] });
+      ConfigData.AllElementLocator.push(newRow);
+  
+    }
+  
+    deleteLocatorInfo = async (event) => {
+      await event.preventDefault();
+      var locatorInfo = this.state.allElementLocator;
+      if (locatorInfo.length === 0) {
+        return await this.getNotification('error', "No Locator information is found under 'ADD YOUR LOCATOR' section");
+      }
+      if (Number(this.state.selectedRowFromLocatorTable) > 0 && Number(this.state.selectedRowFromLocatorTable) <= locatorInfo.length) {
+        var dataAfterDelete = await ConfigGetter.updateRowIdAfterDelete(locatorInfo, this.state.selectedRowFromLocatorTable)
+        this.setState({ allElementLocator: [] }, () => { this.setState({ allElementLocator: dataAfterDelete }); });
+        ConfigData.AllElementLocator = dataAfterDelete;
+        this.setState({ selectedRowFromLocatorTable: -2 })
+        ConfigData.SelectedRowFromLocatorTable = -2
+      }
+      else {
+        this.setState({ isDataValidInLocatorTable: false });
+        return await this.getNotification('error', 'Please select any locator information for delete');
+      }
+    }
+  
+    selectRadioButtonFromLocatorTable = (row, isSelect) => {
+      if (isSelect) {
+        ConfigData.SelectedRowFromLocatorTable = row.id;
+        this.setState({ selectedRowFromLocatorTable: row.id });
+      }
+    }
+  
+    saveLocatorData = async (event) => {
+      await event.preventDefault();
+      var locatorToBeSaved = [];
+      var allLocatorInfo = this.state.allElementLocator;
+      if (this.state.isDataValidInLocatorTable) {
+        if (allLocatorInfo.length > 0) {
+  
+          for (let i = 0; i < await allLocatorInfo.length; i++) {
+            var locName = await allLocatorInfo[i]['locator'];
+            locName = await locName.toString().toLowerCase().trim();
+            if (await locatorToBeSaved.includes(await locName) || locName === '') {
+              return await this.getNotification('error', "Please remove the duplicate/Blank locator from 'ADD YOUR LOCATOR FOR Mobile ELEMENT IDENTIFICATION' table.");
+            }
+            else {
+              locatorToBeSaved.push(await locName);
+            }
+          }
+  
+        }
+        else {
+          return await this.getNotification('error', "Please add the locator name");
+        }
+        this.setState({ isPageLoading: true });
+        var isSaved = await ConfigGetter.saveLocatorData(await locatorToBeSaved);
+        this.setState({ isPageLoading: false });
+        if (isSaved) {
+          return await this.getNotification('success', 'Locator information is successfully saved.');
+        }
+        else {
+          return await this.getNotification('error', 'Unable to save Locator information because of ' + Config.ErrorMessage);
+        }
+  
+      }
+      else {
+        return await this.getNotification('error', "Please add the correct locator name , it should not have number and Special characters.");
+      }
+    }
+
 
   //****************** End */********************************** */
 
@@ -295,6 +957,21 @@ class ConfigurationPage extends React.Component {
       mode: 'radio',
       onSelect: this.selectRadioButtonFromURlTable,
       selected: [this.state.selectedRowFromUrlTable]
+    };
+    const selectRowFromEmulatorTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromEmulatorTable,
+      selected: [this.state.selectedRowFromEmulatorTable]
+    };
+    const selectRowFromToolTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromToolTable,
+      selected: [this.state.selectedRowFromToolTable]
+    };
+    const selectRowFromLocatorTable = {
+      mode: 'radio',
+      onSelect: this.selectRadioButtonFromLocatorTable,
+      selected: [this.state.selectedRowFromLocatorTable]
     };
     return (
       <Page
@@ -356,11 +1033,11 @@ class ConfigurationPage extends React.Component {
                         </Input>
                       </Col>
                       <Label sm={5}>
-                        Device
+                        Platform*
                       </Label>
                       <Col>
-                        <Input type="select" invalid={this.state.isErroronDefaultDecice} onChange={this.selectDefaultDevice.bind(this)} name="deviceList" value={this.state.defaultDevice}>
-                          <DropDownOptions options={this.state.deviceList} />
+                        <Input type="select" invalid={this.state.isErroronDefaultExecutionPlatform} onChange={this.selectDefaultDevice.bind(this)} name="deviceList" value={this.state.defaultExecutionPlatform}>
+                          <DropDownOptions options={this.state.executionPlatformList} />
                         </Input>
                       </Col>
                     </FormGroup>
@@ -372,7 +1049,7 @@ class ConfigurationPage extends React.Component {
               <Card>
                 <CardHeader>
                   <div className="d-flex justify-content-between align-items-center">
-                    Add new environment
+                    Add Mobile app details
                     <ButtonGroup size="sm">
                       <Button color='black' onClick={this.addNewUrlForEnvironment.bind(this)}>
                         <small>Add</small>
@@ -405,9 +1082,325 @@ class ConfigurationPage extends React.Component {
                   </Col>
                 </CardBody>
               </Card>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Add Device
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.addNewEmulatorInfo.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveEmulatorScreenData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='black' onClick={this.deleteEmulatorInfo.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BootstrapTable
+                      keyField='id'
+                      data={this.state.allEmulatorTableData}
+                      columns={EmulatorTableHeader}
+                      wrapperClasses="table-responsive"
+                      striped
+                      hover
+                      condensed
+                      selectRow={selectRowFromEmulatorTable}
+                      cellEdit={cellEditFactory({
+                        mode: 'click',
+                        blurToSave: true,
+                      })}
+                    // pagination={paginationFactory(PagiNationData)}
+                    />
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Test Management tool setup
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.addNewToolInfo.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveToolInfo.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='black' onClick={this.deleteToolInfo.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BootstrapTable
+                      keyField='id'
+                      data={this.state.allTestManagementToolData}
+                      columns={TestToolTableHeader}
+                      wrapperClasses="table-responsive"
+                      striped
+                      hover
+                      condensed
+                      selectRow={selectRowFromToolTable}
+                      cellEdit={cellEditFactory({
+                        mode: 'click',
+                        blurToSave: true,
+                      })}
+                    />
+                  </Col>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Capability Setup
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.saveCapabilityData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup row>
+                      <Label sm={5}>
+                        Execution Server*
+                      </Label>
+                      <Col>
+                        <Input type="select" invalid={this.state.isErrorOnExecutionAt} onChange={this.selectCapabilityServer.bind(this)} name="executionAt" value={this.state.executionServer}>
+                          <DropDownOptions options={this.state.allExecutionServer} />
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label sm={5}>
+                        Hub Url*
+                      </Label>
+                      <Col>
+                        <Input type="input" invalid={this.state.isErrorOnServerUrl} onChange={this.addServerUrl.bind(this)} name="serverUrl" defaultValue={this.state.serverUrl}>
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label sm={5}>
+                        Capabilities*
+                      </Label>
+                      <Col>
+                        <ReactJson name={true} collapsed={true} collapseStringsAfterLength={30} displayDataTypes={false} indentWidth={0} enableClipboard={true} iconStyle="circle" src={this.state.allCapabilities} onAdd={this.addCapabilitiesItem.bind(this)} onEdit={this.editCapabilitiesItem.bind(this)} onDelete={this.deleteCapabilitiesItem.bind(this)} />
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={6} md={6} sm={6} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Cleanup Reports
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.deleteReportForDays.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='info' onClick={this.deleteAllReports.bind(this)}>
+                        <small>Delete All</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup row>
+                      <Label sm={5}>
+                        Environment
+                      </Label>
+                      <Col>
+                        <Input type="select" invalid={this.state.isErrorOnCleanUpEnvironment} onChange={this.selectCleanUpEnvironment.bind(this)} name="cleanUpEnvironment" value={this.state.cleanUpEnvironment}>
+                          <DropDownOptions options={this.state.environmentList} />
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Label sm={5}>
+                        Keep Report Data (timeline)
+                      </Label>
+                      <Col>
+                        <Input type="select" invalid={this.state.isErrorOnDayToDelete} onChange={this.selectKeepDaysToDate.bind(this)} name="keepReportData" value={this.state.selectedDaysForDelete}>
+                          <option>7 Days</option>
+                          <option>14 Days</option>
+                          <option>30 Days</option>
+                          <option>45 Days</option>
+                          <option>60 Days</option>
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+            {Users.isSuperAdmin && (<Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Rename/Delete test component
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.confirmRename.bind(this)}>
+                        <small>Rename</small>
+                      </Button>
+                      <Button color='info' onClick={this.confirmdelete.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup col>
+                      <Label sm={6}>
+                        Component*
+                      </Label>
+                      <Col>
+                        <Input type="select" onChange={this.selectComponent.bind(this)} name="componentList" value={this.state.selectedComponent}>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                      <Label sm={5}>
+                        New Name*
+                      </Label>
+                      <Col>
+                        <Input type="input" invalid={this.state.isErrorOnNewComponentName} onChange={this.addNewComponent.bind(this)} name="newComponnetName" defaultValue={this.state.newComponentName}>
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+            )}
+          </Row>
+          <Row>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Move your test scripts
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.moveTestScripts.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Form>
+                    <FormGroup col>
+                      <Label sm={6}>
+                        Component*
+                      </Label>
+                      <Col>
+                        <Input type="select" invalid={this.state.isErrorOnSourceComponent} onChange={this.selectSourceComponent.bind(this)} name="componentList" value={this.state.selectedSourceComponentToMove}>
+                          <option></option>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                      <Label sm={5}>
+                        Select Test to move
+                      </Label>
+                      <Col>
+                        <Select
+                          defaultValue={this.state.listOfTestIdToMove}
+                          isMulti
+                          name="testId"
+                          options={this.state.listOfAllTestID}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.selectTestScriptsToMove.bind(this)}
+                        />
+                      </Col>
+                      <Label sm={6}>
+                        Select Component to Move
+                      </Label>
+                      <Col>
+                        <Input invalid={this.state.isErrorOnDestinationComponent} type="select" onChange={this.selectDestinationComponent.bind(this)} name="componentList" value={this.state.selectedDestinationComponentToMove}>
+                          <option></option>
+                          <DropDownOptions options={this.state.componentList} />
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Add your locator for mobile element identification
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.addNewLocatorInfo.bind(this)}>
+                        <small>Add</small>
+                      </Button>
+                      <Button color='info' onClick={this.saveLocatorData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                      <Button color='black' onClick={this.deleteLocatorInfo.bind(this)}>
+                        <small>Delete</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <Col>
+                    <BootstrapTable
+                      keyField='id'
+                      data={this.state.allElementLocator}
+                      columns={CustomLocator}
+                      wrapperClasses="table-responsive"
+                      striped
+                      hover
+                      condensed
+                      selectRow={selectRowFromLocatorTable}
+                      cellEdit={cellEditFactory({
+                        mode: 'click',
+                        blurToSave: true,
+                      })}
+                    />
+                  </Col>
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Fade>
+        <Modal isOpen={this.state.modalForDelete} toggle={this.toggle} className={this.props.className}>
+          <ModalHeader toggle={this.toggleDeleteModal}>Confirmation</ModalHeader>
+          <ModalBody>
+            {this.state.confirmationModalMessage}
+          </ModalBody>
+          <ModalFooter>
+            <ButtonGroup size="sm">
+              <Button color='black' onClick={this.toggleDeleteModal.bind(this)}>
+                <small>Cancel</small>
+              </Button>
+              <Button color='info' onClick={this.performModalConfirmationAction.bind(this)}>
+                <small>Yes</small>
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </Modal>
       </Page>
     );
   }

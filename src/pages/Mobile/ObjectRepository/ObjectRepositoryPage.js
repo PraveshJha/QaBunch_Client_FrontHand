@@ -163,7 +163,8 @@ class ObjectRepositoryPage extends React.Component {
     var dataDetails = this.state.oRElementTagData;
     for (let i = 0; i < await dataDetails.length; i++) {
       var tagName = dataDetails[i]['tag'];
-      if (await tagName.toString().trim() === '') {
+      var iostagName = dataDetails[i]['iostag'];
+      if (await tagName.toString().trim() === '' ) {
         return await this.getNotification('error', "Tag name can not blank.Please add correct tag name 'SET UP TAG FOR AUTOMATIC WEB ELEMENT CREATION' in table");
       }
     }
@@ -290,6 +291,13 @@ class ObjectRepositoryPage extends React.Component {
                             if (column.dataField === 'tag') {
                               var type = row.type;
                               var tag = row.tag;
+                              if (tag !== '') {
+                                ORData.ORTagDataToSave[type] = tag;
+                              }
+                            }
+                            if (column.dataField === 'iostag') {
+                              var type = row.type;
+                              var tag = row.iostag;
                               if (tag !== '') {
                                 ORData.ORTagDataToSave[type] = tag;
                               }

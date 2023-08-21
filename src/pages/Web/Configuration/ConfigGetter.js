@@ -250,6 +250,11 @@ export class ConfigGetter {
 
     async setAllCapability(capFor)
     {
+     var allCaps = await ConfigData.AllConfigData['ExecutionCapabilities'];
+     if(await allCaps ===undefined)
+     {
+        ConfigData.AllConfigData['ExecutionCapabilities']={}
+     }
       var allCapsforAllPlatform = await ConfigData.AllConfigData['ExecutionCapabilities'][await capFor];
       if(allCapsforAllPlatform ===undefined)
       {

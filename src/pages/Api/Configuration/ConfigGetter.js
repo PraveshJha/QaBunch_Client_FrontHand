@@ -67,6 +67,10 @@ export class ConfigGetter {
         }
         else {
             try {
+                if(await allconfigData['Environment'] ===undefined)
+                {
+                    allconfigData['Environment']=[]
+                }
                 ConfigData.EnvNameList = await allconfigData['Environment'];
                 if (await allconfigData['DefaultSelectedEnvironment'] === undefined || await allconfigData['DefaultSelectedEnvironment'] === '') {
                     try {
@@ -129,7 +133,7 @@ export class ConfigGetter {
                 ConfigData.HttpHeaderData = await dataChoice;
             }
             else {
-                ConfigData.HttpHeaderData = [];
+                ConfigData.HttpHeaderData = [{ id: 1, key: 'Accept', value: 'application/json' }, { id: 2, key: 'Content-Type', value: 'application/json' }];
             }
         }
     }
@@ -201,6 +205,7 @@ export class ConfigGetter {
             ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
           }
           catch (error) {
+            ConfigData.MaxReportCounter =0;
           }
         }
     }
@@ -226,6 +231,8 @@ export class ConfigGetter {
             }
           }
           catch (error) {
+            ConfigData.SelectedComponent =''
+            ConfigData.ComponentList=[]
           }
         }
     }
