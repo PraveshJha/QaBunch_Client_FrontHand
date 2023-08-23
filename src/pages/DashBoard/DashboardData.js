@@ -28,7 +28,7 @@ export var DashBoardData = {
 	"ListOfExecutionTimeForaDay":[],
 	"SelectedExecutionTime":'',
 	"TableDataforDetailedReports":[],
-	"SelectedTab":'Web',
+	"SelectedTab":'',
 	"DefaultSaveDaysToReport":10,
 	"DefaultSaveDaysToDevelopment":30,
 	"ListOfPastDateforDaysToDevelopment":[],

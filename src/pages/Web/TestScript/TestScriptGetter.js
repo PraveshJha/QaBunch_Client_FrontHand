@@ -744,8 +744,9 @@ export class TestScriptGetter {
                 var elementName = await values.orLogicalName.trim().toUpperCase();
                 var locator = await values.primaryLocator;
                 var locatorProperty = await values.primaryLocatorProperty;
+                var secondaryXpath = await values.secondaryXPath;
                 var isKeyAlreadyPresent = TestScriptData.TestScriptORData[await elementName];
-                var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: '' }
+                var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: secondaryXpath }
                 if (await isKeyAlreadyPresent === undefined) {
                   TestScriptData.AllORData[await elementName] = {};
                   TestScriptData.AllORData[await elementName] = await newElementAdd;

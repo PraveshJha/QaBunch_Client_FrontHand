@@ -31,6 +31,7 @@ import NotificationSystem from 'react-notification-system';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 import { TextWidget } from '../../../uiLayout/components/widget';
+import { Config } from '../../../QAautoMATER/Config';
 
 class ExecutionLabPage extends React.Component {
   notificationSystem = React.createRef();
@@ -339,7 +340,7 @@ class ExecutionLabPage extends React.Component {
           <CardHeader>
             <div className="d-flex justify-content-between align-items-center">
               Test Step Results ({ExecutionLabData.ExecutionTimeForTestScripts[row.id]} seconds)
-              {row.status === 'Fail' && (<ButtonGroup size="sm">
+              {(row.status === 'Fail' && Config.isManualComponentDisplayed) && (<ButtonGroup size="sm">
                 <Button color='black' name="createnewDefect" onClick={(e) => this.createNewDefect(assertionData, e)} >
                   <small>Create new defect</small>
                 </Button>

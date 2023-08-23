@@ -476,8 +476,8 @@ class CICDPage extends React.Component {
               <img height="32" width="32" src="https://cdn.simpleicons.org/GoCD/black" /> */}
               </Col>
               <ButtonGroup className="mr-3 mb-3" size="sm">
-                <Button color={this.state.buttonWebColor} onClick={this.selectWebDashboard.bind(this)}  >Web</Button>
-                <Button color={this.state.buttonApiColor} onClick={this.selectApiDashboard.bind(this)}>Api</Button>
+              {Config.isUIComponentDisplayed && (<Button color={this.state.buttonWebColor} onClick={this.selectWebDashboard.bind(this)}  >Web</Button>)}
+              {Config.isApiComponentDisplayed && ( <Button color={this.state.buttonApiColor} onClick={this.selectApiDashboard.bind(this)}>Api</Button>)}
               </ButtonGroup>
             </Nav>
           </Row>

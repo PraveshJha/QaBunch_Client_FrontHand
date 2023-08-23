@@ -15,6 +15,26 @@ export class DashBoardGetter {
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 1000));
         }
+        if(DashBoardData.SelectedTab ==='')
+        {
+            if(!await Config.isUIComponentDisplayed)
+            {
+                if(await Config.isApiComponentDisplayed)
+                {
+                    DashBoardData.SelectedTab = 'Api'
+                    selectedTestingType ='Api'
+                }
+                else{
+                    DashBoardData.SelectedTab = 'Mobile'
+                    selectedTestingType ='Mobile'
+                }
+                
+            }
+            else{
+                DashBoardData.SelectedTab = 'Web'
+                selectedTestingType ='Web'
+            }
+        }
         var allconfigData = {};
         var dashBoardData = {}
         if (!Config.isDemo) {

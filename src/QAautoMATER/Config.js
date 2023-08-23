@@ -9,6 +9,9 @@ export const Config = {
 	"fileSystemtechniques": "api", //local or api,
 	"isManualComponentDisplayed": true,
 	"isMobileComponentDisplayed": false,
+	"isAutomationComponentDisplayed": true,
+	"isUIComponentDisplayed": true,
+	"isApiComponentDisplayed": true,
 };
 export const Users = {
 	"userEmail": localStorage.getItem('UserEmail'),

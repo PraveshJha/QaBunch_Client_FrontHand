@@ -1264,9 +1264,10 @@ class TestCasePagePage extends React.Component {
                           <Button color='black' onClick={this.updateTestCase.bind(this)}>
                             <small>Update</small>
                           </Button>
-                          <Button color='info' onClick={this.automateTestCase.bind(this)}>
+                          {(Config.isAutomationComponentDisplayed && Config.isUIComponentDisplayed)  && (<Button color='info' onClick={this.automateTestCase.bind(this)}>
                             <small>Automate</small>
                           </Button >
+                          )}
                           {(this.state.testCaseCreatedBy.toLocaleLowerCase().trim() === Users.userEmail.toLocaleLowerCase().trim() || Users.isSuperAdmin === true) && (<Button color='black' onClick={this.confirmdelete.bind(this)}>
                             <small>Delete</small>
                           </Button>

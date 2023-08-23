@@ -292,14 +292,24 @@ class ObjectRepositoryPage extends React.Component {
                               var type = row.type;
                               var tag = row.tag;
                               if (tag !== '') {
-                                ORData.ORTagDataToSave[type] = tag;
+                                if(ORData.ORTagDataToSave[type] ===undefined)
+                                {
+                                  ORData.ORTagDataToSave[type]={}
+                                }
+                                ORData.ORTagDataToSave[type]["TAG"] = tag;
+                                ORData.ORTagDataToSave[type]["IOSTAG"] = row.iostag;
                               }
                             }
                             if (column.dataField === 'iostag') {
                               var type = row.type;
                               var tag = row.iostag;
                               if (tag !== '') {
-                                ORData.ORTagDataToSave[type] = tag;
+                                if(ORData.ORTagDataToSave[type] ===undefined)
+                                {
+                                  ORData.ORTagDataToSave[type]={}
+                                }
+                                ORData.ORTagDataToSave[type]["TAG"] = row.tag;
+                                ORData.ORTagDataToSave[type]["IOSTAG"] = tag;
                               }
                             }
                           },

@@ -75,22 +75,42 @@ export class ORGetter {
             if(elementKeyData ===undefined)
             {
                 elementKeyData ={};
-                elementKeyData['LINK'] ="//a";
-                elementKeyData['BUTTON'] ="//button";
-                elementKeyData['TEXTBOX'] ="//input";
-                elementKeyData['IMAGE'] ="//img";
-                elementKeyData['CHECKBOX'] ="//input";
-                elementKeyData['RADIOBUTTON'] ="//input";
-                elementKeyData['LISTBOX'] ="//select";
-                elementKeyData['TEXTAREA'] ="//textarea";
-                elementKeyData['LABEL'] ="//label";
-                elementKeyData['DEFAULT'] ="//*";
+                elementKeyData['BUTTON'] ={}
+                elementKeyData['BUTTON']['TAG']='//android.widget.Button'
+                elementKeyData['BUTTON']['IOSTAG']='//*'
+                elementKeyData['TEXTBOX'] ={}
+                elementKeyData['TEXTBOX']['TAG']='//android.widget.TextView'
+                elementKeyData['TEXTBOX']['IOSTAG']='//*'
+                elementKeyData['LINK'] ={};
+                elementKeyData['LINK']['TAG'] ="//android.widget.Button";
+                elementKeyData['LINK']['IOSTAG'] ="//*";
+                elementKeyData['IMAGE'] ={};
+                elementKeyData['IMAGE']['TAG'] ="//android.widget.Image";
+                elementKeyData['IMAGE']['IOSTAG'] ="//*";
+                elementKeyData['CHECKBOX'] ={};
+                elementKeyData['CHECKBOX']['TAG'] ="//android.widget.TextView";
+                elementKeyData['CHECKBOX']['IOSTAG'] ="//*";
+                elementKeyData['RADIOBUTTON'] ={};
+                elementKeyData['RADIOBUTTON']['TAG'] ="//android.widget.TextView";
+                elementKeyData['RADIOBUTTON']['IOSTAG'] ="//*";
+                elementKeyData['LISTBOX'] ={};
+                elementKeyData['LISTBOX']['TAG'] ="//android.widget.Select";
+                elementKeyData['LISTBOX']['IOSTAG'] ="//*";
+                elementKeyData['TEXTAREA'] ={};
+                elementKeyData['TEXTAREA']['TAG'] ="//android.widget.TextArea";
+                elementKeyData['TEXTAREA']['IOSTAG'] ="//*";
+                elementKeyData['LABEL'] ={};
+                elementKeyData['LABEL']['TAG'] ="//android.view.View";
+                elementKeyData['LABEL']['IOSTAG'] ="//*";
+                elementKeyData['DEFAULT'] ={};
+                elementKeyData['DEFAULT']['TAG']  ="//*";
+                elementKeyData['DEFAULT']['IOSTAG']  ="//*";
             }
             var allTagData = [];
             var tagData = await Object.keys(await elementKeyData);
             for (let i = 0; i < await tagData.length; i++) {
                 var eleName = await tagData[i];
-                var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName],iostag:'' };
+                var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName]['TAG'],iostag:await  elementKeyData[await eleName]['IOSTAG'] };
                 allTagData.push(await allDetails);
             }
             ORData.ORElementTagData = await allTagData;

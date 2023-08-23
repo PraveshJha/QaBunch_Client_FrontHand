@@ -18,6 +18,7 @@ import {
   Fade,
 } from 'reactstrap';
 import bn from '../../utils/bemnames';
+import { Config } from '../../QAautoMATER/Config';
 import { DoughnutChart, BarChart, LineChart } from '../../uiLayout/components/chart'
 import { TextWidget, NumberWidget } from '../../uiLayout/components/widget';
 import { DashBoardData } from './DashboardData'
@@ -48,6 +49,7 @@ class DashboardPage extends React.Component {
       //****** Button Color ***********************************************************
       buttonWebColor: 'black',
       buttonApiColor: 'white',
+      selectedTab:DashBoardData.SelectedTab,
 
       //****** WIDGET Data ***********************************************************
       totalTestScripts: DashBoardData.TotalTestScripts,
@@ -116,6 +118,7 @@ class DashboardPage extends React.Component {
     window.scrollTo(0, 0);
     this.setState({ isPageLoading: true });
     await DashBoardGetter.dashboardPageLoadData(DashBoardData.SelectedTab);
+    this.setState({selectedTab:DashBoardData.SelectedTab});
 
     //****** Button color ***********************************************************
     this.setState({ buttonWebColor: await DashBoardGetter.getWebButtonColor() })
@@ -308,7 +311,9 @@ class DashboardPage extends React.Component {
   };
 
   selectWebDashboard = async () => {
-    if (DashBoardData.SelectedTab !== 'Web') {
+    DashBoardData.SelectedTab ="Web";
+    if (await this.state.selectedTab !== 'Web') {
+      this.setState({selectedTab:'Web'})
       this.setState({ isPageLoading: true });
       DashBoardData.SelectedTab = 'Web';
       this.setState({ buttonWebColor: 'black' })
@@ -385,7 +390,9 @@ class DashboardPage extends React.Component {
     }
   }
   selectApiDashboard = async () => {
-    if (DashBoardData.SelectedTab !== 'Api') {
+    DashBoardData.SelectedTab ='Api'
+    if (await this.state.selectedTab !== 'Api') {
+      await this.setState({ selectedTab: 'Api' })
       this.setState({ isPageLoading: true });
       DashBoardData.SelectedTab = 'Api';
       this.setState({ buttonWebColor: 'white' })
@@ -536,8 +543,7 @@ class DashboardPage extends React.Component {
                   onStartEdit: (row, column, rowIndex, columnIndex) => {
                     if (columnIndex === 5) {
                       if (DashBoardData.ImageData !== '') {
-                        if(row.screenshot !=='')
-                        {
+                        if (row.screenshot !== '') {
                           this.setState({ isScreenshotModalOpen: true });
                           this.setState({ stepsDetailsForScreenshot: DashBoardData.StepsDetailsForScreenshot })
                           this.setState({ imageData: DashBoardData.ImageData })
@@ -598,8 +604,8 @@ class DashboardPage extends React.Component {
           </ButtonGroups> */}
             <Nav className={bem.e('nav-right')}>
               <ButtonGroup className="mr-3 mb-3" size="sm">
-                <Button color={this.state.buttonWebColor} onClick={this.selectWebDashboard.bind(this)}  >Web</Button>
-                <Button color={this.state.buttonApiColor} onClick={this.selectApiDashboard.bind(this)}>Api</Button>
+              {Config.isUIComponentDisplayed && (<Button color={this.state.buttonWebColor} onClick={this.selectWebDashboard.bind(this)}  >Web</Button>)}
+              {Config.isApiComponentDisplayed && ( <Button color={this.state.buttonApiColor} onClick={this.selectApiDashboard.bind(this)}>Api</Button>)}
               </ButtonGroup>
             </Nav>
           </Row>

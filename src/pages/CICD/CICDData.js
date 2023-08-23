@@ -1,6 +1,6 @@
 export var CICDData = {
     AllConfigData:{},
-    SelectedTab :'Web',
+    SelectedTab :'',
     ListOfTestScripts:[],
     SelectedTestScripts:[],
     EnvironmentList:[],

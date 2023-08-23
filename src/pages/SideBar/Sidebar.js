@@ -9,7 +9,7 @@ import {
   MdAssistantNavigation,
 } from 'react-icons/md';
 import { ImLab, ImCommand, ImCodepen, ImLibrary, ImMan, ImBug } from "react-icons/im";
-import { AiFillApi, AiOutlineShopping, AiOutlineDatabase, AiFillBulb, AiFillRobot,AiOutlineMobile } from "react-icons/ai";
+import { AiFillApi, AiOutlineShopping, AiOutlineDatabase, AiFillBulb, AiFillRobot, AiOutlineMobile } from "react-icons/ai";
 import { NavLink } from 'react-router-dom';
 import {
   Collapse,
@@ -298,7 +298,7 @@ class Sidebar extends React.Component {
               ))}
             </Collapse>
             )}
-            <NavItem
+            {Config.isAutomationComponentDisplayed && (<NavItem
               className={bem.e('nav-item')}
               onClick={this.handleAutomationComponentClick()}>
               <BSNavLink className={bem.e('nav-item-collapse')}>
@@ -319,7 +319,8 @@ class Sidebar extends React.Component {
                 />
               </BSNavLink>
             </NavItem>
-            <Collapse isOpen={this.state.isAutomationComponentOpen}>
+            )}
+            {(Config.isUIComponentDisplayed || Config.isApiComponentDisplayed || Config.isMobileComponentDisplayed) && (<Collapse isOpen={this.state.isAutomationComponentOpen}>
               {automationTestingComponents.map(({ to, name, exact, Icon }, index) => (
                 <NavItem key={index} className={bem.e('nav-item')}>
                   <BSNavLink
@@ -338,7 +339,7 @@ class Sidebar extends React.Component {
                 className={bem.e('nav-item')}
                 onClick={this.handleUIClick()}
               >
-                <BSNavLink className={bem.e('nav-item-collapse')}>
+                {Config.isUIComponentDisplayed && (<BSNavLink className={bem.e('nav-item-collapse')}>
                   <div className="d-flex">
                     <MdMonitor className={bem.e('nav-item-icon')} />
                     <span className=" align-self-start">UI Testing</span>
@@ -355,8 +356,9 @@ class Sidebar extends React.Component {
                     }}
                   />
                 </BSNavLink>
+                )}
               </NavItem>
-              <Collapse isOpen={this.state.isUIComponentsOpen}>
+              {Config.isUIComponentDisplayed && (<Collapse isOpen={this.state.isUIComponentsOpen}>
                 {uiTestingComponents.map(({ to, name, exact, Icon }, index) => (
                   <NavItem key={index} className={bem.e('nav-item')}>
                     <BSNavLink
@@ -372,7 +374,8 @@ class Sidebar extends React.Component {
                   </NavItem>
                 ))}
               </Collapse>
-              <NavItem
+              )}
+              {Config.isApiComponentDisplayed && (<NavItem
                 className={bem.e('nav-item')}
                 onClick={this.handleApiClick()}>
                 <BSNavLink className={bem.e('nav-item-collapse')}>
@@ -393,6 +396,7 @@ class Sidebar extends React.Component {
                   />
                 </BSNavLink>
               </NavItem>
+              )}
               <Collapse isOpen={this.state.isApiComponentsOpen}>
                 {apiTestingComponents.map(({ to, name, exact, Icon }, index) => (
                   <NavItem key={index} className={bem.e('nav-item')}>
@@ -449,6 +453,7 @@ class Sidebar extends React.Component {
               </Collapse>
               )}
             </Collapse>
+            )}
           </Nav>
         </div>
       </aside>
