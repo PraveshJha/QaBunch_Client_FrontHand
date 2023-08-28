@@ -41,7 +41,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { TestScriptTableHeader, CustomFunctionDependentHeader, UIActionTableHeader, AssertionActionTableHeader, WebActionTableHeader, BrowserActionTableHeader } from '../WebPageTableHeader'
+import { TestScriptTableHeader, CustomFunctionDependentHeader, UIActionTableHeader, AssertionActionTableHeader, WebActionTableHeader, BrowserActionTableHeader } from '../MobilePageTableHeader'
 import "react-widgets/styles.css";
 import { Combobox } from 'react-widgets'
 import DataGetter from '../../DataGetter';
@@ -1213,7 +1213,7 @@ class CustomFunctionPage extends React.Component {
     return (
       <Page
         className="customfunctionpage"
-        title="Custom Page Function"
+        title="Mobile Reusable component"
       >
         {this.state.isPageLoading && <PageLoader sentences={LoaderMessage} height='150%' color="black" />}
         <Fade in={!this.state.isPageLoading}>

@@ -44,6 +44,9 @@ const ManualDashboardPage = React.lazy(() => import('../pages/Manual/Dashboard/D
 const MobileConfigurationPage = React.lazy(() => import('../pages/Mobile/Configuration/ConfigurationPage'));
 const MobileTestDataPage = React.lazy(() => import('../pages/Mobile/TestData/TestDataPage'));
 const MobileORPage = React.lazy(() => import('../pages/Mobile/ObjectRepository/ObjectRepositoryPage'));
+const MobileExecutionLabPage = React.lazy(() => import('../pages/Mobile/ExecutionLab/ExecutionLabPage'));
+const MobileTestScriptPage = React.lazy(() => import('../pages/Mobile/TestScript/TestScriptPage'));
+const MobileCustomFunctionPage = React.lazy(() => import('../pages/Mobile/CustomFunction/CustomFunctionPage'));
 
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
@@ -230,6 +233,9 @@ class AuthForm extends React.Component {
                 <Route path="mobile/configuration" element={<MobileConfigurationPage />} />
                 <Route path="mobile/testdata" element={<MobileTestDataPage />} />
                 <Route path="mobile/or" element={<MobileORPage />} />
+                <Route path="mobile/executionlab" element={<MobileExecutionLabPage />} />
+                <Route path="mobile/testscript" element={<MobileTestScriptPage />} />
+                <Route path="mobile/customfunction" element={<MobileCustomFunctionPage />} />
               </Routes>
             </React.Suspense>
           </MainLayout>

@@ -6,6 +6,9 @@ import Matcher from "../../QAautoMATER/funcLib/matcher";
 import { ConfigData } from "./Configuration/ConfigData";
 import { TestData } from "./TestData/TestData";
 import { ORData } from "./ObjectRepository/ORData";
+import { TestScriptData } from "./TestScript/TestScriptData";
+import CustomFunctionGetter from "./CustomFunction/CustomFunctionGetter"
+import { CustomFunctionData } from "./CustomFunction/CustomFunctionData";
 export var EnvironmentURLTableHeader = [{
 	dataField: 'id',
 	text: '#',
@@ -442,5 +445,310 @@ export var CustomLocator = [{
 		
 	}
 }
+];
+export var TestScriptTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '60px' }
+}, {
+	dataField: 'stepdefinition',
+	text: 'Step Definition*',
+	headerStyle: { width: '300px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Step Definition can not be blank.'
+			});
+		}
+		else {
+			return done();
+		}
+	},
+},
+{
+	dataField: 'action',
+	text: 'Action*',
+	headerStyle: { width: '200px' },
+},
+{
+	dataField: 'element',
+	text: 'Web Element',
+	headerStyle: { width: '200px' },
+	validator: async (newValue, row, column, done) => {
+		if (row.stepdefinition.toString().trim() === '' || row.action.toString().trim() === '') {
+			return done({
+				valid: false,
+				message: 'Please add step definition and action'
+			});
+		}
+		else {
+			return done();
+		}
+	},
+},
+{
+	dataField: 'value',
+	text: 'Value',
+	headerStyle: { width: '200px' },
+	validator: async (newValue, row, column, done) => {
+		return done();
+	},
+},
+{
+	dataField: 'isreporting',
+	text: 'IsReportingRequired',
+	headerStyle: { width: '200px' },
+	validator: async (newValue, row, column, done) => {
+		return done();
+	},
+	editor: {
+		type: Type.SELECT,
+		options: [{ label: 'Yes', value: 'Yes' }, { label: 'No', value: 'No' }],
+	}
+},
+];
+export var TestScriptTestDataTableHeader = [
+	{}
+];
+export var DependentCustomFunctionHeader = [
+	{
+		dataField: 'id',
+		text: '#',
+		headerStyle: { width: '40px' }
+	}, {
+		dataField: 'customfunction',
+		text: 'Page Function',
+		headerStyle: { width: '250px' },
+		editor: {
+			type: Type.SELECT,
+			getOptions: (setOptions) => {
+				setTimeout(() => {
+					setOptions(TestScriptData.PageFunctionNameListWithLabelandValue);
+				}, 0);
+			}
+		},
+		validator: async (newValue, row, column, done) => {
+			if (newValue === '') {
+				return done({
+					valid: false,
+					message: 'Page Function can not be blank'
+				});
+			}
+			else {
+				var allColumnValue = await GetData.jsonArrayGetallKeyValue(TestScriptData.DependentCustomFunction, 'customfunction')
+				var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+				if (isPresent) {
+					return done({
+						valid: false,
+						message: 'Page Function can not be duplicate.'
+					});
+				}
+				else {
+					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
+					try {
+						if (Object.keys(await allAgrsList).length > 0) {
+							row.parameter = await JSON.stringify(await allAgrsList)
+						}
+					}
+					catch (error) {
+						row.parameter = ''
+					}
+					return done();
+				}
+			}
+		}
+	},
+	{
+		dataField: 'parameter',
+		text: 'Parameter',
+		headerStyle: { width: '210px' },
+	}
+	// {
+	// 	dataField: 'seq',
+	// 	text: 'Seq',
+	// 	headerStyle: { width: '40px' },
+	// 	validator: async (newValue, row, column, done) => {
+	// 		var format = /[^1-9]/ig;
+	// 		if (format.test(await newValue)) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Only integer value allowed'
+	// 			});
+	// 		}
+	// 		if (newValue.trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Seq can not be null'
+	// 			});
+	// 		}
+	// 		if (row.customfunction.toString().trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Please select Custom Function first'
+	// 			});
+	// 		}
+	// 		var allColumnValue = await GetData.jsonArrayGetallKeyValue(TestScriptData.DependentCustomFunction, 'seq')
+	// 		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+	// 		if (isPresent) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Seq can not be duplicate.'
+	// 			});
+	// 		}
+	// 		var maxSequence = await TestScriptData.DependentCustomFunction.length;
+	// 		if (newValue > maxSequence) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'As per your data selection Maximum sequence can be ' + maxSequence
+	// 			});
+	// 		}
+	// 		else {
+	// 			return done();
+	// 		}
+	// 	}
+	// }
+];
+export var UIActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden: true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+},
+];
+
+export var AssertionActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden: true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({ placeholder: 'search action' })
+},
+];
+export var WebActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden: true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({ placeholder: 'search action' })
+},
+];
+export var BrowserActionTableHeader = [{
+	dataField: 'id',
+	text: '#',
+	headerStyle: { width: '100px' },
+	hidden: true,
+}, {
+	dataField: 'action',
+	text: 'Action',
+	filter: textFilter({ placeholder: 'search action' })
+},
+];
+export var CustomFunctionDependentHeader = [
+	{
+		dataField: 'id',
+		text: '#',
+		headerStyle: { width: '40px' }
+	}, {
+		dataField: 'customfunction',
+		text: 'Page Function',
+		headerStyle: { width: '250px' },
+		editor: {
+			type: Type.SELECT,
+			getOptions: (setOptions) => {
+				setTimeout(() => {
+					setOptions(CustomFunctionData.CustomFunctionListWithLabelandValue);
+				}, 0);
+			}
+		},
+		validator: async (newValue, row, column, done) => {
+			if (newValue === '') {
+				return done({
+					valid: false,
+					message: 'Custom Function can not be blank'
+				});
+			}
+			else {
+				var allColumnValue = await GetData.jsonArrayGetallKeyValue(CustomFunctionData.DependentCustomFunction, 'customfunction')
+				var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+				if (isPresent) {
+					return done({
+						valid: false,
+						message: 'Custom Function can not be duplicate.'
+					});
+				}
+				else {
+					var allAgrsList = await CustomFunctionGetter.getCustomFunctionArguments(newValue);
+					try {
+						if (await Object.keys(await allAgrsList).length > 0) {
+							row.parameter = await JSON.stringify(await allAgrsList);
+						}
+					}
+					catch (error) {
+						row.parameter =''
+					 }
+					return done();
+				}
+			}
+		}
+	},
+	{
+		dataField: 'parameter',
+		text: 'Parameter',
+		headerStyle: { width: '210px' },
+	}
+	// {
+	// 	dataField: 'seq',
+	// 	text: 'Seq',
+	// 	headerStyle: { width: '40px' },
+	// 	validator: async (newValue, row, column, done) => {
+	// 		var format = /[^1-9]/ig;
+	// 		if (format.test(await newValue)) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Only integer value allowed'
+	// 			});
+	// 		}
+	// 		if (newValue.trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Seq can not be null'
+	// 			});
+	// 		}
+	// 		if (row.customfunction.toString().trim() === '') {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Please select Custom Function first'
+	// 			});
+	// 		}
+	// 		var allColumnValue = await GetData.jsonArrayGetallKeyValue(CustomFunctionData.DependentCustomFunction, 'seq')
+	// 		var isPresent = await Matcher.isValuePresentInArray(allColumnValue, await newValue);
+	// 		if (isPresent) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'Seq can not be duplicate.'
+	// 			});
+	// 		}
+	// 		var maxSequence = await CustomFunctionData.ListOfCustomFunction.length;
+	// 		if (newValue > maxSequence) {
+	// 			return done({
+	// 				valid: false,
+	// 				message: 'As per your data selection Maximum sequence can be ' + maxSequence
+	// 			});
+	// 		}
+	// 		else {
+	// 			return done();
+	// 		}
+	// 	}
+	// }
 ];
 

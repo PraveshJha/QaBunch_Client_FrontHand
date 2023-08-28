@@ -53,10 +53,15 @@ export class ConfigGetter {
             }
             try {
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Mobile/defaultconfiguration', await headers, await defaultConfigData);
+                var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debuggerwindow', await headers, await defaultConfigData);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];
+                // var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                // var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Mobile/defaultconfiguration', await headers, await defaultConfigData);
+                // var saveFile = await serverResponse['data'];
+                // Config.ErrorMessage = await saveFile['errorMessage'];
+                // return await saveFile['isFileSaved'];
             }
             catch (error) {
                 Config.ErrorMessage = await error.message;
