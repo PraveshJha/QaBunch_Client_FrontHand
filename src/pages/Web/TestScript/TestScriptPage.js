@@ -168,6 +168,7 @@ class TestScriptPage extends React.Component {
       this.setState({ isErrorOnNewName: TestScriptData.IsErrorOnNewName });
       this.setState({ isNewNameSectionDisplayed: TestScriptData.IsNewNameSectionDisplayed });
 
+
       //**** Debug your Test *************************************************************
       this.setState({ appUrl: TestScriptData.AppUrl });
       this.setState({ isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl });
@@ -177,16 +178,23 @@ class TestScriptPage extends React.Component {
       this.setState({ deviceList: TestScriptData.DeviceList });
       this.setState({ selectedDevice: TestScriptData.SelectedDevice });
 
+
       //**** Dependendent Custom function *************************************************************
       this.setState({ dependentCustomFunction: TestScriptData.DependentCustomFunction });
       this.setState({ selectedRowFromDependentCustomFunctionTable: TestScriptData.SelectedRowFromDependentCustomFunctionTable });
+
 
 
       //**** Test Steps *************************************************************
       this.setState({ listOfTestSteps: TestScriptData.ListOfTestSteps });
       this.setState({ selectedRowFromTestStepsTable: TestScriptData.SelectedRowFromTestStepsTable });
 
+
       //**** Test script Test Data *************************************************************
+      if (await TestScriptData.TestDataTableHeader.length === 0) {
+        var baseHeaderData = { "dataField": "id", "text": "#", "headerStyle": { "width": "20px" } }
+        TestScriptData.TestDataTableHeader.push(await baseHeaderData);
+      }
       this.setState({ listOfTestScriptData: TestScriptData.ListOfTestScriptData });
       this.setState({ selectedRowFromTestDataSetTable: TestScriptData.SelectedRowFromTestDataSetTable });
       this.setState({ allCommonTestData: TestScriptData.AllCommonTestData })
@@ -201,6 +209,7 @@ class TestScriptPage extends React.Component {
       //**** OR Data Modal *************************************************************
       this.setState({ allORData: TestScriptData.AllORData });
       this.setState({ allORKey: TestScriptData.AllORKey });
+
       //**** Test Steps *************************************************************
       this.setState({ isErrorOnExternalTestSteps: TestScriptData.IsErrorOnExternalTestSteps });
       this.setState({ externalTestSteps: TestScriptData.ExternalTestSteps });
@@ -222,10 +231,14 @@ class TestScriptPage extends React.Component {
       this.setState({ selectedWebActionName: TestScriptData.SelectedWebActionName })
       this.setState({ selectedWebActionRowId: TestScriptData.SelectedWebActionRowId })
       this.setState({ isPageLoading: false })
-
+      
     }
     catch (error) {
-      //console.log(await error);
+      if (await TestScriptData.TestDataTableHeader.length === 0) {
+        var baseHeaderData = { "dataField": "id", "text": "#", "headerStyle": { "width": "20px" } }
+        TestScriptData.TestDataTableHeader.push(await baseHeaderData);
+        this.setState({ testDataTableHeader: TestScriptData.TestDataTableHeader });
+      }
     }
   }
 
@@ -1196,6 +1209,11 @@ class TestScriptPage extends React.Component {
       TestScriptData.TestName = await testDetails['testName'];
       TestScriptData.ListOfTestSteps = await testDetails['listOfTestSteps'];
       TestScriptData.DependentCustomFunction = await testDetails['dependentCustomFunction'];
+      if(await testDetails['testDataTableHeader'].length ===0)
+      {
+        var baseHeaderData = { "dataField": "id", "text": "#", "headerStyle": { "width": "20px" } }
+        testDetails['testDataTableHeader'].push(await baseHeaderData);
+      }
       TestScriptData.TestDataTableHeader = await testDetails['testDataTableHeader'];
       TestScriptData.ListOfTestScriptData = await testDetails['listOfTestScriptData'];
       TestScriptData.ExternalTestSteps = await testDetails['manualTestSteps'];;

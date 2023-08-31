@@ -289,7 +289,7 @@ export class TestCaseGetter {
             if (await allColumnInfo[i].includes('step')) {
                 output['teststeps'] = await i;
             }
-            if (await allColumnInfo[i].includes('expected result') || await allColumnInfo[i].includes('expectedresult')) {
+            if (await allColumnInfo[i].includes('expected result') || await allColumnInfo[i].includes('expectedresult') || await allColumnInfo[i].includes('expected')) {
                 output['expectedresult'] = await i;
             }
             if (await allColumnInfo[i].includes('priority')) {

@@ -858,10 +858,22 @@ class TestCasePagePage extends React.Component {
         var testName = await rowInfo[i][nameindex];
         var testPriority = await rowInfo[i][priorityIndex];
         var testPrecondition = await rowInfo[i][preconditionIndex];
+        if(await testPrecondition ===undefined)
+        {
+          testPrecondition=''
+        }
         var testDataValue = await rowInfo[i][testdataIndex];
+        if(await testDataValue ===undefined)
+        {
+          testDataValue=''
+        }
         var referenceValue = await rowInfo[i][referenceIndex];
         var testSteps = await rowInfo[i][testStepsIndex];
         var expectedResult = await rowInfo[i][expectedResultIndex];
+        if(await expectedResult ===undefined)
+        {
+          expectedResult=''
+        }
         var automationType = await rowInfo[i][automationTypeIndex];
         var createBy = await rowInfo[i][createdByIndex];
         lastExpectedResults = await expectedResult;
@@ -949,6 +961,7 @@ class TestCasePagePage extends React.Component {
           counter = await Number(await counter) + 1;
           componentName = await TestCaseGetter.createPathForComponent(await componentName);
           await TestCaseGetter.createPlaceHolderFromExcelFile(await componentName);
+          console.log(await expectedResult)
           var isTestCaseCreated = await TestCaseGetter.saveTestCaseWithTestAttribute(await testName, await componentName, await priority, await testSteps, await expectedResult, await testDataValue, await referenceValue, await testPrecondition,await automationType,await createBy);
           if (await isTestCaseCreated) {
             totalTestCaseCreated = await (Number(await totalTestCaseCreated) + 1)

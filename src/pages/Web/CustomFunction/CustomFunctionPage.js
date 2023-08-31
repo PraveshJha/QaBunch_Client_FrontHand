@@ -199,6 +199,11 @@ class CustomFunctionPage extends React.Component {
     this.setState({ selectedRowFromTestStepsTable: CustomFunctionData.SelectedRowFromTestStepsTable });
 
     //**** Test script Test Data *************************************************************
+    if (await CustomFunctionData.TestDataTableHeader.length === 0) {
+      var baseHeaderData = { "dataField": "id", "text": "#", "headerStyle": { "width": "20px" } }
+      CustomFunctionData.TestDataTableHeader.push(await baseHeaderData);
+      this.setState({ testDataTableHeader: CustomFunctionData.TestDataTableHeader });
+    }
     this.setState({ listOfTestScriptData: CustomFunctionData.ListOfTestScriptData });
     this.setState({ selectedRowFromTestDataSetTable: CustomFunctionData.SelectedRowFromTestDataSetTable });
     this.setState({ allCommonTestData: CustomFunctionData.AllCommonTestData })
@@ -699,7 +704,7 @@ class CustomFunctionPage extends React.Component {
 
       }
       var rowToUpdate = CustomFunctionData.SelectedRowFromTestStepsTable;
-      var testvalue ={"valuetobesend":"Provide value"};
+      var testvalue = { "valuetobesend": "Provide value" };
       testvalue.valuetobesend = await keytoSend;
       CustomFunctionData.ListOfTestSteps[Number(rowToUpdate) - 1]['value'] = await JSON.stringify(await testvalue);
       this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
@@ -1057,8 +1062,8 @@ class CustomFunctionPage extends React.Component {
         if (await fileUploadDetails['isSuccess']) {
           this.setState({ isFileUploadButtonDisplayed: false });
           CustomFunctionData.IsFileUploadButtonDisplayed = false;
-          CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] ='';
-          var updateValue = {"filename":""};
+          CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] = '';
+          var updateValue = { "filename": "" };
           updateValue['filename'] = await fileUploadDetails['fileName'];
           CustomFunctionData.ListOfTestSteps[await Number(selectId) - 1]['value'] = await JSON.stringify(await updateValue);
           this.setState({ listOfTestSteps: [] }, () => { this.setState({ listOfTestSteps: CustomFunctionData.ListOfTestSteps }); });
@@ -1102,16 +1107,16 @@ class CustomFunctionPage extends React.Component {
         if (await selectedCategory === 'ApplicationAction') {
           try {
             var param = await CustomFunctionData.UIActionList['UIActionHelpText'][selectedCategory][actionToBeSelect]['parameter'];
-            if (await Object.keys(await param).length !==0) {
+            if (await Object.keys(await param).length !== 0) {
               CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = await param;
             }
-            else{
+            else {
               CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
             }
           }
           catch (error) {
             CustomFunctionData.ListOfTestSteps[rowIndex]['value'] = ''
-           }
+          }
         }
         else {
           try {
@@ -1154,8 +1159,8 @@ class CustomFunctionPage extends React.Component {
           {(helpText !== undefined && helpText !== '') && (<div>{helpText}</div>)}
           {(example !== undefined && example.trim() !== '') && (<div><b>Example</b></div>)}
           {(example !== undefined && example.trim() !== '') && (<div>{example}</div>)}
-          {(parameter !== undefined && parameter !=='') && (<div><b>Parameter</b></div>)}
-          {(parameter !== undefined && parameter !=='') && (<div>{parameter}</div>)}
+          {(parameter !== undefined && parameter !== '') && (<div><b>Parameter</b></div>)}
+          {(parameter !== undefined && parameter !== '') && (<div>{parameter}</div>)}
         </Alert>
       </div>
     }
