@@ -46,4 +46,7 @@ export var ConfigData = {
     AllElementLocator:[],
     IsDataValidInLocatorTable:true,
     SelectedRowFromLocatorTable:-2,
+    ORElementTagData:[],
+    ORTagDataToSave :{},
+    AllLocatorList:[],
 };

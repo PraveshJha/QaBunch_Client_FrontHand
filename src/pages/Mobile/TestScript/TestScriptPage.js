@@ -83,8 +83,8 @@ class TestScriptPage extends React.Component {
       isNewNameSectionDisplayed: TestScriptData.IsNewNameSectionDisplayed,
 
       //**** Debug your Test *************************************************************
-      isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl,
-      appUrl: TestScriptData.AppUrl,
+      // isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl,
+      // appUrl: TestScriptData.AppUrl,
       testingMethod: TestScriptData.TestingMethod,
       screenOptionList: TestScriptData.ScreenOptionList,
       selectedScreenOption: TestScriptData.SelectedScreenOption,
@@ -169,8 +169,8 @@ class TestScriptPage extends React.Component {
       this.setState({ isNewNameSectionDisplayed: TestScriptData.IsNewNameSectionDisplayed });
 
       //**** Debug your Test *************************************************************
-      this.setState({ appUrl: TestScriptData.AppUrl });
-      this.setState({ isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl });
+      // this.setState({ appUrl: TestScriptData.AppUrl });
+      // this.setState({ isErrorOnAppUrl: TestScriptData.IsErrorOnAppUrl });
       this.setState({ testingMethod: TestScriptData.TestingMethod });
       this.setState({ screenOptionList: TestScriptData.ScreenOptionList });
       this.setState({ selectedScreenOption: TestScriptData.SelectedScreenOption });
@@ -477,27 +477,6 @@ class TestScriptPage extends React.Component {
 
   //**** Debug your Test *******************************************************************************
 
-  addApplicationUrl = async (event) => {
-    this.setState({ isErrorOnAppUrl: false })
-    var dataChoice = await event.target.value;
-    if (this.state.appUrl !== await dataChoice) {
-      this.setState({ appUrl: await dataChoice });
-      TestScriptData.AppUrl = await dataChoice;
-      if (await dataChoice.trim() === '') {
-        this.setState({ isErrorOnAppUrl: true });
-        return;
-      }
-      var isValid = await TestScriptGetter.isValidUrl(await dataChoice)
-      if (!isValid) {
-        this.setState({ isErrorOnAppUrl: true });
-      }
-      else {
-        this.setState({ isErrorOnAppUrl: false });
-      }
-    }
-
-  };
-
   selectTestingMethod = async (event) => {
     var selectedTestingType = await event.target.value;
     if (this.state.testingMethod !== await selectedTestingType) {
@@ -516,7 +495,7 @@ class TestScriptPage extends React.Component {
       TestScriptData.DeviceList = [];
       TestScriptData.SelectedDevice = ''
       this.setState({ selectedDevice: '' })
-      await TestScriptGetter.GetAllDeviceAndBrowser(await screenName);
+      await TestScriptGetter.setDeviceInforMation(await screenName,TestScriptData.AllConfigData)
       this.setState({ deviceList: TestScriptData.DeviceList })
       this.setState({ selectedDevice: TestScriptData.SelectedDevice })
     }
@@ -885,15 +864,6 @@ class TestScriptPage extends React.Component {
   openDebuggerWindow = async (event) => {
     await event.preventDefault();
     if (!await this.state.isInspectorWindowOpen) {
-      var applicationUrl = this.state.appUrl;
-      if (applicationUrl.toString().trim() === '') {
-        return await this.getNotification('error', "Application Url can not be blank.");
-      }
-      if (this.state.isErrorOnAppUrl) {
-        return await this.getNotification('error', "Please add correct application url details");
-      }
-      this.setState({ appUrl: applicationUrl });
-      TestScriptData.AppUrl = await applicationUrl;
       //@ check Screen
       var screen = await this.state.selectedScreenOption;
       if (await screen === '') {
@@ -902,6 +872,10 @@ class TestScriptPage extends React.Component {
       var device = await this.state.selectedDevice;
       if (await device === '') {
         return await this.getNotification('error', "Please select device/browser before debugging");
+      }
+      if(await TestScriptData.SelectedEnvironment ==='')
+      {
+        return await this.getNotification('error', "Please add environment from the configuration page before debugging");
       }
       this.setState({ isPageLoading: true });
       await TestScriptGetter.setupDebuggerWindow();
@@ -1548,7 +1522,7 @@ class TestScriptPage extends React.Component {
                 </CardHeader>
                 <CardBody>
                   <Form>
-                    <FormGroup row>
+                    {/* <FormGroup row>
                       <Label sm={5}>
                         Application Url*
                       </Label>
@@ -1556,7 +1530,7 @@ class TestScriptPage extends React.Component {
                         <Input type="url" name="testUrl" invalid={this.state.isErrorOnAppUrl} value={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
                         </Input>
                       </Col>
-                    </FormGroup>
+                    </FormGroup> */}
                     {/* <FormGroup row>
                       <Label sm={5}>
                         Testing type*
@@ -1570,7 +1544,7 @@ class TestScriptPage extends React.Component {
                     </FormGroup> */}
                     <FormGroup row>
                       <Label sm={5}>
-                        Screen*
+                        Platform*
                       </Label>
                       <Col>
                         <Input type="select" name="screen" value={this.state.selectedScreenOption} onChange={this.selectScreen.bind(this)}>
@@ -1580,7 +1554,7 @@ class TestScriptPage extends React.Component {
                     </FormGroup>
                     <FormGroup row>
                       <Label sm={5}>
-                        Device/Browser*
+                        Device*
                       </Label>
                       <Col>
                         <Input type="select" name="screen" value={this.state.selectedDevice} onChange={this.selectDevice.bind(this)}>
@@ -1695,11 +1669,13 @@ class TestScriptPage extends React.Component {
                                     var elementName = values.orLogicalName.trim().toUpperCase();
                                     var locator = values.primaryLocator;
                                     var locatorProperty = values.primaryLocatorProperty;
+                                    var iOSLocatorName = values.iosLocatorName;
+                                    var iOSLocatorProperty = values.iosLocatorproperty;
                                     var secondaryXpath = values.secondaryXPath;
                                     row.action = actionName;
                                     row.value = values.actionvalue;
                                     var isKeyAlreadyPresent = TestScriptData.TestScriptORData[elementName];
-                                    var newElementAdd = { locator: locator, locatorproperty: locatorProperty, alternatexpath: secondaryXpath }
+                                    var newElementAdd = {issame:'Y', locator: locator, locatorproperty: locatorProperty,ioslocator: iOSLocatorName, ioslocatorproperty: iOSLocatorProperty, alternatexpath: secondaryXpath }
                                     if (isKeyAlreadyPresent === undefined) {
                                       TestScriptData.AllORData[elementName] = {};
                                       TestScriptData.AllORData[elementName] = newElementAdd;
@@ -1914,7 +1890,7 @@ class TestScriptPage extends React.Component {
             </UncontrolledAccordion >
           </Row>
           <Draggable>
-            <Offcanvas style={{ width: 1000, height: '400px', 'background-color': 'lightblue' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
+            <Offcanvas style={{ width: 450, height: '800px', 'background-color': 'lightblue' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
               <OffcanvasHeader style={{ 'background-color': 'lightblue' }} toggle={this.toggleInspectorWindow.bind(this)}>
                 Please watch your debug action
               </OffcanvasHeader>
@@ -2060,7 +2036,7 @@ class TestScriptPage extends React.Component {
                         </AccordionBody>
                       </AccordionItem>
                       <AccordionItem>
-                        <AccordionHeader targetId="2">UI action</AccordionHeader>
+                        <AccordionHeader targetId="2">Mobile UI action</AccordionHeader>
                         <AccordionBody accordionId="2">
                           <BootstrapTable
                             keyField='id'
@@ -2077,7 +2053,7 @@ class TestScriptPage extends React.Component {
                         </AccordionBody>
                       </AccordionItem>
                       <AccordionItem>
-                        <AccordionHeader targetId="3">Browser action</AccordionHeader>
+                        <AccordionHeader targetId="3">Mobile action</AccordionHeader>
                         <AccordionBody accordionId="3">
                           <BootstrapTable
                             keyField='id'

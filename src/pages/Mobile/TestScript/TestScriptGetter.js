@@ -18,7 +18,7 @@ export class TestScriptGetter {
       await this.renderComponent();
       await this.setLocator();
       //await DataGetter.GetAllActions();
-      var allWebActionList = await DataGetter.GetAllWebActions();
+      var allWebActionList = await DataGetter.GetAllMobileActions();
       TestScriptData.UIActionList = await allWebActionList;
       await this.getPageFunctionList();
       try {
@@ -52,7 +52,7 @@ export class TestScriptGetter {
   async initializeTestScriptPage() {
     var allconfigData = null;
     if (!await Config.isDemo) {
-      allconfigData = await ConfigGetter.readConfigurationFile('Web');
+      allconfigData = await ConfigGetter.readConfigurationFile('Mobile');
       TestScriptData.AllConfigData = await allconfigData;
       try {
         var defaultEnv = await allconfigData['DefaultSelectedEnvironment'];
@@ -60,15 +60,17 @@ export class TestScriptGetter {
         if (await allEnv.length > 0) {
           if (await defaultEnv === '' || await defaultEnv === undefined) {
             defaultEnv = await allEnv[0]['name'];
+            
           }
-          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name', await defaultEnv)
-          if (await index > -1) {
-            var appUrl = await allEnv[await index]['url'];
-            TestScriptData.AppUrl = await appUrl;
-          }
+          TestScriptData.SelectedEnvironment = await defaultEnv;
+        }
+        else{
+          TestScriptData.SelectedEnvironment = '';
         }
       }
       catch (error) { }
+      TestScriptData.SelectedScreenOption = allconfigData.DefaultExecutionPlatform;
+      await this.setDeviceInforMation(await allconfigData.DefaultExecutionPlatform,await allconfigData);
     }
 
   }
@@ -86,7 +88,7 @@ export class TestScriptGetter {
           backendApi = await Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'or/project/' + await selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.get(backendApi + 'or/project/' + await selectedProject + '/testingtype/Mobile', await headers);
         var orData = await serverResponse['data']
         TestScriptData.AllORData = await orData;
         var allKeys = await Object.keys(await orData);
@@ -116,7 +118,7 @@ export class TestScriptGetter {
           backendApi = await Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.get(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Mobile', await headers);
         var commonData = await serverResponse['data'];
         var allCommonKeys = await Object.keys(await commonData);
         var allCommonTestDataRow = [];
@@ -146,7 +148,7 @@ export class TestScriptGetter {
   }
 
   async getTestScriptListFromComponent(componentName) {
-    var allTestID = await DataGetter.getUITestScriptIDfromallComponent(await componentName, 'Web');
+    var allTestID = await DataGetter.getUITestScriptIDfromallComponent(await componentName, 'Mobile');
     TestScriptData.AllTestId = await allTestID['allTestId'];
     TestScriptData.AllTestIdWithName = await allTestID['testIdWithName'];
   }
@@ -163,7 +165,7 @@ export class TestScriptGetter {
           backendAPI = await Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendAPI + 'components/project/' + selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.get(backendAPI + 'components/project/' + selectedProject + '/testingtype/Mobile', await headers);
         TestScriptData.AllComponentList = await serverResponse['data'];
       }
       catch (error) {
@@ -180,7 +182,7 @@ export class TestScriptGetter {
       var testID = TestScriptData.TestId;
       var testIdIndex = await GetData.getIndexForMatchingKeyValueinJsonArray(TestScriptData.AllTestIdWithName, 'testid', testID);
       TestScriptData.TestName = TestScriptData.AllTestIdWithName[testIdIndex]['testname'];
-      var existingTestDetails = await DataGetter.getTestDetailsInJson(TestScriptData.SelectedComponent, testID, TestScriptData.TestName, 'Web');
+      var existingTestDetails = await DataGetter.getTestDetailsInJson(TestScriptData.SelectedComponent, testID, TestScriptData.TestName, 'Mobile');
       TestScriptData.ListOfTestSteps = await existingTestDetails['allsteps'];
       TestScriptData.DependentCustomFunction = await existingTestDetails['dependentpage'];
       TestScriptData.TestDataTableHeader = await existingTestDetails['testdatacolumn'];
@@ -188,16 +190,9 @@ export class TestScriptGetter {
     }
   }
 
-  async isValidUrl(urlString) {
-    // var urlPattern = new RegExp('^(https?:\\/\\/)?' + // validate protocol
-    //   '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
-    //   '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
-    //   '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
-    //   '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
-    //   '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
-    // return !!urlPattern.test(urlString);
-    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString);
-  }
+  // async isValidUrl(urlString) {
+  //   return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString);
+  // }
 
   async isDataFilledforDependendentPage() {
     try {
@@ -239,25 +234,26 @@ export class TestScriptGetter {
     else {
       try {
         var selectedProject = await  localStorage.getItem('UserSelectedAccount');
-        var appUrl = await TestScriptData.AppUrl;
+        var appUrl =''
+        //var appUrl = await TestScriptData.AppUrl;
         var screen = await TestScriptData.SelectedScreenOption;
         var device = await TestScriptData.SelectedDevice;
         var degugDetails = { Step: '', Status: '', Message: '' };
-        degugDetails.Step = "Launch Application " + appUrl;
+        degugDetails.Step = "Launch Mobile Application " + appUrl;
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
           backendApi = Config.remoteBackendAPI;
         }
         var dataforSend = {};
-        appUrl = await GetData.generateLOcalApplicationUrl(await appUrl);
-        dataforSend['applicationurl'] = await appUrl;
-        dataforSend['screen'] = await screen;
-        dataforSend['browser'] = await device;
+        //appUrl = await GetData.generateLOcalApplicationUrl(await appUrl);
+        dataforSend['platform'] = await screen;
+        dataforSend['device'] = await device;
+        dataforSend['environment'] = await TestScriptData.SelectedEnvironment;
         dataforSend['userEmail'] = await Users.userEmail;
         dataforSend['projectName'] = await selectedProject;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'uidebug/debuggerwindow', await headers, await dataforSend);
+        var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debuggerwindow', await headers, await dataforSend);
         var driverDetails = await serverResponse['data'];
         degugDetails.Status = await driverDetails['status'];
         degugDetails.Message = await driverDetails['message'];
@@ -269,75 +265,6 @@ export class TestScriptGetter {
         Config.ErrorMessage = await error.message;
       }
     }
-  }
-
-  async GetAllDeviceAndBrowser(screenName) {
-    if (Config.isDemo) {
-      switch (await screenName.toString().trim().toLowerCase()) {
-        case "desktop":
-          TestScriptData.DeviceList = ['Chrome', 'Firefox', 'Edge', 'Safari'];
-          TestScriptData.SelectedDevice = 'Chrome'
-          break;
-        case "mobile":
-          TestScriptData.DeviceList = ['iPhone 14'];
-          TestScriptData.SelectedDevice = 'iPhone 14'
-          break;
-        case "tablet":
-          TestScriptData.DeviceList = ['iPad Air'];
-          TestScriptData.SelectedDevice = 'iPad Air'
-          break;
-        default:
-          break;
-
-      }
-    }
-    else {
-      var allconfigData = await TestScriptData.AllConfigData;
-      switch (await screenName.toString().trim().toLowerCase()) {
-        case "desktop":
-          TestScriptData.DeviceList = ['Chrome', 'Firefox', 'Edge', 'Safari'];
-          TestScriptData.SelectedDevice = 'Chrome'
-          break;
-        default:
-          if (await allconfigData['Emulator'] === undefined) {
-            TestScriptData.DeviceList = [];
-            TestScriptData.SelectedDevice = '';
-          }
-          else {
-            var allMobileDevice = [];
-            var allTabletDevice = [];
-            var allEmulator = await allconfigData['Emulator'];
-            for (let i = 0; i < await allEmulator.length; i++) {
-              var deviceType = await allEmulator[i]['device'];
-              switch (deviceType.toString()) {
-                case "Mobile":
-                  allMobileDevice.push(await allEmulator[i]['name']);
-                  break;
-                case "Tablet":
-                  allTabletDevice.push(await allEmulator[i]['name']);
-                  break;
-                default:
-                  break;
-              }
-            }
-            if (screenName === 'Mobile') {
-              TestScriptData.DeviceList = await allMobileDevice;
-            }
-            if (screenName === 'Tablet') {
-              TestScriptData.DeviceList = await allTabletDevice;
-            }
-            if (await TestScriptData.DeviceList.length > 0) {
-              TestScriptData.SelectedDevice = await TestScriptData.DeviceList[0];
-            }
-            else {
-              TestScriptData.SelectedDevice = '';
-            }
-          }
-          break;
-
-      }
-    }
-
   }
 
   async getPageFunctionList() {
@@ -356,7 +283,7 @@ export class TestScriptGetter {
           backendApi = Config.remoteBackendAPI;
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page', await headers);
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/Page', await headers);
         var customFunctionData = await serverResponse['data'];
         TestScriptData.ListOfPageFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -402,7 +329,7 @@ export class TestScriptGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/Page/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         return await customFunctionData['argumentlist'];
       }
@@ -446,7 +373,7 @@ export class TestScriptGetter {
           dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement;
           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
           if (!saveOrData['isFileSaved']) {
             Config.ErrorMessage = await saveOrData['errorMessage'];
@@ -457,7 +384,7 @@ export class TestScriptGetter {
           dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await TestScriptData.TestDataToAdd
           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-          serverResponse = await restAPI.post(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+          serverResponse = await restAPI.post(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Mobile', await headers, await dataforSend);
           saveFile = await serverResponse['data'];
           if (!saveFile['isFileSaved']) {
             Config.ErrorMessage = await saveFile['errorMessage'];
@@ -473,11 +400,11 @@ export class TestScriptGetter {
             dataforSend['pagename'] = await testscriptData['dependentpage']
             dataforSend['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA']
             headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/createpagefunctionfromtestscript', await headers, await dataforSend);
+            serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/createpagefunctionfromtestscript', await headers, await dataforSend);
           }
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Web', await headers, await testscriptData);
+        serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + TestScriptData.SelectedComponent + '/testId/' + TestScriptData.TestId.trim() + '@' + TestScriptData.TestName.trim() + '/project/' + selectedProject + '/testingtype/Mobile', await headers, await testscriptData);
         saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -517,7 +444,7 @@ export class TestScriptGetter {
           backendAPI = await Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.delete(backendAPI + 'testscripts/component/' + componentName + '/testId/' + testId + '@' + testName + '/project/' + selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.delete(backendAPI + 'testscripts/component/' + componentName + '/testId/' + testId + '@' + testName + '/project/' + selectedProject + '/testingtype/Mobile', await headers);
         var deleteFile = await serverResponse['data'];
         Config.ErrorMessage = await deleteFile['errorMessage'];
         return await deleteFile['isFileDeleted'];
@@ -547,7 +474,7 @@ export class TestScriptGetter {
         }
         var testDetails = { oldName: existingTestId + '@' + oldName, newName: existingTestId + '@' + newtestName };
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + componentName + '/project/' + selectedProject + '/testingtype/Web/rename', await headers, await testDetails);
+        var serverResponse = await restAPI.post(backendApi + 'testscripts/component/' + componentName + '/project/' + selectedProject + '/testingtype/Mobile/rename', await headers, await testDetails);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -575,7 +502,7 @@ export class TestScriptGetter {
         dataforSend['userEmail'] = await Users.userEmail;
         dataforSend['projectName'] = await selectedProject;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'uidebug/debuggerwindow/quit', await headers, await dataforSend);
+        var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debuggerwindow/quit', await headers, await dataforSend);
         var saveFile = await serverResponse['data'];
         return await saveFile;
       }
@@ -607,7 +534,7 @@ export class TestScriptGetter {
         dataforSend['commonTestData'] = await TestScriptData.CommonTestDataWithKeyValue;
         dataforSend['testSpecificData'] = await testSpecificData;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'uidebug/debugstep', await headers, await dataforSend);
+        var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debugstep', await headers, await dataforSend);
         var driverDetails = await serverResponse['data'];
         var degugDetails = { Step: '', Status: '', Message: '' };
         if (await isPageFunction) {
@@ -679,9 +606,9 @@ export class TestScriptGetter {
         }
         var testscriptData = {};
         testscriptData['step'] = await testStep;
-        testscriptData['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA'];
+        testscriptData['elementtag'] = await TestScriptData.AllConfigData['ELEMENTTAGDATA'];
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail, account: Config.SelectedProject };
-        var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, await testscriptData);
+        var serverResponse = await restAPI.post(backendAPI + 'mobileaistep/step', await headers, await testscriptData);
         var allAIDetails = await serverResponse['data'];
         return await allAIDetails;
       }
@@ -950,13 +877,13 @@ export class TestScriptGetter {
   {
     if(Config.isDemo)
     {
-      TestScriptData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector'];
+      TestScriptData.AllLocatorList = ['id','name','xpath','text',,'class'];
     }
     else{
       var allLOc = await TestScriptData.AllConfigData['Locator'];
       if(await allLOc === undefined)
       {
-        TestScriptData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector'];
+        TestScriptData.AllLocatorList = ['id','name','xpath','text',,'class'];
       }
       else{
         TestScriptData.AllLocatorList = await allLOc;
@@ -964,8 +891,46 @@ export class TestScriptGetter {
     }
   }
 
+  async setDeviceInforMation(platform,allConFigData) {
+    if (Config.isDemo) {
+      switch (platform) {
+        case "Android":
+          TestScriptData.DeviceList = ['One plus 9R', 'Pixel 3'];
+          TestScriptData.SelectedDevice = 'Pixel 3';
+          break;
+        case "iOS":
+          TestScriptData.DeviceList = ['iPhone 12', 'iPhone 14'];
+          TestScriptData.SelectedDevice = 'iPhone 14';
+          break;
+        default:
+          TestScriptData.DeviceList = [];
+          TestScriptData.SelectedDevice = '';
+          break;
+      }
+    }
+    else {
+      var allDevice =[];
+       var allDeviceDetails = await allConFigData['Emulator'];
+       for(let i=0;i<await allDeviceDetails.length;i++)
+       {
+         if(await allDeviceDetails[i]['platform'] === await platform)
+         {
+          allDevice.push(await allDeviceDetails[i]['name']);
+         }
+       }
+       if(await allDevice.length >0)
+       {
+        TestScriptData.DeviceList = await allDevice;
+        TestScriptData.SelectedDevice = await allDevice[0];
+       }
+       else{
+        TestScriptData.DeviceList = [];
+        TestScriptData.SelectedDevice = '';
+       }
 
+    }
 
+  }
 }
 export default new TestScriptGetter();
 

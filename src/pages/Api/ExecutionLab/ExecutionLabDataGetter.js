@@ -34,7 +34,7 @@ export class ExecutionLabDataGetter {
             ExecutionLabData.SelectedComponent = "All";
         }
         else {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+            var selectedProject = await localStorage.getItem('UserSelectedAccount');
             var backendAPI = await Config.backendAPI;
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
@@ -73,7 +73,7 @@ export class ExecutionLabDataGetter {
         var barChartDataForPass = {};
         var barChartDataForFail = {};
         var componentPassFailData = [];
-        var executionReportData ={}
+        var executionReportData = {}
         var status = "Pass";
         if (Config.isDemo) {
             var mockResultsData = {};
@@ -100,17 +100,16 @@ export class ExecutionLabDataGetter {
 
         }
         else {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+            var selectedProject = await localStorage.getItem('UserSelectedAccount');
             var requestBody = {};
             requestBody['environment'] = await environment;
             requestBody['threadCount'] = await threadCount;
             requestBody['testingType'] = await testingType;
             requestBody['reportInDashBoard'] = await reportInDashBoard;
-            var testScriptCollection =[];
-            for (let i = 0; i < await selectedScripts.length; i++) 
-            {
-               var testDetails = await allTestScripts[Number(await selectedScripts[await i])-1];
-               testScriptCollection.push(await testDetails);
+            var testScriptCollection = [];
+            for (let i = 0; i < await selectedScripts.length; i++) {
+                var testDetails = await allTestScripts[Number(await selectedScripts[await i]) - 1];
+                testScriptCollection.push(await testDetails);
             }
             requestBody['testscriptforExecution'] = await testScriptCollection;
             var backendAPI = await Config.backendAPI;
@@ -119,13 +118,19 @@ export class ExecutionLabDataGetter {
             }
             var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
             var serverResponse = await restAPI.post(backendAPI + 'apiexecutor/project/' + selectedProject, await headers, await requestBody);
-             executionReportData = await serverResponse['data'];
+            executionReportData = await serverResponse['data'];
+            ExecutionLabData.GlobalErrorMessage = await executionReportData['globalError'];
+            if (await executionReportData['globalError'] !== '') {
+                ExecutionLabData.IsGlobalError = true;
+                return;
+            }
+            ExecutionLabData.IsGlobalError = false;
+            ExecutionLabData.GlobalErrorMessage = '';
             //update status
-            for (let i = 0; i < await selectedScripts.length; i++) 
-            {
-               allTestScripts[Number(await selectedScripts[await i])-1]['status'] = await executionReportData['listOfTestScipts'][i]['status'];
-               ExecutionLabData.AssertionResultsForAllResults[await selectedScripts[i]] = await executionReportData['testscriptAssertionData'][i+1];
-               ExecutionLabData.ResponseDataForAllResults[await selectedScripts[i]] = await executionReportData['testscriptResponseData'][i+1];
+            for (let i = 0; i < await selectedScripts.length; i++) {
+                allTestScripts[Number(await selectedScripts[await i]) - 1]['status'] = await executionReportData['listOfTestScipts'][i]['status'];
+                ExecutionLabData.AssertionResultsForAllResults[await selectedScripts[i]] = await executionReportData['testscriptAssertionData'][i + 1];
+                ExecutionLabData.ResponseDataForAllResults[await selectedScripts[i]] = await executionReportData['testscriptResponseData'][i + 1];
             }
 
         }
@@ -135,7 +140,7 @@ export class ExecutionLabDataGetter {
         ExecutionLabData.ListOfTestScripts = allTestScripts;
         for (let i = 0; i < allTestScripts.length; i++) {
             var componentName = await allTestScripts[i]['component'];
-             status = await allTestScripts[i]['status'];
+            status = await allTestScripts[i]['status'];
             if (status === "Pass") {
                 totalPass = totalPass + 1;
                 if (barChartDataForPass[componentName] === undefined)
@@ -161,19 +166,19 @@ export class ExecutionLabDataGetter {
 
         ///********* update Execution time and Graph Data **********************************************
 
-    //*** ExecutionTimeData****************************************************************
-    var componentExecutionData = await executionReportData['executionTimeForComponent'];
-    var componentPassDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await componentExecutionData);
-    ExecutionLabData.ExecutionTimeGraphXaxis= await await componentPassDataxandyAxis['key'];
-    var executiontimeYaxisData =[];
-    executiontimeYaxisData.push(await componentPassDataxandyAxis['value']);
-    ExecutionLabData.ExecutionTimeGraphYaxis = await executiontimeYaxisData;
+        //*** ExecutionTimeData****************************************************************
+        var componentExecutionData = await executionReportData['executionTimeForComponent'];
+        var componentPassDataxandyAxis = await GetData.getAllKeyValueInJsonArrayFromJsonObject(await componentExecutionData);
+        ExecutionLabData.ExecutionTimeGraphXaxis = await await componentPassDataxandyAxis['key'];
+        var executiontimeYaxisData = [];
+        executiontimeYaxisData.push(await componentPassDataxandyAxis['value']);
+        ExecutionLabData.ExecutionTimeGraphYaxis = await executiontimeYaxisData;
 
     }
 
     async createTestSuiteForSpecificComponent(componentName, rowId = 1) {
         var allTestScripts = [];
-        var rowData ={}
+        var rowData = {}
         if (Config.isDemo) {
             var randomRowCount = await DataGeneratorUtility.getNumberFromRange(10, 20);
             for (let i = 0; i < randomRowCount; i++) {
@@ -187,7 +192,7 @@ export class ExecutionLabDataGetter {
             }
         }
         else {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+            var selectedProject = await localStorage.getItem('UserSelectedAccount');
             var allComponentTestDetails = await GetData.getListOfTestIdAndTestName(selectedProject, 'Api', componentName);
             for (let i = 0; i < allComponentTestDetails.length; i++) {
                 rowData = { id: rowId, component: await componentName, testid: await allComponentTestDetails[i]['testid'], testname: await allComponentTestDetails[i]['testname'], status: '' }

@@ -47,8 +47,8 @@ export var CustomFunctionData = {
     IsErrorOnNewName:false,
     NewName:'',
     IsNewNameSectionDisplayed:false,
-    ScreenOptionList:['Desktop','Mobile','Tablet'],
-    SelectedScreenOption:'Desktop',
+    ScreenOptionList:['Android','iOS'],
+    SelectedScreenOption:'',
     DeviceList:['Chrome','Firefox','Edge','Safari'],
     SelectedDevice:'Chrome',
     AllConfigData:{},
@@ -64,4 +64,5 @@ export var CustomFunctionData = {
     SelectedWebActionCategoryID:0,
     SelectedWebActionName:'',
     SelectedWebActionRowId:-1,
+    SelectedEnvironment:'',
 };

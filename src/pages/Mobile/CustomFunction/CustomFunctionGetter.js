@@ -12,7 +12,7 @@ export class CustomFunctionGetter {
   async loadCustomFunctionPage() {
     var allconfigData = null;
     if (!Config.isDemo) {
-      allconfigData = await ConfigGetter.readConfigurationFile('Web');
+      allconfigData = await ConfigGetter.readConfigurationFile('Mobile');
       CustomFunctionData.AllConfigData = await allconfigData;
     }
     await this.closeDebuggerWindow();
@@ -21,7 +21,7 @@ export class CustomFunctionGetter {
     await this.getallORDATA();
     await this.setLocator();
     //await DataGetter.GetAllActions();
-    var allWebActionList = await DataGetter.GetAllWebActions();
+    var allWebActionList = await DataGetter.GetAllMobileActions();
     CustomFunctionData.UIActionList = await allWebActionList;
     await this.getallCommonDATA();
   }
@@ -42,7 +42,7 @@ export class CustomFunctionGetter {
       try {
         var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + await CustomFunctionData.ReusableType, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfCustomFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -73,7 +73,7 @@ export class CustomFunctionGetter {
       try {
         var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.get(backendApi + 'testdata/project/' + selectedProject + '/testingtype/Mobile', await headers);
         var commonData = await serverResponse['data'];
         CustomFunctionData.CommonTestDataWithKeyValue = await commonData;
       }
@@ -103,7 +103,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfTestSteps = await customFunctionData['allsteps'];
         if (CustomFunctionData.ReusableType === 'Page') {
@@ -133,7 +133,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers);
+        var serverResponse = await restAPI.get(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers);
         var orData = await serverResponse['data'];
         CustomFunctionData.AllORData = await orData;
         var allKeys = await Object.keys(await orData);
@@ -171,10 +171,6 @@ export class CustomFunctionGetter {
     }
   }
 
-  async isValidUrl(urlString) {
-    return await /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(await urlString);
-  }
-
   async isDataFilledforDependendentAPITable() {
     var allData = CustomFunctionData.DependentCustomFunction;
     for (let i = 0; i < allData.length; i++) {
@@ -193,24 +189,24 @@ export class CustomFunctionGetter {
     else {
       try {
         var selectedProject = await  localStorage.getItem('UserSelectedAccount');
-        var appUrl = await CustomFunctionData.AppUrl;
+        var appUrl = '';
         var screen = await CustomFunctionData.SelectedScreenOption;
         var device = await CustomFunctionData.SelectedDevice;
         var degugDetails = { Step: '', Status: '', Message: '' };
-        degugDetails.Step = "Launch Application " + appUrl;
+        degugDetails.Step = "Launch Mobile application ";
         var backendApi = Config.backendAPI;
         var backendServiceLocation = await Config.backendServiceAt;
         if (backendServiceLocation === 'remote') {
           backendApi = Config.remoteBackendAPI;
         }
         var dataforSend = {};
-        dataforSend['applicationurl'] = await appUrl;
-        dataforSend['screen'] = await screen;
-        dataforSend['browser'] = await device;
+        dataforSend['platform'] = await screen;
+        dataforSend['device'] = await device;
+        dataforSend['environment'] = await CustomFunctionData.SelectedEnvironment;
         dataforSend['userEmail'] = await Users.userEmail;
         dataforSend['projectName'] = await selectedProject;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'uidebug/debuggerwindow', await headers, await dataforSend);
+        var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debuggerwindow', await headers, await dataforSend);
         var driverDetails = await serverResponse['data'];
         degugDetails.Status = await driverDetails['status'];
         degugDetails.Message = await driverDetails['message'];
@@ -240,7 +236,7 @@ export class CustomFunctionGetter {
         dataforSend['userEmail'] = await Users.userEmail;
         dataforSend['projectName'] = await selectedProject;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        await restAPI.post(backendApi + 'uidebug/debuggerwindow/quit', await headers, await dataforSend);
+        await restAPI.post(backendApi + 'mobiledebug/debuggerwindow/quit', await headers, await dataforSend);
       }
       catch (error) {
         Config.ErrorMessage = await error.message;
@@ -301,7 +297,7 @@ export class CustomFunctionGetter {
           var dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement
           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Web', await headers, await dataforSend);
+          serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
           if (!await saveOrData['isFileSaved']) {
             Config.ErrorMessage = await saveOrData['errorMessage'];
@@ -309,7 +305,7 @@ export class CustomFunctionGetter {
           }
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
+        serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + pageFunctionType, await headers, await fileData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -389,7 +385,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.delete(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await CustomFunctionData.SelectedCustomFunction, await headers);
+        var serverResponse = await restAPI.delete(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + CustomFunctionData.ReusableType + '/name/' + await CustomFunctionData.SelectedCustomFunction, await headers);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileDeleted'];
@@ -418,7 +414,7 @@ export class CustomFunctionGetter {
         postData['oldName'] = CustomFunctionData.SelectedCustomFunction;
         postData['newName'] = CustomFunctionData.NewName;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/rename', await headers, await postData);
+        var serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + CustomFunctionData.ReusableType + '/rename', await headers, await postData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -474,7 +470,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         return await customFunctionData['argumentlist'];
       }
@@ -573,7 +569,7 @@ export class CustomFunctionGetter {
       dataforSend['commonTestData'] = await CustomFunctionData.CommonTestDataWithKeyValue;
       dataforSend['testSpecificData'] = await testSpecificData;
       var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-      var serverResponse = await restAPI.post(backendApi + 'uidebug/debugstep', await headers, await dataforSend);
+      var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debugstep', await headers, await dataforSend);
       var driverDetails = await serverResponse['data'];
       var degugDetails = { Step: '', Status: '', Message: '' };
       if (await isPageFunction) {
@@ -608,7 +604,7 @@ export class CustomFunctionGetter {
   async initializeCustomPage() {
     var allconfigData = null;
     if (!await Config.isDemo) {
-      allconfigData = await ConfigGetter.readConfigurationFile('Web');
+      allconfigData = await ConfigGetter.readConfigurationFile('Mobile');
       CustomFunctionData.AllConfigData = await allconfigData;
       try {
         var defaultEnv = await allconfigData['DefaultSelectedEnvironment'];
@@ -617,30 +613,72 @@ export class CustomFunctionGetter {
           if (await defaultEnv === '' || await defaultEnv === undefined) {
             defaultEnv = await allEnv[0]['name'];
           }
-          var index = await GetData.getIndexForMatchingKeyValueinJsonArray(await allEnv, 'name', await defaultEnv)
-          if (await index > -1) {
-            var appUrl = await allEnv[await index]['url'];
-            CustomFunctionData.AppUrl = await appUrl;
-          }
+          CustomFunctionData.SelectedEnvironment = await defaultEnv;
+        }
+        else{
+          CustomFunctionData.SelectedEnvironment = '';
         }
       }
       catch (error) { }
+      CustomFunctionData.SelectedScreenOption = allconfigData.DefaultExecutionPlatform;
+      await this.setDeviceInforMation(await allconfigData.DefaultExecutionPlatform,await allconfigData);
     }
 
   }
   async setLocator() {
     if (Config.isDemo) {
-      CustomFunctionData.AllLocatorList =['id','name','xpath','linktext','partiallinktext','class','cssselector']
+      CustomFunctionData.AllLocatorList =['id','name','xpath','text','class']
     }
     else {
       var allLOc = await CustomFunctionData.AllConfigData['Locator'];
       if (await allLOc === undefined) {
-        CustomFunctionData.AllLocatorList = ['id','name','xpath','linktext','partiallinktext','class','cssselector']
+        CustomFunctionData.AllLocatorList =['id','name','xpath','text','class']
       }
       else {
         CustomFunctionData.AllLocatorList = await allLOc;
       }
     }
+  }
+
+  async setDeviceInforMation(platform,allConFigData) {
+    if (Config.isDemo) {
+      switch (platform) {
+        case "Android":
+          CustomFunctionData.DeviceList = ['One plus 9R', 'Pixel 3'];
+          CustomFunctionData.SelectedDevice = 'Pixel 3';
+          break;
+        case "iOS":
+          CustomFunctionData.DeviceList = ['iPhone 12', 'iPhone 14'];
+          CustomFunctionData.SelectedDevice = 'iPhone 14';
+          break;
+        default:
+          CustomFunctionData.DeviceList = [];
+          CustomFunctionData.SelectedDevice = '';
+          break;
+      }
+    }
+    else {
+      var allDevice =[];
+       var allDeviceDetails = await allConFigData['Emulator'];
+       for(let i=0;i<await allDeviceDetails.length;i++)
+       {
+         if(await allDeviceDetails[i]['platform'] === await platform)
+         {
+          allDevice.push(await allDeviceDetails[i]['name']);
+         }
+       }
+       if(await allDevice.length >0)
+       {
+        CustomFunctionData.DeviceList = await allDevice;
+        CustomFunctionData.SelectedDevice = await allDevice[0];
+       }
+       else{
+        CustomFunctionData.DeviceList = [];
+        CustomFunctionData.SelectedDevice = '';
+       }
+
+    }
+
   }
 }
 

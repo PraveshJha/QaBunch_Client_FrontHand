@@ -36,8 +36,8 @@ export var TestScriptData = {
     TestingMethod:'Unit Testing',
     DependentCustomFunction:[],
     SelectedRowFromDependentCustomFunctionTable:'',
-    ScreenOptionList:['Desktop','Mobile','Tablet'],
-    SelectedScreenOption:'Desktop',
+    ScreenOptionList:['Android','iOS'],
+    SelectedScreenOption:'',
     DeviceList:['Chrome'],
     SelectedDevice:'Chrome',
     AllConfigData:{},
@@ -66,4 +66,5 @@ export var TestScriptData = {
     SelectedWebActionCategoryID:0,
     SelectedWebActionName:'',
     SelectedWebActionRowId:-1,
+    SelectedEnvironment:'',
 };

@@ -4,8 +4,5 @@ export var ORData = {
     IsDataValidInORTable:true,
     NewAndUpdatedElement:{},
     DeletedKey:[],
-    ORElementTagData:[],
-    ORTagDataToSave :{},
-    AllLocatorList:[],
-    AllConfigData:{},
+    AllLocatorList:[]
 };

@@ -8,7 +8,7 @@ export const Config = {
 	"backendServiceAt": "remote", //local or remote
 	"fileSystemtechniques": "api", //local or api,
 	"isManualComponentDisplayed": true,
-	"isMobileComponentDisplayed": false,
+	"isMobileComponentDisplayed": true,
 	"isAutomationComponentDisplayed": true,
 	"isUIComponentDisplayed": true,
 	"isApiComponentDisplayed": true,

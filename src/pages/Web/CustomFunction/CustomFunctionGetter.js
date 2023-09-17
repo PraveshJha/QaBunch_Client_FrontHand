@@ -42,7 +42,7 @@ export class CustomFunctionGetter {
       try {
         var selectedProject = await  localStorage.getItem('UserSelectedAccount');
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + await CustomFunctionData.ReusableType, await headers);
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + await CustomFunctionData.ReusableType, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfCustomFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -103,7 +103,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         CustomFunctionData.ListOfTestSteps = await customFunctionData['allsteps'];
         if (CustomFunctionData.ReusableType === 'Page') {
@@ -309,7 +309,7 @@ export class CustomFunctionGetter {
           }
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + pageFunctionType, await headers, await fileData);
+        serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + pageFunctionType, await headers, await fileData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -389,7 +389,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.delete(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await CustomFunctionData.SelectedCustomFunction, await headers);
+        var serverResponse = await restAPI.delete(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + CustomFunctionData.ReusableType + '/name/' + await CustomFunctionData.SelectedCustomFunction, await headers);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileDeleted'];
@@ -418,7 +418,7 @@ export class CustomFunctionGetter {
         postData['oldName'] = CustomFunctionData.SelectedCustomFunction;
         postData['newName'] = CustomFunctionData.NewName;
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/rename', await headers, await postData);
+        var serverResponse = await restAPI.post(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + CustomFunctionData.ReusableType + '/rename', await headers, await postData);
         var saveFile = await serverResponse['data'];
         Config.ErrorMessage = await saveFile['errorMessage'];
         return await saveFile['isFileSaved'];
@@ -474,7 +474,7 @@ export class CustomFunctionGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/' + CustomFunctionData.ReusableType + '/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         return await customFunctionData['argumentlist'];
       }

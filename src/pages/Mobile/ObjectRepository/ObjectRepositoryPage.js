@@ -25,7 +25,7 @@ import { LoaderMessage } from '../../LoaderMessage';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "react-widgets/styles.css";
-import { ORTableHeader, ORElementTagHeader } from '../MobilePageTableHeader'
+import { ORTableHeader } from '../MobilePageTableHeader'
 
 
 class ObjectRepositoryPage extends React.Component {
@@ -41,8 +41,6 @@ class ObjectRepositoryPage extends React.Component {
       allORTableData: ORData.AllORTableData,
       selectedRowFromORTable: ORData.SelectedRowFromORTable,
       isDataValidInORTable: ORData.IsDataValidInORTable,
-      oRElementTagData: ORData.ORElementTagData,
-      oRTagDataToSave: ORData.ORTagDataToSave,
 
     };
 
@@ -58,9 +56,6 @@ class ObjectRepositoryPage extends React.Component {
     this.setState({ selectedRowFromORTable: ORData.SelectedRowFromORTable });
     this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
     this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
-    this.setState({ oRElementTagData: ORData.ORElementTagData });
-    this.setState({ oRTagDataToSave: ORData.ORTagDataToSave });
-
   }
 
   //************************* Notification ***************************************************************
@@ -97,7 +92,7 @@ class ObjectRepositoryPage extends React.Component {
     }
     this.setState({ isDataValidInORTable: true });
     var lastId = dataDetails.length + 1;
-    var newRow = { id: lastId, name: '', locator: '', locatorproperty: '', alternatexpath: '' };
+    var newRow = { id: lastId, name: '', issame:'N',locator: '', locatorproperty: '',ioslocator:'',ioslocatorproperty:'', alternatexpath: '' };
     this.setState({ allORTableData: [...this.state.allORTableData, newRow] });
     ORData.AllORTableData.push(newRow);
   }
@@ -133,7 +128,9 @@ class ObjectRepositoryPage extends React.Component {
         var name = dataDetails[dataDetails.length - 1]['name'];
         var locator = dataDetails[dataDetails.length - 1]['locator'];
         var locatorproperty = dataDetails[dataDetails.length - 1]['locatorproperty'];
-        if (name.toString().trim() === "" || locator.toString().trim() === '' || locatorproperty.toString().trim() === '') {
+        var ioslocator = dataDetails[dataDetails.length - 1]['ioslocator'];
+        var ioslocatorproperty = dataDetails[dataDetails.length - 1]['ioslocatorproperty'];
+        if (name.toString().trim() === "" || locator.toString().trim() === '' || locatorproperty.toString().trim() === '' || ioslocator.toString().trim() === '' || ioslocatorproperty.toString().trim() === '') {
           return await this.getNotification('error', "Please add correct details in 'Object Repository' table section");
         }
       }
@@ -157,32 +154,6 @@ class ObjectRepositoryPage extends React.Component {
       return await this.getNotification('error', "Please add the correct information in 'Object Repository' table");
     }
   }
-
-  saveElementTagData = async (event) => {
-    await event.preventDefault();
-    var dataDetails = this.state.oRElementTagData;
-    for (let i = 0; i < await dataDetails.length; i++) {
-      var tagName = dataDetails[i]['tag'];
-      var iostagName = dataDetails[i]['iostag'];
-      if (await tagName.toString().trim() === '' ) {
-        return await this.getNotification('error', "Tag name can not blank.Please add correct tag name 'SET UP TAG FOR AUTOMATIC WEB ELEMENT CREATION' in table");
-      }
-    }
-    var allKeys = await Object.keys(await ORData.ORTagDataToSave);
-    if (await allKeys.length === 0) {
-      return await this.getNotification('warning', "No changes to save.");
-    }
-    this.setState({ isPageLoading: true });
-    var isSaved = await ORGetter.saveORTagData();
-    this.setState({ isPageLoading: false });
-    if (isSaved) {
-      return await this.getNotification('success', 'Tag name is successfully updated.');
-    }
-    else {
-      return await this.getNotification('error', 'Unable to save tag name because of ' + Config.ErrorMessage);
-    }
-  }
-
 
   //****************** End */********************************** */
 
@@ -241,79 +212,42 @@ class ObjectRepositoryPage extends React.Component {
                             }
                             var rowNo = Number(row.id) - 1;
                             var elementName = this.state.allORTableData[rowNo]['name'];
+                            var elementProperty = {}
                             if (elementName !== undefined) {
-                              var elementProperty = {}
+                              elementProperty['issame'] = 'N';
                               elementProperty['locator'] = this.state.allORTableData[rowNo]['locator'];
                               elementProperty['locatorproperty'] = this.state.allORTableData[rowNo]['locatorproperty'];
+                              elementProperty['ioslocator'] = this.state.allORTableData[rowNo]['ioslocator'];
+                              elementProperty['ioslocatorproperty'] = this.state.allORTableData[rowNo]['ioslocatorproperty'];
                               elementProperty['alternatexpath'] = this.state.allORTableData[rowNo]['alternatexpath'];
+                              if(ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] === undefined)
+                              {
+                                ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] ={}
+                              }
                               ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] = elementProperty;
                             }
-
+                            if(column.dataField ==='issame')
+                            {
+                              if(newValue ==='Y')
+                              {
+                                this.state.allORTableData[rowNo]['issame'] ='Y'
+                                this.state.allORTableData[rowNo]['ioslocator'] = this.state.allORTableData[rowNo]['locator'];
+                                this.state.allORTableData[rowNo]['ioslocatorproperty']= this.state.allORTableData[rowNo]['locatorproperty'];
+                                elementProperty['issame'] = 'Y'
+                                elementProperty['ioslocator'] = this.state.allORTableData[rowNo]['ioslocator'];
+                                elementProperty['ioslocatorproperty'] = this.state.allORTableData[rowNo]['ioslocatorproperty'];
+                                ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] = elementProperty;
+                              }
+                              else{
+                                this.state.allORTableData[rowNo]['issame'] ='N'
+                                elementProperty['issame'] = 'N'
+                                ORData.NewAndUpdatedElement[elementName.toString().toUpperCase()] = elementProperty;
+                              }
+                            }
                           },
                         })}
                         pagination={paginationFactory()}
                         filter={filterFactory()}
-                      />
-                    </Col>
-                  </CardBody>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={12} md={12} sm={12} xs={12}>
-              <Card>
-                <CardHeader>
-                  <div className="d-flex justify-content-between align-items-center">
-                    Set up tag for automatic mobile element creation
-                    <ButtonGroup size="sm">
-                      <Button color='black' onClick={this.saveElementTagData.bind(this)}>
-                        <small>Save</small>
-                      </Button>
-                    </ButtonGroup>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <CardBody>
-                    <Col>
-                      <BootstrapTable
-                        keyField='id'
-                        data={this.state.oRElementTagData}
-                        columns={ORElementTagHeader}
-                        wrapperClasses="table-responsive"
-                        striped
-                        hover
-                        condensed
-                        cellEdit={cellEditFactory({
-                          mode: 'click',
-                          blurToSave: true,
-                          afterSaveCell: (oldValue, newValue, row, column) => {
-                            if (column.dataField === 'tag') {
-                              var type = row.type;
-                              var tag = row.tag;
-                              if (tag !== '') {
-                                if(ORData.ORTagDataToSave[type] ===undefined)
-                                {
-                                  ORData.ORTagDataToSave[type]={}
-                                }
-                                ORData.ORTagDataToSave[type]["TAG"] = tag;
-                                ORData.ORTagDataToSave[type]["IOSTAG"] = row.iostag;
-                              }
-                            }
-                            if (column.dataField === 'iostag') {
-                              var type = row.type;
-                              var tag = row.iostag;
-                              if (tag !== '') {
-                                if(ORData.ORTagDataToSave[type] ===undefined)
-                                {
-                                  ORData.ORTagDataToSave[type]={}
-                                }
-                                ORData.ORTagDataToSave[type]["TAG"] = row.tag;
-                                ORData.ORTagDataToSave[type]["IOSTAG"] = tag;
-                              }
-                            }
-                          },
-                        })}
                       />
                     </Col>
                   </CardBody>

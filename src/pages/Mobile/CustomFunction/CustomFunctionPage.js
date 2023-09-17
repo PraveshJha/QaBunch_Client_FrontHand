@@ -93,8 +93,6 @@ class CustomFunctionPage extends React.Component {
       isValidComponentName: CustomFunctionData.IsValidComponentName,
 
       //**** Debug your Test *************************************************************
-      isErrorOnAppUrl: CustomFunctionData.IsErrorOnAppUrl,
-      appUrl: CustomFunctionData.AppUrl,
       testingMethod: CustomFunctionData.TestingMethod,
       screenOptionList: CustomFunctionData.ScreenOptionList,
       selectedScreenOption: CustomFunctionData.SelectedScreenOption,
@@ -183,8 +181,6 @@ class CustomFunctionPage extends React.Component {
     this.setState({ isValidComponentName: CustomFunctionData.IsValidComponentName });
 
     //**** Debug your Test *************************************************************
-    this.setState({ appUrl: CustomFunctionData.AppUrl });
-    this.setState({ isErrorOnAppUrl: CustomFunctionData.IsErrorOnAppUrl });
     this.setState({ testingMethod: CustomFunctionData.TestingMethod });
     this.setState({ screenOptionList: CustomFunctionData.ScreenOptionList });
     this.setState({ selectedScreenOption: CustomFunctionData.SelectedScreenOption });
@@ -474,27 +470,6 @@ class CustomFunctionPage extends React.Component {
 
   //**** Debug your Test *******************************************************************************
 
-  addApplicationUrl = async (event) => {
-    this.setState({ isErrorOnAppUrl: false })
-    var dataChoice = await event.target.value;
-    if (this.state.appUrl !== await dataChoice) {
-      this.setState({ appUrl: await dataChoice });
-      CustomFunctionData.AppUrl = await dataChoice;
-      if (await dataChoice.trim() === '') {
-        this.setState({ isErrorOnAppUrl: true });
-        return;
-      }
-      var isValid = await CustomFunctionGetter.isValidUrl(await dataChoice)
-      if (!isValid) {
-        this.setState({ isErrorOnAppUrl: true });
-      }
-      else {
-        this.setState({ isErrorOnAppUrl: false });
-      }
-    }
-
-  };
-
   selectTestingMethod = async (event) => {
     var selectedTestingType = await event.target.value;
     if (this.state.testingMethod !== await selectedTestingType) {
@@ -513,7 +488,7 @@ class CustomFunctionPage extends React.Component {
       CustomFunctionData.DeviceList = [];
       CustomFunctionData.SelectedDevice = ''
       this.setState({ selectedDevice: '' })
-      await CustomFunctionGetter.GetAllDeviceAndBrowser(await screenName);
+      await CustomFunctionGetter.setDeviceInforMation(await screenName,CustomFunctionData.AllConfigData)
       this.setState({ deviceList: CustomFunctionData.DeviceList })
       this.setState({ selectedDevice: CustomFunctionData.SelectedDevice })
     }
@@ -840,15 +815,6 @@ class CustomFunctionPage extends React.Component {
   openDebuggerWindow = async (event) => {
     await event.preventDefault();
     if (!await this.state.isInspectorWindowOpen) {
-      var applicationUrl = this.state.appUrl;
-      if (applicationUrl.toString().trim() === '') {
-        return await this.getNotification('error', "Application Url can not be blank.");
-      }
-      if (this.state.isErrorOnAppUrl) {
-        return await this.getNotification('error', "Please add correct application url details");
-      }
-      this.setState({ appUrl: applicationUrl });
-      CustomFunctionData.AppUrl = await applicationUrl;
       //@ check Screen
       var screen = await this.state.selectedScreenOption;
       if (await screen === '') {
@@ -857,6 +823,10 @@ class CustomFunctionPage extends React.Component {
       var device = await this.state.selectedDevice;
       if (await device === '') {
         return await this.getNotification('error', "Please select device/browser before debugging");
+      }
+      if(await CustomFunctionData.SelectedEnvironment ==='')
+      {
+        return await this.getNotification('error', "Please add environment from the configuration page before debugging");
       }
       this.setState({ isPageLoading: true });
       await CustomFunctionGetter.setupDebuggerWindow();
@@ -1297,7 +1267,7 @@ class CustomFunctionPage extends React.Component {
                 </CardHeader>
                 <CardBody>
                   <Form>
-                    <FormGroup row>
+                    {/* <FormGroup row>
                       <Label sm={5}>
                         Application Url*
                       </Label>
@@ -1305,7 +1275,7 @@ class CustomFunctionPage extends React.Component {
                         <Input type="url" name="testUrl" invalid={this.state.isErrorOnAppUrl} value={this.state.appUrl} onChange={this.addApplicationUrl.bind(this)}>
                         </Input>
                       </Col>
-                    </FormGroup>
+                    </FormGroup> */}
                     {/* <FormGroup row>
                     <Label sm={5}>
                       Testing type*
@@ -1319,7 +1289,7 @@ class CustomFunctionPage extends React.Component {
                   </FormGroup> */}
                     <FormGroup row>
                       <Label sm={5}>
-                        Screen*
+                        Platform*
                       </Label>
                       <Col>
                         <Input type="select" name="screen" value={this.state.selectedScreenOption} onChange={this.selectScreen.bind(this)}>
@@ -1329,7 +1299,7 @@ class CustomFunctionPage extends React.Component {
                     </FormGroup>
                     <FormGroup row>
                       <Label sm={5}>
-                        Device/Browser*
+                        Device*
                       </Label>
                       <Col>
                         <Input type="select" name="screen" value={this.state.selectedDevice} onChange={this.selectDevice.bind(this)}>
@@ -1546,7 +1516,7 @@ class CustomFunctionPage extends React.Component {
             </Col>
           </Row>
           <Draggable>
-            <Offcanvas style={{ width: 1000, height: '400px' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
+            <Offcanvas style={{ width: 450, height: '800px' }} returnFocusAfterClose={true} isOpen={this.state.isInspectorWindowOpen} toggle={this.toggleInspectorWindow.bind(this)} direction="start" backdrop={false} >
               <OffcanvasHeader style={{ 'background-color': 'lightblue' }} toggle={this.toggleInspectorWindow.bind(this)}>
                 Please watch your debug action
               </OffcanvasHeader>
@@ -1706,7 +1676,7 @@ class CustomFunctionPage extends React.Component {
                         </AccordionBody>
                       </AccordionItem>
                       <AccordionItem>
-                        <AccordionHeader targetId="2">UI action</AccordionHeader>
+                        <AccordionHeader targetId="2">Mobile UI action</AccordionHeader>
                         <AccordionBody accordionId="2">
                           <BootstrapTable
                             keyField='id'
@@ -1723,7 +1693,7 @@ class CustomFunctionPage extends React.Component {
                         </AccordionBody>
                       </AccordionItem>
                       <AccordionItem>
-                        <AccordionHeader targetId="3">Browser action</AccordionHeader>
+                        <AccordionHeader targetId="3">Mobile action</AccordionHeader>
                         <AccordionBody accordionId="3">
                           <BootstrapTable
                             keyField='id'

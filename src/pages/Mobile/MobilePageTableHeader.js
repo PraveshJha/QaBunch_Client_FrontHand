@@ -156,8 +156,16 @@ export var ORTableHeader = [{
 	)
 },
 {
+	dataField: 'issame',
+	text: 'is Property Same',
+	editor: {
+		type: Type.CHECKBOX,
+		value: 'Y:N'
+	  }
+},
+{
 	dataField: 'locator',
-	text: 'Locator',
+	text: 'Android Locator',
 	headerStyle: { width: '150px' },
 	validator: async (newValue, row, column, done) => {
 		if (await newValue.trim() === '') {
@@ -177,16 +185,56 @@ export var ORTableHeader = [{
 				setOptions(ORData.AllLocatorList);
 			}, 0);
 		}
+	}
+},
+{
+	dataField: 'locatorproperty',
+	text: 'Android Locator Property',
+	headerStyle: { width: '350px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Locator Property can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
 	},
 	filter: textFilter(
 		{
-			placeholder: 'Search By Locator',
+			placeholder: 'Search By Locator Property',
 		}
 	)
 },
 {
-	dataField: 'locatorproperty',
-	text: 'Locator Property',
+	dataField: 'ioslocator',
+	text: 'iOS Locator',
+	headerStyle: { width: '150px' },
+	validator: async (newValue, row, column, done) => {
+		if (await newValue.trim() === '') {
+			return done({
+				valid: false,
+				message: 'Locator can not be blank'
+			});
+		}
+		else {
+			return done();
+		}
+	},
+	editor: {
+		type: Type.SELECT,
+		getOptions: (setOptions) => {
+			setTimeout(() => {
+				setOptions(ORData.AllLocatorList);
+			}, 0);
+		}
+	}
+},
+{
+	dataField: 'ioslocatorproperty',
+	text: 'iOS Locator Property',
 	headerStyle: { width: '350px' },
 	validator: async (newValue, row, column, done) => {
 		if (await newValue.trim() === '') {
@@ -264,25 +312,16 @@ export var EmulatorTableHeader = [{
 {
 	dataField: 'platform',
 	text: 'Platform',
-	headerStyle: { width: '80px' },
+	headerStyle: { width: '100px' },
 	editor: {
 		type: Type.SELECT,
 		options: [{ label: 'Android', value: 'Android' }, { label: 'iOS', value: 'iOS' }],
 	},
 },
 {
-	dataField: 'device',
-	text: 'Device Type',
-	headerStyle: { width: '80px' },
-	editor: {
-		type: Type.SELECT,
-		options: [{ label: 'Mobile', value: 'Mobile' }, { label: 'Tablet', value: 'Tablet' }],
-	},
-},
-{
 	dataField: 'name',
 	text: 'Screen Name',
-	headerStyle: { width: '120px' },
+	headerStyle: { width: '150px' },
 	validator: async (newValue, row, column, done) => {
 		var format = /[^A-Za-z0-9-_. ]/ig;
 		if (await newValue.trim() === '') {
@@ -311,30 +350,58 @@ export var EmulatorTableHeader = [{
 	}
 },
 {
+	dataField: 'udid',
+	text: 'Device udid',
+	headerStyle: { width: '150px' },
+	validator: async (newValue, row, column, done) => {
+		// if (await newValue.trim() === '') {
+		// 	return done({
+		// 		valid: false,
+		// 		message: 'appPackage can not be blank.'
+		// 	});
+		// }
+		return done();
+	}
+},
+{
 	dataField: 'apppackage',
 	text: 'appPackage',
-	headerStyle: { width: '120px' },
+	headerStyle: { width: '250px' },
 	validator: async (newValue, row, column, done) => {
-		if (await newValue.trim() === '') {
-			return done({
-				valid: false,
-				message: 'appPackage can not be blank.'
-			});
-		}
+		// if (await newValue.trim() === '') {
+		// 	return done({
+		// 		valid: false,
+		// 		message: 'appPackage can not be blank.'
+		// 	});
+		// }
 		return done();
 	}
 },
 {
 	dataField: 'apppactivity',
 	text: 'appActivity',
-	headerStyle: { width: '120px' },
+	headerStyle: { width: '300px' },
 	validator: async (newValue, row, column, done) => {
-		if (await newValue.trim() === '') {
-			return done({
-				valid: false,
-				message: 'appActivity can not be blank.'
-			});
-		}
+		// if (await newValue.trim() === '') {
+		// 	return done({
+		// 		valid: false,
+		// 		message: 'appActivity can not be blank.'
+		// 	});
+		// }
+		return done();
+	}
+},
+{
+	dataField: 'platformversion',
+	text: 'Version',
+	headerStyle: { width: '100px' },
+	validator: async (newValue, row, column, done) => {
+		// if (await newValue.trim() === '') {
+		// 	return done({
+		// 		valid: false,
+		// 		message: 'appActivity can not be blank.'
+		// 	});
+		// }
 		return done();
 	}
 }
@@ -473,7 +540,7 @@ export var TestScriptTableHeader = [{
 },
 {
 	dataField: 'element',
-	text: 'Web Element',
+	text: 'Mobile Element',
 	headerStyle: { width: '200px' },
 	validator: async (newValue, row, column, done) => {
 		if (row.stepdefinition.toString().trim() === '' || row.action.toString().trim() === '') {

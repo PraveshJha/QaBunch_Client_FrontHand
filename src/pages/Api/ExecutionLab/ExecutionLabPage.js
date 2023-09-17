@@ -13,6 +13,9 @@ import {
   Button,
   ButtonGroup,
   Progress,
+  Modal,
+  ModalBody,
+  ModalHeader,
 } from 'reactstrap';
 import { ExecutionLabData } from './ExecutionLabData'
 import DropDownOptions from '../../../uiLayout/components/DropDownOptions'
@@ -75,6 +78,10 @@ class ExecutionLabPage extends React.Component {
     executionTimeGraphXaxis: ExecutionLabData.ExecutionTimeGraphXaxis,
     executionTimeGraphYaxis: ExecutionLabData.ExecutionTimeGraphYaxis,
     executionTimeColor: ExecutionLabData.ExecutionTimeColor,
+
+    //********** Modal For Global Error****************************************
+    isGlobalError: ExecutionLabData.IsGlobalError,
+    globalErrorMessage: ExecutionLabData.GlobalErrorMessage,
 
   };
   async componentDidMount() {
@@ -245,6 +252,11 @@ class ExecutionLabPage extends React.Component {
       ExecutionLabData.ExecutionTimeColor = await DataGeneratorUtility.gerHexaColorCodeForArray(1);
       this.setState({ executionTimeColor: ExecutionLabData.ExecutionTimeColor  })
       this.setState({ executionProgressBar: false });
+      if(ExecutionLabData.IsGlobalError)
+      {
+        this.setState({isGlobalError:true})
+        this.setState({globalErrorMessage:ExecutionLabData.GlobalErrorMessage})
+      }
     }
   }
 
@@ -296,6 +308,13 @@ class ExecutionLabPage extends React.Component {
         </Card>
       </Col>
     </Row>
+  }
+
+  ///**************** Global Error**********************************************/
+
+  toggleGlobalError = async () => {
+    this.setState({ isGlobalError: false });
+    ExecutionLabData.IsGlobalError = false;
   }
 
   render() {
@@ -467,6 +486,12 @@ class ExecutionLabPage extends React.Component {
             </Card>
           </Col>
         </Row>
+        <Modal isOpen={this.state.isGlobalError} className={this.props.className} backdrop="static">
+          <ModalHeader toggle={this.toggleGlobalError.bind(this)}>Oh Sorry,we encountered an error</ModalHeader>
+          <ModalBody>
+            {this.state.globalErrorMessage}
+          </ModalBody>
+        </Modal>
       </Page>
 
     );

@@ -139,8 +139,8 @@ export class ExecutionLabDataGetter {
       executionParams['deviceName'] = await deviceName;
       executionParams['screenShotOption'] = await screenShotOption;
       executionParams['environment'] = await environment;
-      var indexforEnvironment = await GetData.getIndexForMatchingKeyValueinJsonArray(ExecutionLabData.AllConfigData['Environment'], 'name', environment);
-      executionParams['applicationUrl'] = await ExecutionLabData.AllConfigData['Environment'][indexforEnvironment]['url'];
+      //var indexforEnvironment = await GetData.getIndexForMatchingKeyValueinJsonArray(ExecutionLabData.AllConfigData['Environment'], 'name', environment);
+      //executionParams['applicationUrl'] = await ExecutionLabData.AllConfigData['Environment'][indexforEnvironment]['url'];
       var testScriptForExecution = [];
       for (let i = 0; i < await selectedScripts.length; i++) {
         selectedRowId = await selectedScripts[i];

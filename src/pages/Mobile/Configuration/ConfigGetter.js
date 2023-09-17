@@ -30,6 +30,9 @@ export class ConfigGetter {
         //Get all Locator
         await this.getLocatorData(await allconfigData);
 
+        // get all Tag
+        await this.setLocator();
+
     }
 
     async saveDefaultConfiguration() {
@@ -53,15 +56,10 @@ export class ConfigGetter {
             }
             try {
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                var serverResponse = await restAPI.post(backendApi + 'mobiledebug/debuggerwindow', await headers, await defaultConfigData);
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Mobile/defaultconfiguration', await headers, await defaultConfigData);
                 var saveFile = await serverResponse['data'];
                 Config.ErrorMessage = await saveFile['errorMessage'];
                 return await saveFile['isFileSaved'];
-                // var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-                // var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Mobile/defaultconfiguration', await headers, await defaultConfigData);
-                // var saveFile = await serverResponse['data'];
-                // Config.ErrorMessage = await saveFile['errorMessage'];
-                // return await saveFile['isFileSaved'];
             }
             catch (error) {
                 Config.ErrorMessage = await error.message;
@@ -605,6 +603,81 @@ export class ConfigGetter {
           catch (error) {
           }
         }
+    }
+
+    async saveORTagData() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            try {
+                const selectedProject = await  localStorage.getItem('UserSelectedAccount')
+                var backendApi = Config.backendAPI;
+                var backendServiceLocation = await Config.backendServiceAt;
+                if (backendServiceLocation === 'remote') {
+                    backendApi = Config.remoteBackendAPI;
+                }
+                var dataforSend = {};
+                dataforSend['elementtag'] = await ConfigData.ORTagDataToSave;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Mobile/updatetag', await headers, await dataforSend);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+            }
+        }
+    }
+
+    async  setLocator()
+    {
+        //*** Set OR Tag Data */
+        var elementKeyData = await ConfigData.AllConfigData['ELEMENTTAGDATA'];
+        if(elementKeyData ===undefined)
+        {
+            elementKeyData ={};
+            elementKeyData['BUTTON'] ={}
+            elementKeyData['BUTTON']['TAG']='//android.widget.Button'
+            elementKeyData['BUTTON']['IOSTAG']='//*'
+            elementKeyData['TEXTBOX'] ={}
+            elementKeyData['TEXTBOX']['TAG']='//android.widget.TextView'
+            elementKeyData['TEXTBOX']['IOSTAG']='//*'
+            elementKeyData['LINK'] ={};
+            elementKeyData['LINK']['TAG'] ="//android.widget.Button";
+            elementKeyData['LINK']['IOSTAG'] ="//*";
+            elementKeyData['IMAGE'] ={};
+            elementKeyData['IMAGE']['TAG'] ="//android.widget.Image";
+            elementKeyData['IMAGE']['IOSTAG'] ="//*";
+            elementKeyData['CHECKBOX'] ={};
+            elementKeyData['CHECKBOX']['TAG'] ="//android.widget.TextView";
+            elementKeyData['CHECKBOX']['IOSTAG'] ="//*";
+            elementKeyData['RADIOBUTTON'] ={};
+            elementKeyData['RADIOBUTTON']['TAG'] ="//android.widget.TextView";
+            elementKeyData['RADIOBUTTON']['IOSTAG'] ="//*";
+            elementKeyData['LISTBOX'] ={};
+            elementKeyData['LISTBOX']['TAG'] ="//android.widget.Select";
+            elementKeyData['LISTBOX']['IOSTAG'] ="//*";
+            elementKeyData['TEXTAREA'] ={};
+            elementKeyData['TEXTAREA']['TAG'] ="//android.widget.TextArea";
+            elementKeyData['TEXTAREA']['IOSTAG'] ="//*";
+            elementKeyData['LABEL'] ={};
+            elementKeyData['LABEL']['TAG'] ="//android.view.View";
+            elementKeyData['LABEL']['IOSTAG'] ="//*";
+            elementKeyData['DEFAULT'] ={};
+            elementKeyData['DEFAULT']['TAG']  ="//*";
+            elementKeyData['DEFAULT']['IOSTAG']  ="//*";
+        }
+        var allTagData = [];
+        var tagData = await Object.keys(await elementKeyData);
+        for (let i = 0; i < await tagData.length; i++) {
+            var eleName = await tagData[i];
+            var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName]['TAG'],iostag:await  elementKeyData[await eleName]['IOSTAG'] };
+            allTagData.push(await allDetails);
+        }
+        ConfigData.ORElementTagData = await allTagData;
     }
 
 

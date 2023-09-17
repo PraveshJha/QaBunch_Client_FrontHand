@@ -17,4 +17,6 @@ export var ExecutionLabData = {
     "ExecutionTimeGraphXaxis":[],
     "ExecutionTimeGraphYaxis":[[]],
     "ExecutionTimeColor":['#F39C12'],
+    "IsGlobalError":false,
+    "GlobalErrorMessage":'',
 };

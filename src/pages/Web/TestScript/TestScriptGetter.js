@@ -356,7 +356,7 @@ export class TestScriptGetter {
           backendApi = Config.remoteBackendAPI;
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page', await headers);
+        serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/Page', await headers);
         var customFunctionData = await serverResponse['data'];
         TestScriptData.ListOfPageFunction = await customFunctionData;
         var allFuctionWithLabelAndValue = [];
@@ -402,7 +402,7 @@ export class TestScriptGetter {
           backendApi = Config.remoteBackendAPI;
         }
         var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/custom/Page/name/' + await customFunctionName, await headers);
+        var serverResponse = await restAPI.get(backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/custom/Page/name/' + await customFunctionName, await headers);
         var customFunctionData = await serverResponse['data'];
         return await customFunctionData['argumentlist'];
       }
@@ -473,7 +473,7 @@ export class TestScriptGetter {
             dataforSend['pagename'] = await testscriptData['dependentpage']
             dataforSend['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA']
             headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/createpagefunctionfromtestscript', await headers, await dataforSend);
+            serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Web/createpagefunctionfromtestscript', await headers, await dataforSend);
           }
         }
         headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };

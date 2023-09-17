@@ -33,6 +33,7 @@ import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader,Cus
 import Select from 'react-select';
 import ReactJson from 'react-json-view'
 import Matcher from '../../../QAautoMATER/funcLib/matcher';
+import {ORElementTagHeader } from '../MobilePageTableHeader'
 
 class ConfigurationPage extends React.Component {
   notificationSystem = React.createRef();
@@ -109,6 +110,10 @@ class ConfigurationPage extends React.Component {
     isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable,
     selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable,
 
+    //*** Mobile Element Tag**************************************************************/
+    oRElementTagData: ConfigData.ORElementTagData,
+    oRTagDataToSave: ConfigData.ORTagDataToSave,
+
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
@@ -171,6 +176,10 @@ class ConfigurationPage extends React.Component {
     this.setState({ allElementLocator: ConfigData.AllElementLocator });
     this.setState({ isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable });
     this.setState({ selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable });
+
+    //*** MObile Element Tag**************************************************************/
+    this.setState({ oRElementTagData: ConfigData.ORElementTagData });
+    this.setState({ oRTagDataToSave: ConfigData.ORTagDataToSave });
 
 
     //**** Page Load at End */
@@ -387,19 +396,20 @@ class ConfigurationPage extends React.Component {
     await event.preventDefault();
     var allDeviceDetails = this.state.allEmulatorTableData;
     if (allDeviceDetails.length > 0) {
-      var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['device'];
+      var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['udid'];
       var deviceName = allDeviceDetails[allDeviceDetails.length - 1]['name'];
       var platform = allDeviceDetails[allDeviceDetails.length - 1]['platform'];
       var appPackage = allDeviceDetails[allDeviceDetails.length - 1]['apppackage'];
       var appActivity = allDeviceDetails[allDeviceDetails.length - 1]['apppactivity'];
-      if (await deviceType.toString().trim() === "" || await deviceName.toString().trim() === '' || await platform.toString().trim() === '' || await appPackage.toString().trim() === '' || await appActivity.toString().trim() === '') {
+      var plarformversion = allDeviceDetails[allDeviceDetails.length - 1]['platformversion'];
+      if (await deviceName.toString().trim() === '' || await platform.toString().trim() === '') {
         this.setState({ isDataValidInEmulatorTable: false });
         return await this.getNotification('error', "Please add correct detsils in 'Add Device' section");
       }
     }
     this.setState({ isDataValidInEmulatorTable: true });
     var lastId = allDeviceDetails.length + 1;
-    var newRow = { id: lastId, platform: '', device: '', name: '',apppackage:'',apppactivity:'' };
+    var newRow = { id: lastId, platform: '', name: '',udid: '',apppackage:'',apppactivity:'',platformversion:'' };
     this.setState({ allEmulatorTableData: [...this.state.allEmulatorTableData, newRow] });
     ConfigData.AllEmulatorTableData.push(newRow);
 
@@ -427,12 +437,12 @@ class ConfigurationPage extends React.Component {
     var allDeviceDetails = this.state.allEmulatorTableData;
     if (this.state.isDataValidInEmulatorTable) {
       if (allDeviceDetails.length > 0) {
-        var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['device'];
+        var deviceType = allDeviceDetails[allDeviceDetails.length - 1]['udid'];
         var deviceName = allDeviceDetails[allDeviceDetails.length - 1]['name'];
         var platform = allDeviceDetails[allDeviceDetails.length - 1]['platform'];
         var appPackage = allDeviceDetails[allDeviceDetails.length - 1]['apppackage'];
         var appActivity = allDeviceDetails[allDeviceDetails.length - 1]['apppactivity'];
-        if (await deviceType.toString().trim() === '' || await deviceName.toString().trim() === '' || await platform.toString().trim() === '' || await appPackage.toString().trim() === '' || await appActivity.toString().trim() === '') {
+        if (await deviceName.toString().trim() === '' || await platform.toString().trim() === '') {
           return await this.getNotification('error', "Please add the correct device information in 'Add device' table");
         }
       }
@@ -947,6 +957,32 @@ class ConfigurationPage extends React.Component {
         return await this.getNotification('error', "Please add the correct locator name , it should not have number and Special characters.");
       }
     }
+    //*******************setup Mobile Element Tag************************************************
+
+    saveElementTagData = async (event) => {
+      await event.preventDefault();
+      var dataDetails = this.state.oRElementTagData;
+      for (let i = 0; i < await dataDetails.length; i++) {
+        var tagName = dataDetails[i]['tag'];
+        var iostagName = dataDetails[i]['iostag'];
+        if (await tagName.toString().trim() === '' || await iostagName.toString().trim() === '' ) {
+          return await this.getNotification('error', "Tag name can not blank.Please add correct tag name 'SET UP TAG FOR AUTOMATIC WEB ELEMENT CREATION' in table");
+        }
+      }
+      var allKeys = await Object.keys(await ConfigData.ORTagDataToSave);
+      if (await allKeys.length === 0) {
+        return await this.getNotification('warning', "No changes to save.");
+      }
+      this.setState({ isPageLoading: true });
+      var isSaved = await ConfigGetter.saveORTagData();
+      this.setState({ isPageLoading: false });
+      if (isSaved) {
+        return await this.getNotification('success', 'Tag name is successfully updated.');
+      }
+      else {
+        return await this.getNotification('error', 'Unable to save tag name because of ' + Config.ErrorMessage);
+      }
+    }
 
 
   //****************** End */********************************** */
@@ -1380,6 +1416,67 @@ class ConfigurationPage extends React.Component {
                       })}
                     />
                   </Col>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={12} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Set up tag for automatic mobile element creation
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.saveElementTagData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <CardBody>
+                    <Col>
+                      <BootstrapTable
+                        keyField='id'
+                        data={this.state.oRElementTagData}
+                        columns={ORElementTagHeader}
+                        wrapperClasses="table-responsive"
+                        striped
+                        hover
+                        condensed
+                        cellEdit={cellEditFactory({
+                          mode: 'click',
+                          blurToSave: true,
+                          afterSaveCell: (oldValue, newValue, row, column) => {
+                            if (column.dataField === 'tag') {
+                              var type = row.type;
+                              var tag = row.tag;
+                              if (tag !== '') {
+                                if(ConfigData.ORTagDataToSave[type] ===undefined)
+                                {
+                                  ConfigData.ORTagDataToSave[type]={}
+                                }
+                                ConfigData.ORTagDataToSave[type]["TAG"] = tag;
+                                ConfigData.ORTagDataToSave[type]["IOSTAG"] = row.iostag;
+                              }
+                            }
+                            if (column.dataField === 'iostag') {
+                              var type = row.type;
+                              var tag = row.iostag;
+                              if (tag !== '') {
+                                if(ConfigData.ORTagDataToSave[type] ===undefined)
+                                {
+                                  ConfigData.ORTagDataToSave[type]={}
+                                }
+                                ConfigData.ORTagDataToSave[type]["TAG"] = row.tag;
+                                ConfigData.ORTagDataToSave[type]["IOSTAG"] = tag;
+                              }
+                            }
+                          },
+                        })}
+                      />
+                    </Col>
+                  </CardBody>
                 </CardBody>
               </Card>
             </Col>
