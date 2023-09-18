@@ -20,7 +20,7 @@ import {
 } from 'reactstrap';
 import { ConfigData } from './ConfigData'
 import ConfigGetter from './ConfigGetter'
-import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader, CustomLocator } from '../WebPageTableHeader'
+import { EnvironmentURLTableHeader, EmulatorTableHeader, TestToolTableHeader, CustomLocator,ORElementTagHeader } from '../WebPageTableHeader'
 import BootstrapTable from "react-bootstrap-table-next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -123,6 +123,11 @@ class ConfigurationPage extends React.Component {
     isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable,
     selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable,
 
+    //*** Setup Tag**********************************************************************/
+
+    oRElementTagData: ConfigData.ORElementTagData,
+    oRTagDataToSave: ConfigData.ORTagDataToSave,
+
   };
   async componentDidMount() {
     window.scrollTo(0, 0);
@@ -199,6 +204,10 @@ class ConfigurationPage extends React.Component {
     this.setState({ allElementLocator: ConfigData.AllElementLocator });
     this.setState({ isDataValidInLocatorTable: ConfigData.IsDataValidInLocatorTable });
     this.setState({ selectedRowFromLocatorTable: ConfigData.SelectedRowFromLocatorTable });
+
+     //*** Setup Tag**********************************************************************/
+     this.setState({ oRElementTagData: ConfigData.ORElementTagData });
+     this.setState({ oRTagDataToSave: ConfigData.ORTagDataToSave });
     this.setState({ isPageLoading: false });
 
   }
@@ -1059,6 +1068,32 @@ class ConfigurationPage extends React.Component {
     }
   }
 
+  //******Setup Tag***********************************************************************/
+
+  saveElementTagData = async (event) => {
+    await event.preventDefault();
+    var dataDetails = this.state.oRElementTagData;
+    for (let i = 0; i < await dataDetails.length; i++) {
+      var tagName = dataDetails[i]['tag'];
+      if (await tagName.toString().trim() === '') {
+        return await this.getNotification('error', "Tag name can not blank.Please add correct tag name 'SET UP TAG FOR AUTOMATIC WEB ELEMENT CREATION' in table");
+      }
+    }
+    var allKeys = await Object.keys(await ConfigData.ORTagDataToSave);
+    if (await allKeys.length === 0) {
+      return await this.getNotification('warning', "No changes to save.");
+    }
+    this.setState({ isPageLoading: true });
+    var isSaved = await ConfigGetter.saveORTagData();
+    this.setState({ isPageLoading: false });
+    if (isSaved) {
+      return await this.getNotification('success', 'Tag name is successfully updated.');
+    }
+    else {
+      return await this.getNotification('error', 'Unable to save tag name because of ' + Config.ErrorMessage);
+    }
+  }
+
   //****************** End */********************************** */
 
   render() {
@@ -1540,6 +1575,48 @@ class ConfigurationPage extends React.Component {
                       })}
                     />
                   </Col>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={6} md={12} sm={12} xs={12}>
+              <Card>
+                <CardHeader>
+                  <div className="d-flex justify-content-between align-items-center">
+                    Set up tag for automatic web element creation
+                    <ButtonGroup size="sm">
+                      <Button color='black' onClick={this.saveElementTagData.bind(this)}>
+                        <small>Save</small>
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+                </CardHeader>
+                <CardBody>
+                  <CardBody>
+                    <Col>
+                      <BootstrapTable
+                        keyField='id'
+                        data={this.state.oRElementTagData}
+                        columns={ORElementTagHeader}
+                        wrapperClasses="table-responsive"
+                        striped
+                        hover
+                        condensed
+                        cellEdit={cellEditFactory({
+                          mode: 'click',
+                          blurToSave: true,
+                          afterSaveCell: (oldValue, newValue, row, column) => {
+                            if (column.dataField === 'tag') {
+                              var type = row.type;
+                              var tag = row.tag;
+                              if (tag !== '') {
+                                ConfigData.ORTagDataToSave[type] = tag;
+                              }
+                            }
+                          },
+                        })}
+                      />
+                    </Col>
+                  </CardBody>
                 </CardBody>
               </Card>
             </Col>

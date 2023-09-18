@@ -2013,7 +2013,7 @@ class TestScriptPage extends React.Component {
             </OffcanvasBody>
           </Offcanvas>
           <Modal size="xl" isOpen={this.state.isWebActionModalOpen} className={this.props.className} backdrop="static">
-            <ModalHeader style={{ background: '#deecf2' }} toggle={this.toggleWebActionModal.bind(this)}>Choose web action</ModalHeader>
+            <ModalHeader style={{ background: '#deecf2' }} toggle={this.toggleWebActionModal.bind(this)}>Choose mobile action</ModalHeader>
             <ModalBody>
               <Row>
                 <Col lg={12} md={12} sm={12} xs={12}>

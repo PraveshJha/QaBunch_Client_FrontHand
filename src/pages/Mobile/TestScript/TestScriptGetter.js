@@ -398,7 +398,7 @@ export class TestScriptGetter {
             //save new function
             dataforSend = {};
             dataforSend['pagename'] = await testscriptData['dependentpage']
-            dataforSend['elementtag'] = await TestScriptData.AllORData['ELEMENTTAGDATA']
+            dataforSend['elementtag'] = await TestScriptData.AllConfigData['ELEMENTTAGDATA']
             headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
             serverResponse = await restAPI.post(await backendApi + 'customfunction/project/' + selectedProject + '/testingtype/Mobile/createpagefunctionfromtestscript', await headers, await dataforSend);
           }
@@ -663,7 +663,7 @@ export class TestScriptGetter {
             for (let j = 0; j < await allStepsTobeCalculated.length; j++) {
               testStep = await allStepsTobeCalculated[j];
               var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
-              var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllORData['ELEMENTTAGDATA'] });
+              var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllConfigData['ELEMENTTAGDATA'] });
               var values = await serverResponse['data'];
               var actionName = await values.actionName;
               var valueneedtobeSend = await values.actionvalue;

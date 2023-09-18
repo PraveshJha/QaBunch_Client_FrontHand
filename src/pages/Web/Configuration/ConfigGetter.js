@@ -1,5 +1,5 @@
 import { ConfigData } from './ConfigData';
-import { Config,Users } from '../../../QAautoMATER/Config';
+import { Config, Users } from '../../../QAautoMATER/Config';
 import GetData from '../../../QAautoMATER/funcLib/getData';
 import DataGeneratorUtility from '../../../QAautoMATER/funcLib/DataGeneratorUtility';
 import FileLib from '../../../QAautoMATER/funcLib/fileLib';
@@ -23,12 +23,13 @@ export class ConfigGetter {
         await this.renderAllComponent();
         await this.getAccountDetails();
         await this.getLocatorData(await allconfigData)
+        await this.setTagData(await allconfigData);
 
     }
     /////****** Default Configuration Getter *******************************************************
 
     async updateDefaultConfigurationData(allconfigData) {
-        var dataChoice =''
+        var dataChoice = ''
         if (Config.isDemo) {
             ConfigData.EnvironmentList = await ['Dev', 'QA'];
             ConfigData.DefaultSelectedEnvironment = 'Dev';
@@ -42,11 +43,11 @@ export class ConfigGetter {
                 dataChoice = await allconfigData['DefaultSelectedEnvironment'];
                 if (dataChoice === undefined) {
                     ConfigData.DefaultSelectedEnvironment = ConfigData.EnvironmentList[0];
-                    ConfigData.CleanUpEnvironment= await ConfigData.EnvironmentList[0];
+                    ConfigData.CleanUpEnvironment = await ConfigData.EnvironmentList[0];
                 }
                 else {
                     ConfigData.DefaultSelectedEnvironment = await dataChoice;
-                    ConfigData.CleanUpEnvironment= await dataChoice;
+                    ConfigData.CleanUpEnvironment = await dataChoice;
                 }
             }
             dataChoice = await allconfigData['DefaultReportTrailCount'];
@@ -109,7 +110,7 @@ export class ConfigGetter {
     }
 
     async readConfigurationFile(testingType = 'Api') {
-        var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+        var selectedProject = await localStorage.getItem('UserSelectedAccount');
         if (Config.fileSystemtechniques === 'local') {
             return await FileLib.readFile(selectedProject + '/' + testingType + '/Configuration.json');
         }
@@ -118,8 +119,8 @@ export class ConfigGetter {
             if (Config.backendServiceAt === 'remote') {
                 backendAPI = await Config.remoteBackendAPI;
             }
-            var headers = {'Authorization':await Users.userToken,userEmail:await Users.userEmail};
-            var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + selectedProject + '/testingtype/' + testingType,await headers);
+            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+            var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + selectedProject + '/testingtype/' + testingType, await headers);
             return await serverResponse['data'];
         }
     }
@@ -170,8 +171,7 @@ export class ConfigGetter {
         else {
             var platform = await allconfigData['DefaultExecutionPlatform'];
             if (platform === undefined) {
-                if(ConfigData.AllExecutionPlatform.length>0)
-                {
+                if (ConfigData.AllExecutionPlatform.length > 0) {
                     ConfigData.DefaultExecutionPlatform = await ConfigData.AllExecutionPlatform[0];
                 }
             }
@@ -180,8 +180,7 @@ export class ConfigGetter {
             }
             var browser = await allconfigData['DefaultBrowser'];
             if (browser === undefined) {
-                if(ConfigData.AllBrowserList.length>0)
-                {
+                if (ConfigData.AllBrowserList.length > 0) {
                     ConfigData.DefaultBrowser = await ConfigData.AllBrowserList[0];
                 }
             }
@@ -190,89 +189,79 @@ export class ConfigGetter {
             }
             var mobileDevice = await allconfigData['DefaultMobileEmulator'];
             if (mobileDevice === undefined) {
-                if(ConfigData.AllMobileEmulator.length>0)
-                {
+                if (ConfigData.AllMobileEmulator.length > 0) {
                     ConfigData.DefaultMobileEmulator = await ConfigData.AllMobileEmulator[0];
                 }
             }
             else {
-                if(ConfigData.AllMobileEmulator.length>0)
-                {
+                if (ConfigData.AllMobileEmulator.length > 0) {
                     ConfigData.DefaultMobileEmulator = await mobileDevice;
                 }
-                
+
             }
             var tabletDevice = await allconfigData['DefaultTabletEmulator'];
             if (tabletDevice === undefined) {
-                if(ConfigData.AllTabletEmulator.length>0)
-                {
+                if (ConfigData.AllTabletEmulator.length > 0) {
                     ConfigData.DefaultTabletEmulator = await ConfigData.AllTabletEmulator[0];
                 }
             }
             else {
-                if(ConfigData.AllTabletEmulator.length>0)
-                {
+                if (ConfigData.AllTabletEmulator.length > 0) {
                     ConfigData.DefaultTabletEmulator = await tabletDevice;
                 }
-                
+
             }
         }
 
     }
 
-    async updateToolsTableData(allconfigData)
-    {
-       if(Config.isDemo)
-       {
-        ConfigData.AllTestManagementToolData =[{id:1,tool:'Jira',url:'https://jira.qaautomater.com',username:'QAautoMATER',password:'iampasswordKey'}]
-       }
-       else{
-        var toolsData = await allconfigData['Tools'];
-        if(toolsData ===undefined)
-        {
-            ConfigData.AllTestManagementToolData =[]
+    async updateToolsTableData(allconfigData) {
+        if (Config.isDemo) {
+            ConfigData.AllTestManagementToolData = [{ id: 1, tool: 'Jira', url: 'https://jira.qaautomater.com', username: 'QAautoMATER', password: 'iampasswordKey' }]
         }
-        else{
-            ConfigData.AllTestManagementToolData =await toolsData;
+        else {
+            var toolsData = await allconfigData['Tools'];
+            if (toolsData === undefined) {
+                ConfigData.AllTestManagementToolData = []
+            }
+            else {
+                ConfigData.AllTestManagementToolData = await toolsData;
+            }
         }
-       }
     }
 
     async isValidUrl(urlString) {
         var urlPattern = new RegExp('^(https?:\\/\\/)?' + // validate protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
-          '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
         return !!urlPattern.test(urlString);
     }
 
-    async setAllCapability(capFor)
-    {
-     var allCaps = await ConfigData.AllConfigData['ExecutionCapabilities'];
-     if(await allCaps ===undefined)
-     {
-        ConfigData.AllConfigData['ExecutionCapabilities']={}
-     }
-      var allCapsforAllPlatform = await ConfigData.AllConfigData['ExecutionCapabilities'][await capFor];
-      if(allCapsforAllPlatform ===undefined)
-      {
-        var baseCapabilitys = await ConfigData.AllCapabilities;
-        baseCapabilitys['Desktop']['Chrome']= await ConfigData.CommonCapability;
-        baseCapabilitys['Desktop']['Firefox']= await ConfigData.CommonCapability;
-        baseCapabilitys['Desktop']['Edge']= await ConfigData.CommonCapability;
-        baseCapabilitys['Desktop']['Safari']= await ConfigData.CommonCapability;
-        baseCapabilitys['Mobile']= await ConfigData.CommonCapability;
-        baseCapabilitys['Tablet']= await ConfigData.CommonCapability;
-        ConfigData.AllCapabilities = await baseCapabilitys;
-        ConfigData.ServerUrl='';
-      }
-      else{
-        ConfigData.ServerUrl = await allCapsforAllPlatform['HubUrl'];
-        ConfigData.AllCapabilities = await allCapsforAllPlatform['Capabilities'];
-      }
-    
+    async setAllCapability(capFor) {
+        var allCaps = await ConfigData.AllConfigData['ExecutionCapabilities'];
+        if (await allCaps === undefined) {
+            ConfigData.AllConfigData['ExecutionCapabilities'] = {}
+        }
+        var allCapsforAllPlatform = await ConfigData.AllConfigData['ExecutionCapabilities'][await capFor];
+        if (allCapsforAllPlatform === undefined) {
+            var baseCapabilitys = await ConfigData.AllCapabilities;
+            baseCapabilitys['Desktop']['Chrome'] = await ConfigData.CommonCapability;
+            baseCapabilitys['Desktop']['Firefox'] = await ConfigData.CommonCapability;
+            baseCapabilitys['Desktop']['Edge'] = await ConfigData.CommonCapability;
+            baseCapabilitys['Desktop']['Safari'] = await ConfigData.CommonCapability;
+            baseCapabilitys['Mobile'] = await ConfigData.CommonCapability;
+            baseCapabilitys['Tablet'] = await ConfigData.CommonCapability;
+            ConfigData.AllCapabilities = await baseCapabilitys;
+            ConfigData.ServerUrl = '';
+        }
+        else {
+            ConfigData.ServerUrl = await allCapsforAllPlatform['HubUrl'];
+            ConfigData.AllCapabilities = await allCapsforAllPlatform['Capabilities'];
+        }
+
     }
 
     async renderAllComponent() {
@@ -281,22 +270,22 @@ export class ConfigGetter {
             ConfigData.SelectedComponent = "All";
         }
         else {
-          try {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
-            var backendAPI = await Config.backendAPI;
-            if (Config.backendServiceAt === 'remote') {
-              backendAPI = await Config.remoteBackendAPI;
+            try {
+                var selectedProject = await localStorage.getItem('UserSelectedAccount');
+                var backendAPI = await Config.backendAPI;
+                if (Config.backendServiceAt === 'remote') {
+                    backendAPI = await Config.remoteBackendAPI;
+                }
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.get(backendAPI + 'components/project/' + selectedProject + '/testingtype/Web', await headers);
+                var allComponent = await serverResponse['data'];
+                if (allComponent.length > 0) {
+                    ConfigData.SelectedComponent = await allComponent[0];
+                    ConfigData.ComponentList = await allComponent;
+                }
             }
-            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            var serverResponse = await restAPI.get(backendAPI + 'components/project/' + selectedProject + '/testingtype/Web', await headers);
-            var allComponent = await serverResponse['data'];
-            if (allComponent.length > 0) {
-              ConfigData.SelectedComponent = await allComponent[0];
-              ConfigData.ComponentList = await allComponent;
+            catch (error) {
             }
-          }
-          catch (error) {
-          }
         }
     }
     async deleteAutomationComponent() {
@@ -305,15 +294,15 @@ export class ConfigGetter {
             return true;
         }
         else {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+            var selectedProject = await localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
                 backendApi = Config.remoteBackendAPI;
             }
             try {
-                var testBody ={};
-                testBody['component']= ConfigData.SelectedComponent;
+                var testBody = {};
+                testBody['component'] = ConfigData.SelectedComponent;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
                 var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Web/deletecomponent', await headers, await testBody);
                 var saveFile = await serverResponse['data'];
@@ -331,53 +320,50 @@ export class ConfigGetter {
 
     async getAccountDetails() {
         if (Config.isDemo) {
-            ConfigData.MaxReportCounter=30;
+            ConfigData.MaxReportCounter = 30;
         }
         else {
-          try {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
-            var backendAPI = await Config.backendAPI;
-            if (Config.backendServiceAt === 'remote') {
-              backendAPI = await Config.remoteBackendAPI;
+            try {
+                var selectedProject = await localStorage.getItem('UserSelectedAccount');
+                var backendAPI = await Config.backendAPI;
+                if (Config.backendServiceAt === 'remote') {
+                    backendAPI = await Config.remoteBackendAPI;
+                }
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + await selectedProject + '/accountdetails', await headers);
+                var accountData = await serverResponse['data'];
+                ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
             }
-            var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
-            var serverResponse = await restAPI.get(backendAPI + 'configuration/project/' + await selectedProject + '/accountdetails', await headers);
-            var accountData = await serverResponse['data'];
-            ConfigData.MaxReportCounter = await accountData['uiMaxReportTrailCount'];
-          }
-          catch (error) {
-          }
+            catch (error) {
+            }
         }
     }
 
-    async getLocatorData(allConfigData)
-    {
+    async getLocatorData(allConfigData) {
         if (Config.isDemo) {
-            ConfigData.AllElementLocator=[{"id":1,"locator":"id"},{"id":2,"locator":"name"},{"id":3,"locator":"xpath"},{"id":4,"locator":"linktext"},{"id":5,"locator":"partiallinktext"},{"id":6,"locator":"class"},{"id":7,"locator":"cssselector"}]
+            ConfigData.AllElementLocator = [{ "id": 1, "locator": "id" }, { "id": 2, "locator": "name" }, { "id": 3, "locator": "xpath" }, { "id": 4, "locator": "linktext" }, { "id": 5, "locator": "partiallinktext" }, { "id": 6, "locator": "class" }, { "id": 7, "locator": "cssselector" }]
         }
         else {
-          try {
-            var allLocator = await allConfigData['Locator'];
-            if(await allLocator ===undefined)
-            {
-                ConfigData.AllElementLocator=[{"id":1,"locator":"id"},{"id":2,"locator":"name"},{"id":3,"locator":"xpath"},{"id":4,"locator":"linktext"},{"id":5,"locator":"partiallinktext"},{"id":6,"locator":"class"},{"id":7,"locator":"cssselector"}]
-            }
-            else{
-                var locatorData =[];
-                for(let i=0;i<await allLocator.length;i++)
-                {
-                    var onebyoneData ={};
-                    var id = Number(i+1);
-                    var name = await allLocator[i].toString().trim();
-                    onebyoneData['id'] = await id;
-                    onebyoneData['locator'] = await name;
-                    locatorData.push(await onebyoneData);
+            try {
+                var allLocator = await allConfigData['Locator'];
+                if (await allLocator === undefined) {
+                    ConfigData.AllElementLocator = [{ "id": 1, "locator": "id" }, { "id": 2, "locator": "name" }, { "id": 3, "locator": "xpath" }, { "id": 4, "locator": "linktext" }, { "id": 5, "locator": "partiallinktext" }, { "id": 6, "locator": "class" }, { "id": 7, "locator": "cssselector" }]
                 }
-                ConfigData.AllElementLocator = await locatorData;
+                else {
+                    var locatorData = [];
+                    for (let i = 0; i < await allLocator.length; i++) {
+                        var onebyoneData = {};
+                        var id = Number(i + 1);
+                        var name = await allLocator[i].toString().trim();
+                        onebyoneData['id'] = await id;
+                        onebyoneData['locator'] = await name;
+                        locatorData.push(await onebyoneData);
+                    }
+                    ConfigData.AllElementLocator = await locatorData;
+                }
             }
-          }
-          catch (error) {
-          }
+            catch (error) {
+            }
         }
     }
 
@@ -387,16 +373,16 @@ export class ConfigGetter {
             return true;
         }
         else {
-            var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+            var selectedProject = await localStorage.getItem('UserSelectedAccount');
             var backendApi = Config.backendAPI;
             var backendServiceLocation = await Config.backendServiceAt;
             if (backendServiceLocation === 'remote') {
                 backendApi = Config.remoteBackendAPI;
             }
             try {
-                var testBody ={};
-                testBody['oldcomponent']= ConfigData.SelectedComponent;
-                testBody['newcomponent']= ConfigData.NewComponentName;
+                var testBody = {};
+                testBody['oldcomponent'] = ConfigData.SelectedComponent;
+                testBody['newcomponent'] = ConfigData.NewComponentName;
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
                 var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + await selectedProject + '/testingtype/Web/renamecomponent', await headers, await testBody);
                 var saveFile = await serverResponse['data'];
@@ -412,6 +398,33 @@ export class ConfigGetter {
 
     }
 
+    async saveORTagData() {
+        if (Config.isDemo) {
+            await new Promise(wait => setTimeout(wait, 3000));
+            return true;
+        }
+        else {
+            try {
+                var selectedProject = await localStorage.getItem('UserSelectedAccount');
+                var backendApi = Config.backendAPI;
+                var backendServiceLocation = await Config.backendServiceAt;
+                if (backendServiceLocation === 'remote') {
+                    backendApi = Config.remoteBackendAPI;
+                }
+                var dataforSend = {};
+                dataforSend['elementtag'] = await ConfigData.ORTagDataToSave;
+                var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
+                var serverResponse = await restAPI.post(backendApi + 'configuration/project/' + selectedProject + '/testingtype/Web/updatetag', await headers, await dataforSend);
+                var saveFile = await serverResponse['data'];
+                Config.ErrorMessage = await saveFile['errorMessage'];
+                return await saveFile['isFileSaved'];
+            }
+            catch (error) {
+                Config.ErrorMessage = await error.message;
+            }
+        }
+    }
+
     async getListOfTestCaseFromComponent(componentName) {
         if (Config.isDemo) {
             await new Promise(wait => setTimeout(wait, 3000));
@@ -419,9 +432,9 @@ export class ConfigGetter {
         }
         else {
             var output = [];
-            var listOfTestDetails =[];
+            var listOfTestDetails = [];
             try {
-                var selectedProject = await  localStorage.getItem('UserSelectedAccount');
+                var selectedProject = await localStorage.getItem('UserSelectedAccount');
                 var backendAPI = await Config.backendAPI;
                 if (await Config.backendServiceAt === 'remote') {
                     backendAPI = await Config.remoteBackendAPI;
@@ -429,22 +442,47 @@ export class ConfigGetter {
                 var headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
                 var serverResponse = await restAPI.get(await backendAPI + 'components/' + await componentName + '/project/' + await selectedProject + '/testingtype/Web', await headers);
                 output = await serverResponse['data'];
-                for(let i=0;i<await output.length;i++)
-                {
-                   var onebyoneValue ={ value: '', label: '' };
-                   onebyoneValue.value = await output[i]['testid']+'@'+await output[i]['testname'];
-                   onebyoneValue.label = await output[i]['testid']+'@'+await output[i]['testname'];
-                   listOfTestDetails.push(await onebyoneValue);
+                for (let i = 0; i < await output.length; i++) {
+                    var onebyoneValue = { value: '', label: '' };
+                    onebyoneValue.value = await output[i]['testid'] + '@' + await output[i]['testname'];
+                    onebyoneValue.label = await output[i]['testid'] + '@' + await output[i]['testname'];
+                    listOfTestDetails.push(await onebyoneValue);
 
                 }
 
-    
+
             } catch (error) {
             }
             return await listOfTestDetails;
 
         }
 
+    }
+
+    async setTagData(allConfigData) {
+        //*** Set OR Tag Data */
+        var elementKeyData = await allConfigData['ELEMENTTAGDATA'];
+        if (elementKeyData === undefined) {
+            elementKeyData = {};
+            elementKeyData['LINK'] = "//a";
+            elementKeyData['BUTTON'] = "//button";
+            elementKeyData['TEXTBOX'] = "//input";
+            elementKeyData['IMAGE'] = "//img";
+            elementKeyData['CHECKBOX'] = "//input";
+            elementKeyData['RADIOBUTTON'] = "//input";
+            elementKeyData['LISTBOX'] = "//select";
+            elementKeyData['TEXTAREA'] = "//textarea";
+            elementKeyData['LABEL'] = "//label";
+            elementKeyData['DEFAULT'] = "//*";
+        }
+        var allTagData = [];
+        var tagData = await Object.keys(await elementKeyData);
+        for (let i = 0; i < await tagData.length; i++) {
+            var eleName = await tagData[i];
+            var allDetails = { id: i + 1, type: eleName, tag: await elementKeyData[await eleName] };
+            allTagData.push(await allDetails);
+        }
+        ConfigData.ORElementTagData = await allTagData;
     }
 
 }

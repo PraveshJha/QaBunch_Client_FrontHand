@@ -61,4 +61,6 @@ export var ConfigData = {
     SelectedDestinationComponentToMove:'',
     ListOfTestIdToMove:[],
     ListOfAllTestID:[],
+    ORElementTagData:[],
+    ORTagDataToSave :{},
 };

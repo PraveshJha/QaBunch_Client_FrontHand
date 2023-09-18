@@ -41,8 +41,6 @@ class ObjectRepositoryPage extends React.Component {
       allORTableData: ORData.AllORTableData,
       selectedRowFromORTable: ORData.SelectedRowFromORTable,
       isDataValidInORTable: ORData.IsDataValidInORTable,
-      oRElementTagData: ORData.ORElementTagData,
-      oRTagDataToSave: ORData.ORTagDataToSave,
 
     };
 
@@ -58,8 +56,6 @@ class ObjectRepositoryPage extends React.Component {
     this.setState({ selectedRowFromORTable: ORData.SelectedRowFromORTable });
     this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
     this.setState({ isDataValidInORTable: ORData.IsDataValidInORTable });
-    this.setState({ oRElementTagData: ORData.ORElementTagData });
-    this.setState({ oRTagDataToSave: ORData.ORTagDataToSave });
 
   }
 
@@ -252,50 +248,6 @@ class ObjectRepositoryPage extends React.Component {
                         })}
                         pagination={paginationFactory()}
                         filter={filterFactory()}
-                      />
-                    </Col>
-                  </CardBody>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={12} md={12} sm={12} xs={12}>
-              <Card>
-                <CardHeader>
-                  <div className="d-flex justify-content-between align-items-center">
-                    Set up tag for automatic web element creation
-                    <ButtonGroup size="sm">
-                      <Button color='black' onClick={this.saveElementTagData.bind(this)}>
-                        <small>Save</small>
-                      </Button>
-                    </ButtonGroup>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <CardBody>
-                    <Col>
-                      <BootstrapTable
-                        keyField='id'
-                        data={this.state.oRElementTagData}
-                        columns={ORElementTagHeader}
-                        wrapperClasses="table-responsive"
-                        striped
-                        hover
-                        condensed
-                        cellEdit={cellEditFactory({
-                          mode: 'click',
-                          blurToSave: true,
-                          afterSaveCell: (oldValue, newValue, row, column) => {
-                            if (column.dataField === 'tag') {
-                              var type = row.type;
-                              var tag = row.tag;
-                              if (tag !== '') {
-                                ORData.ORTagDataToSave[type] = tag;
-                              }
-                            }
-                          },
-                        })}
                       />
                     </Col>
                   </CardBody>

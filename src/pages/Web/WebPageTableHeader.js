@@ -720,6 +720,7 @@ export var ORElementTagHeader = [{
 }, {
 	dataField: 'type',
 	text: 'Webelement type',
+	headerStyle: { width: '200px' },
 	editable:false,
 },
 {
