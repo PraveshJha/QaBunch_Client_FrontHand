@@ -372,6 +372,7 @@ export class TestScriptGetter {
         if (await Object.keys(newElement).length > 0) {
           dataforSend = {};
           dataforSend['keyForAddandUpdate'] = await newElement;
+          console.log(await dataforSend);
           headers = { 'Authorization': await Users.userToken, userEmail: await Users.userEmail };
           serverResponse = await restAPI.post(backendApi + 'or/project/' + selectedProject + '/testingtype/Mobile', await headers, await dataforSend);
           var saveOrData = await serverResponse['data'];
@@ -663,17 +664,20 @@ export class TestScriptGetter {
             for (let j = 0; j < await allStepsTobeCalculated.length; j++) {
               testStep = await allStepsTobeCalculated[j];
               var steDetails = { id: await counter, stepdefinition: await testStep, action: '', element: '', value: '', isreporting: 'Yes' };
-              var serverResponse = await restAPI.post(backendAPI + 'aistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllConfigData['ELEMENTTAGDATA'] });
+              var serverResponse = await restAPI.post(backendAPI + 'mobileaistep/step', await headers, { "step": await testStep, "elementtag": await TestScriptData.AllConfigData['ELEMENTTAGDATA'] });
               var values = await serverResponse['data'];
               var actionName = await values.actionName;
               var valueneedtobeSend = await values.actionvalue;
-              if (actionName !== '') {
+              if (await actionName !== '') {
                 var elementName = await values.orLogicalName.trim().toUpperCase();
                 var locator = await values.primaryLocator;
                 var locatorProperty = await values.primaryLocatorProperty;
+                var iOSLocatorName = values.iosLocatorName;
+                var iOSLocatorProperty = values.iosLocatorproperty;
                 var secondaryXpath = await values.secondaryXPath;
                 var isKeyAlreadyPresent = TestScriptData.TestScriptORData[await elementName];
-                var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: secondaryXpath }
+                //var newElementAdd = { locator: await locator, locatorproperty: await locatorProperty, alternatexpath: secondaryXpath }
+                var newElementAdd = {issame:'Y', locator: locator, locatorproperty: locatorProperty,ioslocator: iOSLocatorName, ioslocatorproperty: iOSLocatorProperty, alternatexpath: secondaryXpath }
                 if (await isKeyAlreadyPresent === undefined) {
                   TestScriptData.AllORData[await elementName] = {};
                   TestScriptData.AllORData[await elementName] = await newElementAdd;

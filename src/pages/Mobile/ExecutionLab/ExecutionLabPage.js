@@ -615,7 +615,7 @@ class ExecutionLabPage extends React.Component {
             {this.state.globalErrorMessage}
           </ModalBody>
         </Modal>
-        <Modal size="xl" isOpen={this.state.isScreenshotModalOpen} className={this.props.className} backdrop="static">
+        <Modal size="sm" isOpen={this.state.isScreenshotModalOpen} className={this.props.className} backdrop="static">
           <ModalHeader toggle={this.toggleScreenshotModal.bind(this)}>Screenshot-{this.state.stepsDetailsForScreenshot}</ModalHeader>
           <ModalBody>
             <Row>
